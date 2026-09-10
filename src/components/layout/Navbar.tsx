@@ -20,7 +20,6 @@ import {
   Home,
   Footprints,
   Briefcase,
-  Flame,
   ArrowRight,
   SlidersHorizontal,
 } from 'lucide-react';

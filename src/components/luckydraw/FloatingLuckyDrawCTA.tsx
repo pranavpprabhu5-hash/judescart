@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Sparkles, Gift, Flame, X } from 'lucide-react';
+import { Sparkles, Gift, X } from 'lucide-react';
 import { useStore } from '@/context/StoreContext';
 import { cn } from '@/lib/utils';
 

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useStore } from '@/context/StoreContext';
-import { X, Package, MapPin, Heart, LogOut, CheckCircle2, Truck, ExternalLink, ShieldCheck } from 'lucide-react';
+import { X, Package, MapPin, Heart, LogOut, Truck, ExternalLink, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';

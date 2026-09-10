@@ -81,7 +81,7 @@ function ProductListingContent() {
       setLoading(true);
       const items = await api.getProducts({
         category: selectedCategory,
-        drawTier: selectedDrawTier as any,
+        drawTier: selectedDrawTier as FilterState['drawTier'],
         brand: selectedBrand || undefined,
         minPrice,
         maxPrice,

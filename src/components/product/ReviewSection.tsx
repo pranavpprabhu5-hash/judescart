@@ -16,7 +16,7 @@ interface ReviewSectionProps {
   reviewCount: number;
 }
 
-export function ReviewSection({ productId, reviews: initialReviews, rating, reviewCount }: ReviewSectionProps) {
+export function ReviewSection({ productId, reviews: initialReviews, rating }: ReviewSectionProps) {
   const [reviews, setReviews] = useState<ProductReview[]>(initialReviews);
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
   const [newRating, setNewRating] = useState(5);
