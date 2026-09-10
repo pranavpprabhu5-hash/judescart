@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { StoreProvider } from '@/context/StoreContext';
-import { AnnouncementBar } from '@/components/layout/AnnouncementBar';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { SlideOverCart } from '@/components/cart/SlideOverCart';
@@ -48,7 +47,6 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${jakarta.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans bg-[#F8FAFC] text-slate-900 selection:bg-[#0066FF] selection:text-white">
         <StoreProvider>
-          <AnnouncementBar />
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
