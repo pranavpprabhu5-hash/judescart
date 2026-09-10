@@ -7,7 +7,7 @@ import { api } from '@/lib/api';
 import { Product } from '@/types/product';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { HeroSlider } from '@/components/home/HeroSlider';
-import { ArrowRight, Sparkles, ShieldCheck, Truck, RefreshCw, Star, Quote, ArrowUpRight, Zap, Headphones, Laptop, Shirt, Watch, Home, Sparkle } from 'lucide-react';
+import { ArrowRight, Sparkles, ShieldCheck, Truck, RefreshCw, ArrowUpRight, Zap, Headphones, Laptop, Shirt, Watch, Home, Sparkle } from 'lucide-react';
 
 const CATEGORIES = [
   {
@@ -45,30 +45,6 @@ const CATEGORIES = [
     slug: 'beauty',
     image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80',
     itemCount: '27 Formulas',
-  },
-];
-
-const TESTIMONIALS = [
-  {
-    quote: 'Ordered the SonicPro headphones and cashmere cardigan in the same order. Both arrived in 2 days in immaculate packaging. JudesCart is now my default store for everything.',
-    author: 'Marcus Vance',
-    title: 'Software Architect, Austin',
-    rating: 5,
-    product: 'SonicPro Studio Headphones & Cashmere Cardigan',
-  },
-  {
-    quote: 'The customer service is unmatched. Fast shipping, easy returns, and genuine high-grade products. JudesCart truly lives up to its motto: Shop More. Live Better.',
-    author: 'Sarah Jenkins',
-    title: 'Interior Designer, New York',
-    rating: 5,
-    product: 'AuraGlow Smart Desk Lamp',
-  },
-  {
-    quote: 'The leather tote has pristine stitching and the ceramic pour-over makes my morning coffee a ceremony. Love the wide range of top-tier products.',
-    author: 'Liam Chen',
-    title: 'Creative Director, Seattle',
-    rating: 5,
-    product: 'Sella Leather Tote',
   },
 ];
 
@@ -221,48 +197,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. CLIENT TESTIMONIALS & SOCIAL PROOF */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="text-center max-w-xl mx-auto space-y-2">
-          <span className="text-xs uppercase tracking-widest font-bold text-[#0066FF]">Verified Customer Reviews</span>
-          <h2 className="font-sans text-2xl sm:text-3xl font-extrabold text-stone-900">
-            Trusted by Thousands of Happy Shoppers
-          </h2>
-          <div className="flex items-center justify-center gap-1 pt-1">
-            <div className="flex text-amber-400">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-current" />
-              ))}
-            </div>
-            <span className="text-xs font-bold text-stone-900 ml-1">4.95 / 5.0</span>
-            <span className="text-xs text-stone-500">• Over 12,000 verified orders</span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {TESTIMONIALS.map((item, idx) => (
-            <div
-              key={idx}
-              className="p-6 rounded-2xl bg-white border border-stone-200/80 shadow-sm flex flex-col justify-between space-y-4 hover:shadow-md transition-shadow"
-            >
-              <div className="space-y-3">
-                <Quote className="w-6 h-6 text-blue-300 stroke-[1.5]" />
-                <p className="text-xs text-stone-700 leading-relaxed font-normal">
-                  {item.quote}
-                </p>
-              </div>
-
-              <div className="pt-4 border-t border-stone-100">
-                <div className="text-xs font-bold text-stone-900">{item.author}</div>
-                <div className="text-[11px] text-stone-500">{item.title}</div>
-                <div className="mt-1 text-[11px] font-semibold text-[#0066FF]">
-                  Verified Purchase: {item.product}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
     </div>
   );
 }
