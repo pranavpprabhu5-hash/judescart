@@ -7,7 +7,7 @@ import { Product } from '@/types/product';
 import { useStore } from '@/context/StoreContext';
 import { Badge } from '@/components/ui/Badge';
 import { RatingStars } from '@/components/ui/RatingStars';
-import { Heart, ShoppingBag, Check } from 'lucide-react';
+import { Heart, ShoppingBag, Check, Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
@@ -16,7 +16,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
-  const { formatAmount, toggleWishlist, isInWishlist, addToCart } = useStore();
+  const { formatAmount, toggleWishlist, isInWishlist, addToCart, openQuickView } = useStore();
   const [isHovered, setIsHovered] = useState(false);
   const [selectedColor, setSelectedColor] = useState(product.colors[0]?.name || '');
   const [selectedSize, setSelectedSize] = useState(
@@ -116,6 +116,18 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
 
             <div className="flex items-center gap-2">
               <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  openQuickView(product);
+                }}
+                className="p-2 rounded-full border border-slate-200 hover:bg-slate-100 text-slate-700 transition-colors"
+                title="Quick View"
+                aria-label="Quick View"
+              >
+                <Eye className="w-4 h-4 text-slate-600" />
+              </button>
+              <button
                 onClick={() => toggleWishlist(product.id)}
                 className="p-2 rounded-full border border-slate-200 hover:bg-rose-50 hover:border-rose-200 text-slate-700 transition-colors"
                 aria-label="Wishlist"
@@ -180,7 +192,7 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
           <Heart className={cn('w-4 h-4 transition-colors', isFavorited && 'fill-rose-500 text-rose-500')} />
         </button>
 
-        {/* Quick Add Overlay on Hover */}
+        {/* Quick Add / Quick View Overlay on Hover */}
         <div
           className={cn(
             'absolute inset-x-3 bottom-3 z-20 transition-all duration-300 transform',
@@ -188,17 +200,31 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
           )}
         >
           {!showQuickAdd ? (
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setShowQuickAdd(true);
-              }}
-              className="w-full py-2.5 px-4 rounded-xl bg-[#0066FF] text-white text-xs font-bold uppercase tracking-wider shadow-lg shadow-blue-500/25 hover:bg-[#0052CC] transition-all flex items-center justify-center gap-2"
-            >
-              <ShoppingBag className="w-3.5 h-3.5" />
-              <span>Quick Add</span>
-            </button>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  openQuickView(product);
+                }}
+                className="p-2.5 rounded-xl bg-white/95 text-slate-800 hover:text-[#0066FF] text-xs font-bold shadow-md hover:bg-white transition-all flex items-center justify-center cursor-pointer border border-slate-200"
+                title="Quick View"
+                aria-label="Quick View"
+              >
+                <Eye className="w-4 h-4" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowQuickAdd(true);
+                }}
+                className="flex-1 py-2.5 px-3 rounded-xl bg-[#0066FF] text-white text-xs font-bold uppercase tracking-wider shadow-lg shadow-blue-500/25 hover:bg-[#0052CC] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <ShoppingBag className="w-3.5 h-3.5" />
+                <span>Quick Add</span>
+              </button>
+            </div>
           ) : (
             <div
               className="bg-white/98 backdrop-blur-md p-3 rounded-xl border border-slate-200 shadow-xl space-y-2 animate-in fade-in-50 duration-150"

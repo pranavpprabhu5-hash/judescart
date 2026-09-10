@@ -18,6 +18,7 @@ import {
   Clock,
   ArrowRight,
   Flame,
+  Coins,
 } from 'lucide-react';
 import { useStore } from '@/context/StoreContext';
 import { cn } from '@/lib/utils';
@@ -130,7 +131,7 @@ interface LuckyDrawWheelProps {
 }
 
 export function LuckyDrawWheel({ onPrizeClaimed, className }: LuckyDrawWheelProps) {
-  const { claimLuckyPrize } = useStore();
+  const { claimLuckyPrize, judesCoins, redeemCoinsForSpin } = useStore();
 
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
@@ -140,6 +141,25 @@ export function LuckyDrawWheel({ onPrizeClaimed, className }: LuckyDrawWheelProp
   const [spinsLeft, setSpinsLeft] = useState(3);
   const [timeUntilReset, setTimeUntilReset] = useState('');
   const [claimed, setClaimed] = useState(false);
+  const [redeemNotice, setRedeemNotice] = useState<string | null>(null);
+
+  const handleBuySpinWithCoins = () => {
+    const success = redeemCoinsForSpin();
+    if (success) {
+      setSpinsLeft((prev) => {
+        const next = prev + 1;
+        try {
+          localStorage.setItem('judescart_spins_left', next.toString());
+        } catch {}
+        return next;
+      });
+      setRedeemNotice('🎉 +1 Spin purchased for 100 JudesCoins! Good luck!');
+      setTimeout(() => setRedeemNotice(null), 3500);
+    } else {
+      setRedeemNotice('Insufficient JudesCoins. You need at least 100 coins to buy a spin.');
+      setTimeout(() => setRedeemNotice(null), 3500);
+    }
+  };
 
   // Audio Context for synthetic mechanical tick and victory fanfare
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -415,12 +435,28 @@ export function LuckyDrawWheel({ onPrizeClaimed, className }: LuckyDrawWheelProp
   return (
     <div className={cn('relative flex flex-col items-center select-none', className)}>
       {/* Top Header Controls Bar */}
-      <div className="w-full flex items-center justify-between gap-2 mb-4 px-2">
-        <div className="flex items-center gap-2">
+      <div className="w-full flex items-center justify-between gap-2 mb-3 px-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-[#0066FF] text-xs font-bold">
             <Sparkles className="w-3.5 h-3.5 animate-spin text-amber-500" />
             <span>{spinsLeft} Free Spin{spinsLeft !== 1 ? 's' : ''} Left</span>
           </span>
+
+          <button
+            onClick={handleBuySpinWithCoins}
+            disabled={isSpinning || judesCoins < 100}
+            className={cn(
+              'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all border shadow-2xs',
+              judesCoins >= 100 && !isSpinning
+                ? 'bg-amber-50 hover:bg-amber-100 border-amber-200 text-amber-900 cursor-pointer active:scale-95'
+                : 'bg-stone-100 border-stone-200 text-stone-400 cursor-not-allowed'
+            )}
+            title="Redeem 100 JudesCoins for +1 extra spin"
+          >
+            <Coins className="w-3.5 h-3.5 text-amber-500" />
+            <span>+1 Spin (100 Coins)</span>
+          </button>
+
           {spinsLeft === 0 && (
             <span className="inline-flex items-center gap-1 text-[11px] text-slate-500 font-medium">
               <Clock className="w-3 h-3 text-slate-400" />
@@ -437,6 +473,13 @@ export function LuckyDrawWheel({ onPrizeClaimed, className }: LuckyDrawWheelProp
           {soundEnabled ? <Volume2 className="w-4 h-4 text-[#0066FF]" /> : <VolumeX className="w-4 h-4 text-slate-400" />}
         </button>
       </div>
+
+      {/* Coin Redemption Notification */}
+      {redeemNotice && (
+        <div className="w-full mb-3 p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold text-center animate-in fade-in slide-in-from-top-1">
+          {redeemNotice}
+        </div>
+      )}
 
       {/* Wheel Stage Container */}
       <div className="relative w-76 h-76 sm:w-92 sm:h-92 flex items-center justify-center">
@@ -612,6 +655,35 @@ export function LuckyDrawWheel({ onPrizeClaimed, className }: LuckyDrawWheelProp
               </button>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Zero Spins Left Prompt */}
+      {spinsLeft === 0 && !wonPrize && (
+        <div className="mt-5 w-full p-4 rounded-2xl bg-amber-50/80 border border-amber-200/90 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <Coins className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-amber-950">Out of free daily spins?</p>
+              <p className="text-[11px] text-amber-800">
+                You have <strong>{judesCoins} JudesCoins</strong>. Trade 100 coins for +1 instant lucky spin!
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={handleBuySpinWithCoins}
+            disabled={judesCoins < 100}
+            className={cn(
+              'px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all shadow-xs',
+              judesCoins >= 100
+                ? 'bg-amber-600 hover:bg-amber-700 text-white cursor-pointer active:scale-95'
+                : 'bg-stone-200 text-stone-400 cursor-not-allowed'
+            )}
+          >
+            Buy +1 Spin (100 Coins)
+          </button>
         </div>
       )}
 

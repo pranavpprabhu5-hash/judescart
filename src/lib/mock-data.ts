@@ -650,4 +650,5 @@ export const INITIAL_USER: UserProfile = {
       estimatedDelivery: 'Aug 28, 2026',
     },
   ],
+  judesCoins: 650,
 };

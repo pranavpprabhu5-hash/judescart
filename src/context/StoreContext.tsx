@@ -45,6 +45,17 @@ interface StoreContextType {
   addOrder: (order: Order) => void;
   saveAddress: (address: ShippingAddress) => void;
 
+  // JudesCoins Rewards
+  judesCoins: number;
+  addJudesCoins: (amount: number) => void;
+  redeemCoinsForSpin: () => boolean;
+  redeemCoinsForDiscount: (coins: number) => boolean;
+
+  // Quick View Modal
+  quickViewProduct: Product | null;
+  openQuickView: (product: Product) => void;
+  closeQuickView: () => void;
+
   // Search overlay
   isSearchOpen: boolean;
   openSearch: () => void;
@@ -80,6 +91,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isLuckyDrawOpen, setIsLuckyDrawOpen] = useState(false);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [judesCoins, setJudesCoins] = useState<number>(INITIAL_USER.judesCoins || 650);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -95,7 +108,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       if (savedCurrency && CURRENCIES[savedCurrency]) setCurrencyState(savedCurrency);
 
       const savedUser = localStorage.getItem('judescart_user_profile');
-      if (savedUser) setUser(JSON.parse(savedUser));
+      if (savedUser) {
+        const parsed = JSON.parse(savedUser);
+        setUser(parsed);
+        if (parsed.judesCoins !== undefined) setJudesCoins(parsed.judesCoins);
+      }
     } catch (e) {
       console.error('Failed to load state from localStorage', e);
     }
@@ -235,11 +252,50 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   // User Actions
   const toggleLogin = () => setIsLoggedIn((prev) => !prev);
   const addOrder = (order: Order) => {
+    const earnedCoins = Math.floor(order.total * 10);
+    setJudesCoins((prev) => prev + earnedCoins);
     setUser((prev) => ({
       ...prev,
       orders: [order, ...prev.orders],
+      judesCoins: (prev.judesCoins || 0) + earnedCoins,
     }));
   };
+
+  const addJudesCoins = (amount: number) => {
+    setJudesCoins((prev) => {
+      const updated = prev + amount;
+      setUser((u) => ({ ...u, judesCoins: updated }));
+      return updated;
+    });
+  };
+
+  const redeemCoinsForSpin = (): boolean => {
+    if (judesCoins < 100) return false;
+    setJudesCoins((prev) => {
+      const updated = prev - 100;
+      setUser((u) => ({ ...u, judesCoins: updated }));
+      return updated;
+    });
+    if (typeof window !== 'undefined') {
+      const currentSpins = parseInt(localStorage.getItem('judescart_spins_left') || '3', 10);
+      localStorage.setItem('judescart_spins_left', (currentSpins + 1).toString());
+    }
+    return true;
+  };
+
+  const redeemCoinsForDiscount = (coins: number): boolean => {
+    if (judesCoins < coins) return false;
+    setJudesCoins((prev) => {
+      const updated = prev - coins;
+      setUser((u) => ({ ...u, judesCoins: updated }));
+      return updated;
+    });
+    applyPromo('LUCKY25');
+    return true;
+  };
+
+  const openQuickView = (product: Product) => setQuickViewProduct(product);
+  const closeQuickView = () => setQuickViewProduct(null);
 
   const saveAddress = (address: ShippingAddress) => {
     setUser((prev) => ({
@@ -282,6 +338,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         closeProfile: () => setIsProfileOpen(false),
         addOrder,
         saveAddress,
+
+        judesCoins,
+        addJudesCoins,
+        redeemCoinsForSpin,
+        redeemCoinsForDiscount,
+
+        quickViewProduct,
+        openQuickView,
+        closeQuickView,
 
         isSearchOpen,
         openSearch: () => setIsSearchOpen(true),

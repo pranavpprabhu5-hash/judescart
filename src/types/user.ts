@@ -60,4 +60,5 @@ export interface UserProfile {
   avatar: string;
   savedAddresses: ShippingAddress[];
   orders: Order[];
+  judesCoins?: number;
 }

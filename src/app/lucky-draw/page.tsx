@@ -23,6 +23,8 @@ import { PRODUCTS } from '@/lib/mock-data';
 import { Product } from '@/types/product';
 import { useStore } from '@/context/StoreContext';
 import { cn } from '@/lib/utils';
+import { LiveDrawCountdown } from '@/components/luckydraw/LiveDrawCountdown';
+import { RecentWinnersTicker } from '@/components/luckydraw/RecentWinnersTicker';
 
 interface DrawTierInfo {
   id: 'platinum' | 'gold' | 'silver';
@@ -158,8 +160,14 @@ export default function LuckyDrawPage() {
         </div>
       </section>
 
+      {/* LIVE COUNTDOWN & RECENT WINNERS */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 space-y-6">
+        <LiveDrawCountdown />
+        <RecentWinnersTicker />
+      </section>
+
       {/* 2. PLATINUM, GOLD & SILVER DRAWS */}
-      <section id="regular-draws" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10">
+      <section id="regular-draws" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-2xl border border-slate-200 space-y-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-100 pb-6">
             <div>

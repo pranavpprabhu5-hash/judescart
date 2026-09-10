@@ -9,6 +9,7 @@ import { useStore } from '@/context/StoreContext';
 import { Order } from '@/types/user';
 import { CheckCircle2, Package, Printer, ArrowRight, Truck, MapPin, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { OrderTrackingMap } from '@/components/checkout/OrderTrackingMap';
 
 function OrderSuccessContent() {
   const searchParams = useSearchParams();
@@ -80,55 +81,8 @@ function OrderSuccessContent() {
         </div>
       </div>
 
-      {/* Fulfillment Status Tracker */}
-      <div className="p-6 rounded-2xl bg-white border border-stone-200/80 shadow-sm space-y-6">
-        <div className="flex items-center justify-between border-b border-stone-100 pb-4">
-          <div className="flex items-center gap-2">
-            <Truck className="w-4 h-4 text-[#0066FF]" />
-            <span className="text-xs font-bold uppercase tracking-wider text-stone-900">
-              Live Delivery Trajectory
-            </span>
-          </div>
-          <span className="text-xs text-stone-500">
-            Estimated Delivery: <strong className="text-stone-900">{currentOrder?.estimatedDelivery || '3–5 Business Days'}</strong>
-          </span>
-        </div>
-
-        {/* Stepper */}
-        <div className="grid grid-cols-4 gap-2 text-center text-xs">
-          <div className="space-y-1.5">
-            <div className="w-6 h-6 rounded-full bg-[#0066FF] text-white flex items-center justify-center mx-auto text-[10px] font-bold">
-              ✓
-            </div>
-            <span className="font-bold text-stone-900 block text-[11px]">Placed</span>
-            <span className="text-[10px] text-stone-400 block">Today</span>
-          </div>
-
-          <div className="space-y-1.5">
-            <div className="w-6 h-6 rounded-full bg-blue-400 text-white flex items-center justify-center mx-auto text-[10px] font-bold animate-pulse">
-              ●
-            </div>
-            <span className="font-bold text-stone-900 block text-[11px]">Processing</span>
-            <span className="text-[10px] text-stone-400 block">In Progress</span>
-          </div>
-
-          <div className="space-y-1.5 opacity-40">
-            <div className="w-6 h-6 rounded-full bg-stone-200 text-stone-600 flex items-center justify-center mx-auto text-[10px] font-bold">
-              3
-            </div>
-            <span className="font-medium text-stone-600 block text-[11px]">Dispatched</span>
-            <span className="text-[10px] text-stone-400 block">Pending</span>
-          </div>
-
-          <div className="space-y-1.5 opacity-40">
-            <div className="w-6 h-6 rounded-full bg-stone-200 text-stone-600 flex items-center justify-center mx-auto text-[10px] font-bold">
-              4
-            </div>
-            <span className="font-medium text-stone-600 block text-[11px]">Delivered</span>
-            <span className="text-[10px] text-stone-400 block">Pending</span>
-          </div>
-        </div>
-      </div>
+      {/* Interactive Live Parcel Radar */}
+      <OrderTrackingMap order={currentOrder} />
 
       {/* Itemized Order Receipt */}
       {currentOrder && (

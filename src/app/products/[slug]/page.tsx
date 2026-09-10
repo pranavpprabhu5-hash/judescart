@@ -11,6 +11,8 @@ import { VariantSelector } from '@/components/product/VariantSelector';
 import { ReviewSection } from '@/components/product/ReviewSection';
 import { StickyMobileCTA } from '@/components/product/StickyMobileCTA';
 import { ProductCard } from '@/components/product/ProductCard';
+import { FrequentlyBoughtTogether } from '@/components/product/FrequentlyBoughtTogether';
+import { RecentlyViewed } from '@/components/product/RecentlyViewed';
 import { Accordion, AccordionItemData } from '@/components/ui/Accordion';
 import { Badge } from '@/components/ui/Badge';
 import { RatingStars } from '@/components/ui/RatingStars';
@@ -399,13 +401,20 @@ export default function ProductDetailPage({
         quantity={quantity}
       />
 
+      {/* Frequently Bought Together Bundle Builder */}
+      {relatedProducts.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
+          <FrequentlyBoughtTogether currentProduct={product} bundleItems={relatedProducts} />
+        </section>
+      )}
+
       {/* Related Products Carousel */}
       {relatedProducts.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 space-y-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 space-y-8">
           <div className="text-center space-y-1">
             <span className="text-xs uppercase tracking-widest font-bold text-[#0066FF]">Curated For You</span>
             <h2 className="font-sans text-2xl sm:text-3xl font-extrabold text-[#0A192F]">
-              Frequently Bought Together
+              Related &amp; Recommended Products
             </h2>
           </div>
 
@@ -416,6 +425,11 @@ export default function ProductDetailPage({
           </div>
         </section>
       )}
+
+      {/* Recently Viewed Products Shelf */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <RecentlyViewed currentProductId={product.id} />
+      </div>
     </div>
   );
 }

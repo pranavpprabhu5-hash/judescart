@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { api } from '@/lib/api';
 import { Product, ProductCategory, FilterState } from '@/types/product';
 import { ProductGrid } from '@/components/product/ProductGrid';
+import { RecentlyViewed } from '@/components/product/RecentlyViewed';
 import { useStore } from '@/context/StoreContext';
 import {
   SlidersHorizontal,
@@ -527,6 +528,9 @@ function ProductListingContent() {
           </div>
         </div>
       )}
+
+      {/* Recently Viewed Products Shelf */}
+      <RecentlyViewed />
     </div>
   );
 }

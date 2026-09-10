@@ -22,6 +22,7 @@ import {
   Briefcase,
   ArrowRight,
   SlidersHorizontal,
+  Coins,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -174,7 +175,7 @@ const DEPARTMENTS: MegaMenuCategory[] = [
 
 export function Navbar() {
   const pathname = usePathname();
-  const { cartCount, openCart, wishlist, openProfile, openSearch, user, isLoggedIn } = useStore();
+  const { cartCount, openCart, wishlist, openProfile, openSearch, user, isLoggedIn, judesCoins } = useStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -276,6 +277,17 @@ export function Navbar() {
                 </span>
               )}
             </Link>
+
+            {/* JudesCoins Loyalty Badge */}
+            <button
+              onClick={openProfile}
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 border border-amber-200/80 text-amber-900 transition-all text-xs font-bold group cursor-pointer shadow-2xs"
+              title="JudesCoins Rewards Balance - Click to Redeem"
+            >
+              <Coins className="w-3.5 h-3.5 text-amber-500 group-hover:scale-110 transition-transform" />
+              <span>{judesCoins.toLocaleString()}</span>
+              <span className="text-[10px] text-amber-700/80 font-bold uppercase tracking-wider">Coins</span>
+            </button>
 
             {/* User Profile */}
             <button
@@ -510,8 +522,20 @@ export function Navbar() {
                 className="flex items-center gap-2 font-bold text-stone-900"
               >
                 <User className="w-4 h-4" />
-                <span>{isLoggedIn ? `Account (${user.name})` : 'Sign In'}</span>
+                <span>{isLoggedIn ? user.name.split(' ')[0] : 'Sign In'}</span>
               </button>
+
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openProfile();
+                }}
+                className="flex items-center gap-1.5 font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200"
+              >
+                <Coins className="w-3.5 h-3.5 text-amber-500" />
+                <span>{judesCoins.toLocaleString()} Coins</span>
+              </button>
+
               <Link
                 href="/wishlist"
                 onClick={() => setMobileMenuOpen(false)}
