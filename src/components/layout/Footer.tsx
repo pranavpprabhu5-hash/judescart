@@ -163,9 +163,11 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-blue-950/60 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-4">
         <p>© 2026 JudesCart Inc. All rights reserved. Shop More. Live Better.</p>
         <div className="flex items-center gap-6">
+          <Link href="/admin" className="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1">
+            <span>Admin Portal</span>
+          </Link>
           <span className="hover:text-stone-400 cursor-pointer">Privacy Notice</span>
           <span className="hover:text-stone-400 cursor-pointer">Terms of Use</span>
-          <span className="hover:text-stone-400 cursor-pointer">Interest-Based Ads</span>
           <span className="hover:text-stone-400 cursor-pointer">Accessibility</span>
         </div>
       </div>

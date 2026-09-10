@@ -426,6 +426,26 @@ export function ProfileDrawer() {
 
           {activeTab === 'security' && (
             <div className="space-y-4 text-xs">
+              <div className="p-4 rounded-xl border border-blue-200 bg-blue-50/50 space-y-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-[#0A192F]">Store Administration</h4>
+                  <span className="text-[10px] uppercase font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full">
+                    Executive
+                  </span>
+                </div>
+                <p className="text-stone-500">
+                  Access the live inventory management, order fulfillment radar, lucky draw odds, and promo code generator.
+                </p>
+                <Link
+                  href="/admin"
+                  onClick={closeProfile}
+                  className="mt-2 inline-flex items-center justify-center gap-1.5 w-full py-2 px-3 rounded-lg bg-[#0066FF] hover:bg-blue-600 text-white font-bold transition-all shadow-xs"
+                >
+                  <span>Open Admin Command Center</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+
               <div className="p-4 rounded-xl border border-stone-200 bg-stone-50/50 space-y-2">
                 <h4 className="font-medium text-stone-900">Simulated Account Session</h4>
                 <p className="text-stone-500">
