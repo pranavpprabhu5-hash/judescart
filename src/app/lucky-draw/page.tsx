@@ -25,12 +25,12 @@ import { useStore } from '@/context/StoreContext';
 import { cn } from '@/lib/utils';
 
 interface DrawTierInfo {
-  id: 'tier-1' | 'tier-2' | 'tier-3';
+  id: 'platinum' | 'gold' | 'silver';
   name: string;
   badge: string;
   badgeColor: string;
   borderHover: string;
-  profitCondition: string;
+  tierHighlight: string;
   schedule: string;
   nextDrawDate: string;
   grandPrizes: string[];
@@ -40,12 +40,12 @@ interface DrawTierInfo {
 
 const REGULAR_DRAWS: DrawTierInfo[] = [
   {
-    id: 'tier-1',
-    name: 'Tier 1 Mega Platinum Draw',
-    badge: 'Profit > ₹500',
+    id: 'platinum',
+    name: 'Platinum Draw',
+    badge: 'Monthly Luxury Draw',
     badgeColor: 'bg-amber-500/15 text-amber-800 border-amber-300',
     borderHover: 'hover:border-amber-400',
-    profitCondition: 'Products generating > ₹500 Profit',
+    tierHighlight: 'Flagship Tech & Luxury Collections',
     schedule: 'Drawn Monthly (1st of Every Month)',
     nextDrawDate: 'October 1, 2026',
     grandPrizes: [
@@ -55,16 +55,16 @@ const REGULAR_DRAWS: DrawTierInfo[] = [
       '₹50,000 JudesCart Shopping Spree',
     ],
     description:
-      'Our highest regular tier! Automatically unlocked whenever you purchase any premium product generating over ₹500 in profit (including flagship audio, virgin wool coats, and fine Italian leather).',
+      'Our highest tier! Automatically unlocked whenever you purchase any premium product (including flagship audio, virgin wool coats, and fine Italian leather).',
     icon: <Trophy className="w-5 h-5 text-amber-500" />,
   },
   {
-    id: 'tier-2',
-    name: 'Tier 2 Gold Draw',
-    badge: 'Profit ₹250 – ₹500',
+    id: 'gold',
+    name: 'Gold Draw',
+    badge: 'Bi-Weekly Premium Draw',
     badgeColor: 'bg-blue-500/15 text-blue-800 border-blue-300',
     borderHover: 'hover:border-blue-400',
-    profitCondition: 'Products generating between ₹250 and ₹500 Profit',
+    tierHighlight: 'Smart Gear, Designer Boots & Apparel',
     schedule: 'Drawn Bi-Weekly (Every 14 Days)',
     nextDrawDate: 'September 24, 2026',
     grandPrizes: [
@@ -74,16 +74,16 @@ const REGULAR_DRAWS: DrawTierInfo[] = [
       '₹20,000 JudesCart Cash Voucher',
     ],
     description:
-      'Mid-tier luxury draw! Earn entries with every purchase generating ₹250 to ₹500 in profit, including smart ambient living gear, luxury boots, and curated apparel.',
+      'Mid-tier luxury draw! Earn entries with every purchase of smart ambient living gear, luxury boots, and curated apparel.',
     icon: <Award className="w-5 h-5 text-[#0066FF]" />,
   },
   {
-    id: 'tier-3',
-    name: 'Tier 3 Silver Draw',
-    badge: 'Profit ₹100 – ₹250',
+    id: 'silver',
+    name: 'Silver Draw',
+    badge: 'Weekly Sunday Draw',
     badgeColor: 'bg-slate-500/15 text-slate-800 border-slate-300',
     borderHover: 'hover:border-slate-400',
-    profitCondition: 'Products generating between ₹100 and ₹250 Profit',
+    tierHighlight: 'Everyday Essentials & Lifestyle Goods',
     schedule: 'Drawn Weekly (Every Sunday 8 PM)',
     nextDrawDate: 'Sunday, September 14, 2026',
     grandPrizes: [
@@ -93,18 +93,23 @@ const REGULAR_DRAWS: DrawTierInfo[] = [
       '₹5,000 JudesCart Store Credit',
     ],
     description:
-      'Our weekly volume draw! Every accessible purchase generating ₹100 to ₹250 in profit enters you into the Sunday evening cash and gadget raffle.',
+      'Our weekly volume draw! Every accessible purchase enters you into the Sunday evening cash and gadget raffle.',
     icon: <Gift className="w-5 h-5 text-cyan-600" />,
   },
 ];
 
 export default function LuckyDrawPage() {
   const { formatAmount } = useStore();
-  const [selectedTier, setSelectedTier] = useState<'tier-1' | 'tier-2' | 'tier-3'>('tier-1');
+  const [selectedTier, setSelectedTier] = useState<'platinum' | 'gold' | 'silver'>('platinum');
   const [simulatedProductId, setSimulatedProductId] = useState(PRODUCTS[0].id);
 
   const activeDrawInfo = REGULAR_DRAWS.find((d) => d.id === selectedTier) || REGULAR_DRAWS[0];
-  const qualifyingProducts = PRODUCTS.filter((p) => p.drawTier === selectedTier);
+  const qualifyingProducts = PRODUCTS.filter((p) => {
+    if (selectedTier === 'platinum') return p.drawTier === 'platinum' || p.drawTier === 'tier-1';
+    if (selectedTier === 'gold') return p.drawTier === 'gold' || p.drawTier === 'tier-2';
+    if (selectedTier === 'silver') return p.drawTier === 'silver' || p.drawTier === 'tier-3';
+    return false;
+  });
   const judesBrandProducts = PRODUCTS.filter((p) => p.brand === 'JUDES');
   const simulatedProduct = PRODUCTS.find((p) => p.id === simulatedProductId) || PRODUCTS[0];
 
@@ -122,28 +127,28 @@ export default function LuckyDrawPage() {
           </div>
 
           <h1 className="font-sans text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
-            3 Regular Profit Draws. <br />
+            Platinum, Gold &amp; Silver Draws. <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-400 to-amber-300">
               Plus The Brand JUDES Mega Bumper Draw.
             </span>
           </h1>
 
           <p className="max-w-3xl mx-auto text-sm sm:text-base text-slate-300 leading-relaxed font-normal">
-            At JudesCart, every order earns you verifiable draw tickets! We feature <strong>3 regular draws tiered by product profit</strong> (Profit &gt;₹500, ₹250–₹500, and ₹100–₹250), plus an exclusive <strong>6 to 12 Month Grand Bumper Draw</strong> dedicated exclusively to our in-house brand <strong>JUDES</strong>.
+            At JudesCart, every order earns you verifiable draw tickets! We feature <strong>Platinum, Gold &amp; Silver draws</strong>, plus an exclusive <strong>6 to 12 Month Grand Bumper Draw</strong> dedicated exclusively to our in-house brand <strong>JUDES</strong>.
           </p>
 
           <div className="pt-2 flex flex-wrap items-center justify-center gap-4 text-xs font-semibold text-slate-300">
             <span className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-full border border-white/10">
               <Trophy className="w-3.5 h-3.5 text-amber-400" />
-              Tier 1: Profit &gt; ₹500
+              Platinum Draw (Monthly)
             </span>
             <span className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-full border border-white/10">
               <Award className="w-3.5 h-3.5 text-blue-400" />
-              Tier 2: Profit ₹250 – ₹500
+              Gold Draw (Bi-Weekly)
             </span>
             <span className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-full border border-white/10">
               <Gift className="w-3.5 h-3.5 text-cyan-400" />
-              Tier 3: Profit ₹100 – ₹250
+              Silver Draw (Weekly)
             </span>
             <span className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500/20 to-purple-500/20 px-3 py-1.5 rounded-full border border-amber-400/30 text-amber-300">
               <Crown className="w-3.5 h-3.5 text-amber-400" />
@@ -153,7 +158,7 @@ export default function LuckyDrawPage() {
         </div>
       </section>
 
-      {/* 2. THREE REGULAR DRAWS (PROFIT-BASED) */}
+      {/* 2. PLATINUM, GOLD & SILVER DRAWS */}
       <section id="regular-draws" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10">
         <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-2xl border border-slate-200 space-y-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-100 pb-6">
@@ -162,10 +167,10 @@ export default function LuckyDrawPage() {
                 Tiered Reward Structure
               </span>
               <h2 className="text-2xl sm:text-3xl font-black text-[#0A192F] mt-1">
-                The 3 Regular Profit-Based Draws
+                The Platinum, Gold &amp; Silver Draws
               </h2>
               <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                Your draw eligibility is determined automatically by the profit margin generated by each item in your cart.
+                Your draw eligibility is determined automatically by qualifying items in your cart.
               </p>
             </div>
 
@@ -229,7 +234,7 @@ export default function LuckyDrawPage() {
 
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <Link
-                  href="/products"
+                  href={`/products?draw=${activeDrawInfo.id}`}
                   className="py-3 px-5 rounded-xl bg-[#0066FF] hover:bg-blue-700 text-white text-xs font-bold transition-all shadow-md shadow-blue-500/25 flex items-center gap-2"
                 >
                   <ShoppingBag className="w-4 h-4" />
@@ -268,7 +273,7 @@ export default function LuckyDrawPage() {
                       <div className="flex items-center gap-2 text-[11px] text-slate-500 mt-0.5">
                         <span className="font-extrabold text-[#0A192F]">{formatAmount(p.price)}</span>
                         <span>•</span>
-                        <span className="text-emerald-600 font-semibold">Profit: ₹{p.profit}</span>
+                        <span className="text-emerald-600 font-semibold">Eligible Item</span>
                       </div>
                     </div>
                     <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#0066FF] group-hover:translate-x-0.5 transition-all shrink-0" />
@@ -403,7 +408,7 @@ export default function LuckyDrawPage() {
           </div>
 
           <p className="text-xs sm:text-sm text-slate-600 font-normal">
-            Select any product from the catalog below to preview its calculated profit margin and see exactly which regular draw and bumper tokens you will be awarded at checkout.
+            Select any product from the catalog below to test and see exactly which regular draw and bumper tokens you will be awarded at checkout.
           </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-2">
@@ -419,7 +424,7 @@ export default function LuckyDrawPage() {
               >
                 {PRODUCTS.map((item) => (
                   <option key={item.id} value={item.id}>
-                    {item.name} ({formatAmount(item.price)}) — Brand: {item.brand || 'Partner'} — Profit: ₹{item.profit || 0}
+                    {item.name} ({formatAmount(item.price)}) — Brand: {item.brand || 'Partner'}
                   </option>
                 ))}
               </select>
@@ -434,8 +439,10 @@ export default function LuckyDrawPage() {
                   <span className="font-bold text-slate-900">{simulatedProduct.brand || 'Partner Brand'}</span>
                 </div>
                 <div className="flex justify-between border-t border-slate-200 pt-2">
-                  <span className="text-slate-700 font-bold">Estimated Product Profit:</span>
-                  <span className="font-black text-emerald-600 text-sm">₹{simulatedProduct.profit}</span>
+                  <span className="text-slate-700 font-bold">Draw Tier Awarded:</span>
+                  <span className="font-black text-[#0066FF] text-sm capitalize">
+                    {simulatedProduct.drawTier ? `${simulatedProduct.drawTier.replace('tier-1', 'platinum').replace('tier-2', 'gold').replace('tier-3', 'silver')} Draw` : 'Standard Entry'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -447,38 +454,38 @@ export default function LuckyDrawPage() {
               </span>
 
               <div className="space-y-2.5">
-                {simulatedProduct.drawTier === 'tier-1' && (
+                {(simulatedProduct.drawTier === 'platinum' || simulatedProduct.drawTier === 'tier-1') && (
                   <div className="p-3.5 rounded-xl bg-white border border-amber-300 shadow-2xs flex items-center gap-3">
                     <span className="text-xl">🏆</span>
                     <div>
                       <h4 className="text-xs font-extrabold text-amber-900">
-                        1x Tier 1 Mega Platinum Draw Ticket
+                        1x Platinum Draw Ticket
                       </h4>
-                      <p className="text-[11px] text-slate-500">Qualifies for Monthly iPhone 16 Pro &amp; MacBook Air draw (Profit &gt; ₹500)</p>
+                      <p className="text-[11px] text-slate-500">Qualifies for Monthly iPhone 16 Pro &amp; MacBook Air draw</p>
                     </div>
                   </div>
                 )}
 
-                {simulatedProduct.drawTier === 'tier-2' && (
+                {(simulatedProduct.drawTier === 'gold' || simulatedProduct.drawTier === 'tier-2') && (
                   <div className="p-3.5 rounded-xl bg-white border border-blue-300 shadow-2xs flex items-center gap-3">
                     <span className="text-xl">🥇</span>
                     <div>
                       <h4 className="text-xs font-extrabold text-blue-900">
-                        1x Tier 2 Gold Draw Ticket
+                        1x Gold Draw Ticket
                       </h4>
-                      <p className="text-[11px] text-slate-500">Qualifies for Bi-Weekly Apple Watch &amp; Sony Headphones draw (Profit ₹250–₹500)</p>
+                      <p className="text-[11px] text-slate-500">Qualifies for Bi-Weekly Apple Watch &amp; Sony Headphones draw</p>
                     </div>
                   </div>
                 )}
 
-                {simulatedProduct.drawTier === 'tier-3' && (
+                {(simulatedProduct.drawTier === 'silver' || simulatedProduct.drawTier === 'tier-3') && (
                   <div className="p-3.5 rounded-xl bg-white border border-slate-300 shadow-2xs flex items-center gap-3">
                     <span className="text-xl">🥈</span>
                     <div>
                       <h4 className="text-xs font-extrabold text-slate-900">
-                        1x Tier 3 Silver Draw Ticket
+                        1x Silver Draw Ticket
                       </h4>
-                      <p className="text-[11px] text-slate-500">Qualifies for Weekly Sunday AirPods &amp; Cash Credit draw (Profit ₹100–₹250)</p>
+                      <p className="text-[11px] text-slate-500">Qualifies for Weekly Sunday AirPods &amp; Cash Credit draw</p>
                     </div>
                   </div>
                 )}
@@ -520,9 +527,9 @@ export default function LuckyDrawPage() {
             <div className="w-10 h-10 rounded-2xl bg-blue-50 text-[#0066FF] flex items-center justify-center font-black text-sm">
               01
             </div>
-            <h3 className="font-bold text-base text-[#0A192F]">Profit-Based Ticket Allocation</h3>
+            <h3 className="font-bold text-base text-[#0A192F]">Automated Ticket Allocation</h3>
             <p className="text-xs text-slate-500 leading-relaxed">
-              Every item in your order is checked for profit tier (&gt;₹500 for Tier 1, ₹250–₹500 for Tier 2, ₹100–₹250 for Tier 3). Digital tickets are attached directly to your order ID.
+              Every item in your order is checked for draw eligibility (Platinum, Gold, or Silver). Digital tickets are attached directly to your order ID.
             </p>
           </div>
 

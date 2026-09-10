@@ -246,35 +246,35 @@ export default function ProductDetailPage({
               </div>
 
               <div className="space-y-1.5 text-xs">
-                {product.drawTier === 'tier-1' && (
+                {(product.drawTier === 'platinum' || product.drawTier === 'tier-1') && (
                   <div className="flex items-start gap-2 p-2 rounded-xl bg-amber-500/10 border border-amber-300/80 text-amber-900">
                     <span className="text-base">🎟️</span>
                     <div>
-                      <strong className="block font-bold">Qualifies for Tier 1 Mega Draw (&gt;₹500 Profit)</strong>
+                      <strong className="block font-bold">Qualifies for Platinum Draw</strong>
                       <span className="text-[11px] text-amber-800">
-                        This purchase automatically generates a Tier 1 Platinum Ticket for the monthly luxury gadget draw.
+                        This purchase automatically generates a Platinum Ticket for the monthly luxury gadget draw.
                       </span>
                     </div>
                   </div>
                 )}
-                {product.drawTier === 'tier-2' && (
+                {(product.drawTier === 'gold' || product.drawTier === 'tier-2') && (
                   <div className="flex items-start gap-2 p-2 rounded-xl bg-blue-500/10 border border-blue-300/80 text-blue-900">
                     <span className="text-base">🎟️</span>
                     <div>
-                      <strong className="block font-bold">Qualifies for Tier 2 Gold Draw (₹250–₹500 Profit)</strong>
+                      <strong className="block font-bold">Qualifies for Gold Draw</strong>
                       <span className="text-[11px] text-blue-800">
-                        This purchase generates a Tier 2 Gold Ticket for the bi-weekly audio &amp; fashion draw.
+                        This purchase generates a Gold Ticket for the bi-weekly audio &amp; fashion draw.
                       </span>
                     </div>
                   </div>
                 )}
-                {product.drawTier === 'tier-3' && (
+                {(product.drawTier === 'silver' || product.drawTier === 'tier-3') && (
                   <div className="flex items-start gap-2 p-2 rounded-xl bg-slate-500/10 border border-slate-300/80 text-slate-900">
                     <span className="text-base">🎟️</span>
                     <div>
-                      <strong className="block font-bold">Qualifies for Tier 3 Silver Draw (₹100–₹250 Profit)</strong>
+                      <strong className="block font-bold">Qualifies for Silver Draw</strong>
                       <span className="text-[11px] text-slate-700">
-                        This purchase generates a Tier 3 Silver Ticket for the weekly lifestyle &amp; living draw.
+                        This purchase generates a Silver Ticket for the weekly lifestyle &amp; living draw.
                       </span>
                     </div>
                   </div>

@@ -81,19 +81,19 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
 
           {/* Draw Badges */}
           <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-            {product.drawTier === 'tier-1' && (
+            {(product.drawTier === 'platinum' || product.drawTier === 'tier-1') && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-700 border border-amber-300/80">
-                🎟️ Tier 1 Draw (&gt;₹500 Profit)
+                🎟️ Platinum Draw
               </span>
             )}
-            {product.drawTier === 'tier-2' && (
+            {(product.drawTier === 'gold' || product.drawTier === 'tier-2') && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-500/10 text-blue-700 border border-blue-300/80">
-                🎟️ Tier 2 Draw (₹250–₹500)
+                🎟️ Gold Draw
               </span>
             )}
-            {product.drawTier === 'tier-3' && (
+            {(product.drawTier === 'silver' || product.drawTier === 'tier-3') && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-500/10 text-slate-700 border border-slate-300/80">
-                🎟️ Tier 3 Draw (₹100–₹250)
+                🎟️ Silver Draw
               </span>
             )}
             {product.brand === 'JUDES' && (
@@ -261,19 +261,19 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
 
           {/* Draw Eligibility Badges */}
           <div className="flex flex-wrap items-center gap-1 pt-1">
-            {product.drawTier === 'tier-1' && (
+            {(product.drawTier === 'platinum' || product.drawTier === 'tier-1') && (
               <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/10 text-amber-700 border border-amber-300/80">
-                🎟️ Tier 1 (&gt;₹500)
+                🎟️ Platinum Draw
               </span>
             )}
-            {product.drawTier === 'tier-2' && (
+            {(product.drawTier === 'gold' || product.drawTier === 'tier-2') && (
               <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-500/10 text-blue-700 border border-blue-300/80">
-                🎟️ Tier 2 (₹250–500)
+                🎟️ Gold Draw
               </span>
             )}
-            {product.drawTier === 'tier-3' && (
+            {(product.drawTier === 'silver' || product.drawTier === 'tier-3') && (
               <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-500/10 text-slate-700 border border-slate-300/80">
-                🎟️ Tier 3 (₹100–250)
+                🎟️ Silver Draw
               </span>
             )}
             {product.brand === 'JUDES' && (

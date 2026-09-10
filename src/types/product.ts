@@ -38,7 +38,7 @@ export interface Product {
   category: ProductCategory;
   brand?: string; // 'JUDES' for in-house brand, or supplier brand
   profit?: number; // Estimated profit in INR (Rs)
-  drawTier?: 'tier-1' | 'tier-2' | 'tier-3'; // Tier 1: >500, Tier 2: 250-500, Tier 3: 100-250
+  drawTier?: 'platinum' | 'gold' | 'silver' | 'tier-1' | 'tier-2' | 'tier-3'; // Platinum: >500, Gold: 250-500, Silver: 100-250
   isBumperEligible?: boolean; // True for JudesCart's own brand JUDES (6-12 month draw)
   price: number;
   originalPrice?: number;
@@ -67,5 +67,5 @@ export interface FilterState {
   sortBy: 'featured' | 'price-asc' | 'price-desc' | 'rating' | 'newest';
   searchQuery: string;
   brand?: string;
-  drawTier?: 'all' | 'tier-1' | 'tier-2' | 'tier-3' | 'bumper';
+  drawTier?: 'all' | 'platinum' | 'gold' | 'silver' | 'tier-1' | 'tier-2' | 'tier-3' | 'bumper';
 }

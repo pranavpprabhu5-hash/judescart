@@ -51,6 +51,20 @@ export const api = {
       if (filters.maxPrice !== undefined && product.price > filters.maxPrice) return false;
       // Rating
       if (filters.minRating !== undefined && product.rating < filters.minRating) return false;
+      // Brand filter
+      if (filters.brand && product.brand !== filters.brand) return false;
+      // Draw Tier filter
+      if (filters.drawTier && filters.drawTier !== 'all') {
+        if (filters.drawTier === 'bumper') {
+          if (!product.isBumperEligible && product.brand !== 'JUDES') return false;
+        } else if (filters.drawTier === 'platinum' || filters.drawTier === 'tier-1') {
+          if (product.drawTier !== 'platinum' && product.drawTier !== 'tier-1') return false;
+        } else if (filters.drawTier === 'gold' || filters.drawTier === 'tier-2') {
+          if (product.drawTier !== 'gold' && product.drawTier !== 'tier-2') return false;
+        } else if (filters.drawTier === 'silver' || filters.drawTier === 'tier-3') {
+          if (product.drawTier !== 'silver' && product.drawTier !== 'tier-3') return false;
+        }
+      }
       // In-stock
       if (filters.inStockOnly) {
         const hasStock = product.sizes.some((s) => s.stock > 0);

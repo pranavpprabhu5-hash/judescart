@@ -28,6 +28,14 @@ const CATEGORIES: { label: string; value: ProductCategory }[] = [
   { label: 'Beauty & Wellness', value: 'beauty' },
 ];
 
+const DRAW_FILTERS = [
+  { label: 'All Lucky Draws', value: 'all' },
+  { label: '🎟️ Platinum Draw', value: 'platinum' },
+  { label: '🎟️ Gold Draw', value: 'gold' },
+  { label: '🎟️ Silver Draw', value: 'silver' },
+  { label: '👑 Brand JUDES Bumper', value: 'bumper' },
+] as const;
+
 const SORT_OPTIONS = [
   { label: 'Featured Recommendations', value: 'featured' },
   { label: 'Price: Low to High', value: 'price-asc' },
@@ -42,6 +50,8 @@ function ProductListingContent() {
 
   const urlCategory = (searchParams.get('category') as ProductCategory) || 'all';
   const urlSearch = searchParams.get('q') || '';
+  const urlBrand = searchParams.get('brand') || '';
+  const urlDraw = searchParams.get('draw') || 'all';
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,6 +60,8 @@ function ProductListingContent() {
 
   // Filters State
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory>(urlCategory);
+  const [selectedDrawTier, setSelectedDrawTier] = useState<string>(urlDraw);
+  const [selectedBrand, setSelectedBrand] = useState<string>(urlBrand);
   const [minPrice, setMinPrice] = useState<number>(0);
   const [maxPrice, setMaxPrice] = useState<number>(800);
   const [minRating, setMinRating] = useState<number>(0);
@@ -59,7 +71,9 @@ function ProductListingContent() {
   // Sync when URL params change
   useEffect(() => {
     if (urlCategory) setSelectedCategory(urlCategory);
-  }, [urlCategory]);
+    if (urlBrand) setSelectedBrand(urlBrand);
+    if (urlDraw) setSelectedDrawTier(urlDraw);
+  }, [urlCategory, urlBrand, urlDraw]);
 
   // Load products based on current filters
   useEffect(() => {
@@ -67,6 +81,8 @@ function ProductListingContent() {
       setLoading(true);
       const items = await api.getProducts({
         category: selectedCategory,
+        drawTier: selectedDrawTier as any,
+        brand: selectedBrand || undefined,
         minPrice,
         maxPrice,
         minRating,
@@ -78,19 +94,23 @@ function ProductListingContent() {
       setLoading(false);
     }
     fetchProducts();
-  }, [selectedCategory, minPrice, maxPrice, minRating, inStockOnly, sortBy, urlSearch]);
+  }, [selectedCategory, selectedDrawTier, selectedBrand, minPrice, maxPrice, minRating, inStockOnly, sortBy, urlSearch]);
 
   const activeFiltersCount = useMemo(() => {
     let count = 0;
     if (selectedCategory !== 'all') count++;
+    if (selectedDrawTier !== 'all') count++;
+    if (selectedBrand) count++;
     if (minPrice > 0 || maxPrice < 800) count++;
     if (minRating > 0) count++;
     if (inStockOnly) count++;
     return count;
-  }, [selectedCategory, minPrice, maxPrice, minRating, inStockOnly]);
+  }, [selectedCategory, selectedDrawTier, selectedBrand, minPrice, maxPrice, minRating, inStockOnly]);
 
   const handleResetFilters = () => {
     setSelectedCategory('all');
+    setSelectedDrawTier('all');
+    setSelectedBrand('');
     setMinPrice(0);
     setMaxPrice(800);
     setMinRating(0);
@@ -217,6 +237,22 @@ function ProductListingContent() {
               </button>
             </span>
           )}
+          {selectedDrawTier !== 'all' && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-xs font-semibold">
+              Draw: {DRAW_FILTERS.find((d) => d.value === selectedDrawTier)?.label.replace(/^[^\s]+\s/, '') || selectedDrawTier}
+              <button onClick={() => setSelectedDrawTier('all')} className="hover:text-amber-950">
+                <X className="w-3 h-3" />
+              </button>
+            </span>
+          )}
+          {selectedBrand && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 border border-purple-200 text-purple-900 text-xs font-semibold">
+              Brand: {selectedBrand}
+              <button onClick={() => setSelectedBrand('')} className="hover:text-purple-950">
+                <X className="w-3 h-3" />
+              </button>
+            </span>
+          )}
           {(minPrice > 0 || maxPrice < 800) && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-[#0066FF] text-xs font-semibold">
               Price: {formatAmount(minPrice)} - {formatAmount(maxPrice)}
@@ -284,6 +320,31 @@ function ProductListingContent() {
                 >
                   <span>{cat.label}</span>
                   {selectedCategory === cat.value && <Check className="w-3.5 h-3.5 text-[#0066FF]" />}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Lucky Draw Eligibility */}
+          <div className="space-y-2 pt-4 border-t border-slate-100">
+            <div className="flex items-center justify-between">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">Lucky Draw Eligibility</h4>
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold">New</span>
+            </div>
+            <div className="space-y-1">
+              {DRAW_FILTERS.map((df) => (
+                <button
+                  key={df.value}
+                  onClick={() => setSelectedDrawTier(df.value)}
+                  className={cn(
+                    'flex items-center justify-between w-full py-2 px-2.5 rounded-xl text-xs transition-colors text-left',
+                    selectedDrawTier === df.value
+                      ? 'bg-amber-50 font-bold text-amber-900 border border-amber-200/80'
+                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                  )}
+                >
+                  <span className="truncate">{df.label}</span>
+                  {selectedDrawTier === df.value && <Check className="w-3.5 h-3.5 text-amber-600 shrink-0" />}
                 </button>
               ))}
             </div>
@@ -393,6 +454,28 @@ function ProductListingContent() {
                     )}
                   >
                     <span>{cat.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Mobile Lucky Draw Eligibility */}
+            <div className="space-y-2 pt-4 border-t border-slate-100">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">Lucky Draw Eligibility</h4>
+              <div className="space-y-1">
+                {DRAW_FILTERS.map((df) => (
+                  <button
+                    key={df.value}
+                    onClick={() => setSelectedDrawTier(df.value)}
+                    className={cn(
+                      'flex items-center justify-between w-full py-2 px-3 rounded-xl text-xs transition-colors text-left',
+                      selectedDrawTier === df.value
+                        ? 'bg-amber-100 text-amber-950 font-bold'
+                        : 'text-slate-700 bg-slate-50'
+                    )}
+                  >
+                    <span>{df.label}</span>
+                    {selectedDrawTier === df.value && <Check className="w-3.5 h-3.5 text-amber-700" />}
                   </button>
                 ))}
               </div>

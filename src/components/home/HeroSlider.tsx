@@ -61,32 +61,32 @@ export interface HeroSlide {
 const HERO_SLIDES: HeroSlide[] = [
   {
     id: 'three-regular-draws',
-    badge: '3 Regular Lucky Draws • Based on Product Profit',
+    badge: 'Platinum, Gold & Silver Lucky Draws',
     badgeIcon: <Trophy className="w-3.5 h-3.5 text-amber-300" />,
     badgeClass: 'bg-emerald-500/20 text-emerald-200 border-emerald-400/40 shadow-emerald-950/40',
     headingPrefix: 'Shop & Win. ',
-    headingHighlight: '3 Regular Lucky Draws.',
+    headingHighlight: 'Platinum, Gold & Silver Draws.',
     headingGradient: 'from-amber-200 via-emerald-200 to-teal-200',
     description:
-      'Earn guaranteed draw entries on every purchase tiered by product profit. From weekly cash jackpots to flagship Apple tech, every qualifying order brings winning tickets.',
+      'Earn guaranteed draw entries on every qualifying purchase. From weekly cash jackpots to flagship Apple tech, every qualifying order brings winning tickets.',
     featurePills: [
       {
         icon: <Trophy className="w-3.5 h-3.5 text-amber-400" />,
-        badge: 'Tier 1 (> ₹500 Profit)',
+        badge: 'Platinum Draw',
         label: 'Flagship iPhones & MacBooks',
       },
       {
         icon: <Award className="w-3.5 h-3.5 text-blue-300" />,
-        badge: 'Tier 2 (₹250–₹500)',
+        badge: 'Gold Draw',
         label: 'Apple Watch & Sony Audio',
       },
       {
         icon: <Gift className="w-3.5 h-3.5 text-cyan-300" />,
-        badge: 'Tier 3 (₹100–₹250)',
+        badge: 'Silver Draw',
         label: 'AirPods & Sunday Cash Raffles',
       },
     ],
-    primaryCtaText: 'View 3 Regular Draws',
+    primaryCtaText: 'View Platinum, Gold & Silver Draws',
     primaryCtaHref: '/lucky-draw#regular-draws',
     primaryCtaClass:
       'bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-white shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50',
@@ -96,7 +96,7 @@ const HERO_SLIDES: HeroSlide[] = [
       'bg-emerald-950/60 border border-emerald-400/30 text-emerald-100 hover:bg-emerald-900/60 hover:border-emerald-300/50',
     image:
       'https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=1600&q=85',
-    imageAlt: 'JudesCart 3 Regular Lucky Draws Tier System',
+    imageAlt: 'JudesCart Platinum, Gold & Silver Lucky Draws System',
     bgGradient: 'from-[#02231c] via-[#053d30]/90 to-[#021f19]',
     radialGlow: 'from-emerald-500/20 via-teal-500/10 to-transparent',
     cardBorder: 'border-emerald-500/40',

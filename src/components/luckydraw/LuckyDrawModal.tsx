@@ -65,7 +65,7 @@ export function LuckyDrawModal() {
                 </span>
               </div>
               <h3 className="font-sans text-lg sm:text-xl font-black text-white leading-tight">
-                3 Regular Draws + JUDES Bumper Draw
+                Platinum, Gold, Silver &amp; JUDES Bumper Draw
               </h3>
             </div>
           </div>
@@ -91,7 +91,7 @@ export function LuckyDrawModal() {
             )}
           >
             <Trophy className="w-3.5 h-3.5" />
-            <span>3 Profit Draws &amp; Bumper</span>
+            <span>Platinum, Gold, Silver &amp; Bumper</span>
           </button>
           <button
             onClick={() => setActiveTab('spin-wheel')}
@@ -112,18 +112,18 @@ export function LuckyDrawModal() {
           {activeTab === 'regular-draws' ? (
             <div className="space-y-4">
               <p className="text-xs text-slate-600 font-normal">
-                Every purchase automatically earns verified draw tickets based on product profit margins, plus grand bumper entries for our own in-house brand <strong>JUDES</strong>:
+                Every purchase of qualifying items automatically earns verified draw tickets, plus grand bumper entries for our own in-house brand <strong>JUDES</strong>:
               </p>
 
-              {/* Tier 1 */}
+              {/* Platinum */}
               <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-300/80 space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-extrabold text-amber-900 flex items-center gap-1.5">
                     <Trophy className="w-3.5 h-3.5 text-amber-600" />
-                    Tier 1 Mega Platinum Draw
+                    Platinum Draw
                   </span>
                   <span className="px-2 py-0.5 rounded-full bg-amber-500 text-white font-mono text-[10px] font-black">
-                    Profit &gt; ₹500
+                    Monthly Draw
                   </span>
                 </div>
                 <p className="text-[11px] text-amber-800">
@@ -131,15 +131,15 @@ export function LuckyDrawModal() {
                 </p>
               </div>
 
-              {/* Tier 2 */}
+              {/* Gold */}
               <div className="p-3.5 rounded-2xl bg-blue-500/10 border border-blue-300/80 space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-extrabold text-blue-900 flex items-center gap-1.5">
                     <Award className="w-3.5 h-3.5 text-[#0066FF]" />
-                    Tier 2 Gold Draw
+                    Gold Draw
                   </span>
                   <span className="px-2 py-0.5 rounded-full bg-[#0066FF] text-white font-mono text-[10px] font-black">
-                    Profit ₹250–₹500
+                    Bi-Weekly Draw
                   </span>
                 </div>
                 <p className="text-[11px] text-blue-800">
@@ -147,15 +147,15 @@ export function LuckyDrawModal() {
                 </p>
               </div>
 
-              {/* Tier 3 */}
+              {/* Silver */}
               <div className="p-3.5 rounded-2xl bg-slate-500/10 border border-slate-300/80 space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
                     <Gift className="w-3.5 h-3.5 text-cyan-600" />
-                    Tier 3 Silver Draw
+                    Silver Draw
                   </span>
                   <span className="px-2 py-0.5 rounded-full bg-slate-700 text-white font-mono text-[10px] font-black">
-                    Profit ₹100–₹250
+                    Weekly Draw
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-700">

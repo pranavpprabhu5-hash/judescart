@@ -24,7 +24,7 @@ export function AnnouncementBar() {
             className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400/20 to-blue-500/20 text-amber-300 hover:text-white border border-amber-400/40 hover:border-amber-300 font-bold transition-all cursor-pointer"
           >
             <Gift className="w-3 h-3 text-amber-400 animate-bounce" />
-            <span>Lucky Draws: 3 Profit Tiers + JUDES Bumper</span>
+            <span>Lucky Draws: Platinum, Gold, Silver &amp; JUDES Bumper</span>
           </button>
         </div>
 

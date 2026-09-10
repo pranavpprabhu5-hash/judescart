@@ -40,7 +40,7 @@ export function FloatingLuckyDrawCTA() {
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
           </div>
           <span className="font-extrabold text-xs tracking-tight text-white block">
-            3 Profit Draws + JUDES Bumper
+            Platinum, Gold, Silver &amp; Bumper
           </span>
         </div>
 
