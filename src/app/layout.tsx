@@ -10,7 +10,6 @@ import { SearchOverlay } from '@/components/layout/SearchOverlay';
 import { LuckyDrawModal } from '@/components/luckydraw/LuckyDrawModal';
 import { FloatingLuckyDrawCTA } from '@/components/luckydraw/FloatingLuckyDrawCTA';
 import { ProductQuickViewModal } from '@/components/product/ProductQuickViewModal';
-import { ExitIntentModal } from '@/components/luckydraw/ExitIntentModal';
 import { DailyMysteryBoxModal } from '@/components/luckydraw/DailyMysteryBoxModal';
 
 const inter = Inter({
@@ -59,7 +58,6 @@ export default function RootLayout({
           <LuckyDrawModal />
           <FloatingLuckyDrawCTA />
           <ProductQuickViewModal />
-          <ExitIntentModal />
           <DailyMysteryBoxModal />
         </StoreProvider>
       </body>
