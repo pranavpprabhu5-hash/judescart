@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
-import { Product } from '@/types/product';
+import { Product, CategoryItem, DEFAULT_CATEGORIES } from '@/types/product';
 import { CartItem, PromoCode, CartSummary } from '@/types/cart';
 import { CurrencyCode, DetectedLocation } from '@/types/currency';
 import { UserProfile, Order, ShippingAddress } from '@/types/user';
@@ -131,6 +131,10 @@ interface StoreContextType {
   grantCustomerCoins: (amount: number) => void;
   recentWinners: AdminWinnerRecord[];
   triggerAdminDraw: (tier: string) => { winnerName: string; prize: string };
+  // Categories
+  categories: CategoryItem[];
+  addCategory: (name: string, description?: string) => string;
+  deleteCategory: (slug: string) => boolean;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -140,6 +144,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   // Products State (Admin managed)
   const [products, setProducts] = useState<Product[]>(PRODUCTS);
+
+  // Categories State (Admin managed)
+  const [categories, setCategories] = useState<CategoryItem[]>(DEFAULT_CATEGORIES);
 
   // Cart State
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -336,6 +343,16 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
       const savedProducts = localStorage.getItem('judescart_products_v2') || localStorage.getItem('judescart_admin_products');
       if (savedProducts) setProducts(JSON.parse(savedProducts));
+
+      const savedCategories = localStorage.getItem('judescart_categories');
+      if (savedCategories) {
+        try {
+          const parsed = JSON.parse(savedCategories);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setCategories(parsed);
+          }
+        } catch {}
+      }
     } catch {
       // LocalStorage unavailable
     }
@@ -377,6 +394,13 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('judescart_admin_products', JSON.stringify(products));
     } catch {}
   }, [products, isMounted]);
+
+  useEffect(() => {
+    if (!isMounted) return;
+    try {
+      localStorage.setItem('judescart_categories', JSON.stringify(categories));
+    } catch {}
+  }, [categories, isMounted]);
 
   // Cart Actions
   const addToCart = (product: Product, color: string, size: string, quantity = 1) => {
@@ -742,6 +766,32 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
+  const addCategory = (name: string, description?: string) => {
+    const trimmed = name.trim();
+    if (!trimmed) return '';
+    const slug = trimmed
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+    const existing = categories.find((c) => c.slug === slug || c.name.toLowerCase() === trimmed.toLowerCase());
+    if (existing) return existing.slug;
+
+    const newCat: CategoryItem = {
+      id: `cat-${Date.now()}`,
+      name: trimmed,
+      slug,
+      description: description?.trim() || `Curated ${trimmed} collection`,
+      isCustom: true,
+    };
+    setCategories((prev) => [...prev, newCat]);
+    return slug;
+  };
+
+  const deleteCategory = (slug: string) => {
+    setCategories((prev) => prev.filter((c) => c.slug !== slug));
+    return true;
+  };
+
   const grantCustomerCoins = (amount: number) => {
     addJudesCoins(amount);
   };
@@ -879,6 +929,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         grantCustomerCoins,
         recentWinners,
         triggerAdminDraw,
+
+        // Categories
+        categories,
+        addCategory,
+        deleteCategory,
       }}
     >
       {children}

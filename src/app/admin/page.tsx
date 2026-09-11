@@ -65,9 +65,12 @@ export default function AdminCommandCenter() {
     currency,
     setCurrency,
     formatAmount,
+    categories,
+    addCategory,
+    deleteCategory,
   } = useStore();
 
-  const [activeTab, setActiveTab] = useState<'analytics' | 'orders' | 'products' | 'luckydraw' | 'promos' | 'customers'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'orders' | 'products' | 'categories' | 'luckydraw' | 'promos' | 'customers'>('analytics');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Filter & Search states
@@ -75,10 +78,17 @@ export default function AdminCommandCenter() {
   const [productSearch, setProductSearch] = useState<string>('');
   const [productCategory, setProductCategory] = useState<string>('all');
 
+  // Category Management Modal State
+  const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
+  const [newCatName, setNewCatName] = useState('');
+  const [newCatDesc, setNewCatDesc] = useState('');
+
   // New Product Modal State
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
   const [newProductName, setNewProductName] = useState('');
   const [newProductCategory, setNewProductCategory] = useState<ProductCategory>('electronics');
+  const [isCustomCategoryInput, setIsCustomCategoryInput] = useState(false);
+  const [customCategoryName, setCustomCategoryName] = useState('');
   const [newProductCurrency, setNewProductCurrency] = useState<CurrencyCode>(currency || 'INR');
   const [newProductPrice, setNewProductPrice] = useState<number>(currency === 'INR' ? 2499 : 149);
   const [newProductStock, setNewProductStock] = useState<number>(25);
@@ -229,6 +239,11 @@ export default function AdminCommandCenter() {
       ? (newProductPrice || 0)
       : Math.round(((newProductPrice || 0) / rate) * 100) / 100;
 
+    let finalCategory = newProductCategory;
+    if (isCustomCategoryInput && customCategoryName.trim()) {
+      finalCategory = addCategory(customCategoryName.trim()) as any;
+    }
+
     const slug = newProductName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     const newProd: Product = {
       id: `prod-${Date.now()}`,
@@ -236,7 +251,7 @@ export default function AdminCommandCenter() {
       name: newProductName,
       tagline: 'Handcrafted luxury and certified performance',
       description: 'Precision engineered for durability, modern functionality, and contemporary minimalist luxury aesthetics.',
-      category: newProductCategory,
+      category: finalCategory,
       brand: newProductIsJudes ? 'JUDES' : 'JudesCart Studio',
       isBumperEligible: newProductIsJudes,
       drawTier: newProductDrawTier,
@@ -261,7 +276,19 @@ export default function AdminCommandCenter() {
     addProduct(newProd);
     setIsAddProductOpen(false);
     setNewProductName('');
+    setIsCustomCategoryInput(false);
+    setCustomCategoryName('');
     showToast(`✅ Created "${newProd.name}" at ${CURRENCIES[newProductCurrency]?.symbol || ''}${newProductPrice} (${formatAmount(baseUsdPrice)})!`);
+  };
+
+  const handleCreateCategory = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCatName.trim()) return;
+    const slug = addCategory(newCatName, newCatDesc);
+    setIsAddCategoryOpen(false);
+    setNewCatName('');
+    setNewCatDesc('');
+    showToast(`📁 Created category "${newCatName.trim()}" (slug: ${slug})!`);
   };
 
   const handleCreatePromo = (e: React.FormEvent) => {
@@ -381,6 +408,19 @@ export default function AdminCommandCenter() {
           >
             <Package className="w-3.5 h-3.5 text-[#0066FF] dark:text-[#38BDF8]" />
             <span>Catalog & Inventory ({products.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('categories')}
+            className={cn(
+              'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap',
+              activeTab === 'categories'
+                ? 'border-[#0066FF] text-[#0066FF] dark:text-white bg-blue-50/80 dark:bg-blue-500/10'
+                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/60 dark:hover:bg-slate-800/40'
+            )}
+          >
+            <Layers className="w-3.5 h-3.5 text-[#0066FF] dark:text-[#38BDF8]" />
+            <span>Categories ({categories.length})</span>
           </button>
 
           <button
@@ -896,10 +936,17 @@ export default function AdminCommandCenter() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5">
+                <button
+                  onClick={() => setIsAddCategoryOpen(true)}
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs border border-slate-200 dark:border-slate-700 transition-all cursor-pointer shadow-2xs"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add Category</span>
+                </button>
                 <button
                   onClick={() => setIsAddProductOpen(true)}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0066FF] hover:bg-blue-600 text-white font-bold text-xs shadow-md shadow-blue-500/25 transition-all"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0066FF] hover:bg-blue-600 text-white font-bold text-xs shadow-md shadow-blue-500/25 transition-all cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add Product</span>
@@ -924,15 +971,17 @@ export default function AdminCommandCenter() {
                 <select
                   value={productCategory}
                   onChange={(e) => setProductCategory(e.target.value)}
-                  className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-700 dark:text-slate-300 focus:outline-hidden"
+                  className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-700 dark:text-slate-300 focus:outline-hidden cursor-pointer"
                 >
-                  <option value="all">All Categories</option>
-                  <option value="electronics">Electronics</option>
-                  <option value="apparel">Apparel</option>
-                  <option value="footwear">Footwear</option>
-                  <option value="leather-goods">Leather Goods</option>
-                  <option value="home-living">Home & Living</option>
-                  <option value="beauty">Beauty</option>
+                  <option value="all">All Categories ({products.length})</option>
+                  {categories.map((cat) => {
+                    const count = products.filter((p) => p.category === cat.slug).length;
+                    return (
+                      <option key={cat.slug} value={cat.slug}>
+                        {cat.name} ({count})
+                      </option>
+                    );
+                  })}
                 </select>
 
                 {/* Quick Currency Selector in Catalog Filter Bar */}
@@ -1098,6 +1147,151 @@ export default function AdminCommandCenter() {
                   </tbody>
                 </table>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* ================= TAB 3.5: CATEGORIES TAXONOMY ================= */}
+        {activeTab === 'categories' && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            {/* Header / Actions */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">Category Taxonomy & Departments</h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Organize store departments, create custom product classifications, and inspect live inventory density
+                </p>
+              </div>
+              <button
+                onClick={() => setIsAddCategoryOpen(true)}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold text-xs shadow-md shadow-amber-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Add New Category</span>
+              </button>
+            </div>
+
+            {/* Metrics Ribbon */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="p-4 rounded-xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center font-bold">
+                  <Layers className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Total Departments</div>
+                  <div className="text-xl font-extrabold text-slate-900 dark:text-white">{categories.length}</div>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center font-bold">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Custom User Categories</div>
+                  <div className="text-xl font-extrabold text-slate-900 dark:text-white">
+                    {categories.filter((c) => c.isCustom).length}
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center font-bold">
+                  <Package className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Assigned Products</div>
+                  <div className="text-xl font-extrabold text-slate-900 dark:text-white">{products.length}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Category Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {categories.map((cat) => {
+                const count = products.filter((p) => p.category === cat.slug).length;
+                return (
+                  <div
+                    key={cat.id}
+                    className="p-5 rounded-2xl bg-white dark:bg-[#0F172A] border border-slate-200/80 dark:border-slate-800/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group"
+                  >
+                    <div>
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-center text-amber-500 font-bold text-sm">
+                            <Tag className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors">
+                              {cat.name}
+                            </h3>
+                            <div className="text-[11px] font-mono text-slate-400 dark:text-slate-500">
+                              slug: {cat.slug}
+                            </div>
+                          </div>
+                        </div>
+
+                        <span
+                          className={cn(
+                            'text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider',
+                            cat.isCustom
+                              ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30'
+                              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
+                          )}
+                        >
+                          {cat.isCustom ? 'Custom' : 'Core'}
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 mb-4">
+                        {cat.description || `Catalog department featuring curated ${cat.name.toLowerCase()} products.`}
+                      </p>
+                    </div>
+
+                    <div className="pt-4 border-t border-slate-100 dark:border-slate-800/70 flex items-center justify-between text-xs">
+                      <span className="font-semibold text-slate-500 dark:text-slate-400">
+                        {count} {count === 1 ? 'item' : 'items'}
+                      </span>
+
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => {
+                            setProductCategory(cat.slug);
+                            setActiveTab('products');
+                          }}
+                          className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-[11px] transition-colors"
+                          title="View catalog items under this category"
+                        >
+                          View Items
+                        </button>
+                        <Link
+                          href={`/products?category=${cat.slug}`}
+                          target="_blank"
+                          className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-500 dark:text-slate-400 transition-colors"
+                          title="Open storefront category page"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </Link>
+                        {cat.isCustom && (
+                          <button
+                            onClick={() => {
+                              if (count > 0) {
+                                if (!window.confirm(`Category "${cat.name}" has ${count} associated products. Deleting will remove this category classification from filters. Continue?`)) return;
+                              }
+                              deleteCategory(cat.slug);
+                              showToast(`🗑️ Removed category "${cat.name}"`);
+                            }}
+                            className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-500 transition-colors"
+                            title="Delete custom category"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
@@ -1401,19 +1595,55 @@ export default function AdminCommandCenter() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Category</label>
-                  <select
-                    value={newProductCategory}
-                    onChange={(e) => setNewProductCategory(e.target.value as any)}
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white focus:outline-hidden"
-                  >
-                    <option value="electronics">Electronics</option>
-                    <option value="apparel">Apparel</option>
-                    <option value="footwear">Footwear</option>
-                    <option value="leather-goods">Leather Goods</option>
-                    <option value="home-living">Home & Living</option>
-                    <option value="beauty">Beauty</option>
-                  </select>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-slate-700 dark:text-slate-300 font-semibold">Category</label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsCustomCategoryInput(!isCustomCategoryInput);
+                        setCustomCategoryName('');
+                      }}
+                      className="text-[10px] text-[#0066FF] dark:text-[#38BDF8] font-semibold hover:underline cursor-pointer"
+                    >
+                      {isCustomCategoryInput ? 'Choose list' : '+ New Category'}
+                    </button>
+                  </div>
+
+                  {!isCustomCategoryInput ? (
+                    <select
+                      value={newProductCategory}
+                      onChange={(e) => {
+                        if (e.target.value === '__add_new__') {
+                          setIsCustomCategoryInput(true);
+                        } else {
+                          setNewProductCategory(e.target.value as any);
+                        }
+                      }}
+                      className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white focus:outline-hidden"
+                    >
+                      {categories.map((c) => (
+                        <option key={c.slug} value={c.slug}>
+                          {c.name}
+                        </option>
+                      ))}
+                      <option value="__add_new__">+ Create New Category...</option>
+                    </select>
+                  ) : (
+                    <div className="space-y-1">
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Watches, Luxury Jewelry"
+                        value={customCategoryName}
+                        onChange={(e) => setCustomCategoryName(e.target.value)}
+                        className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white focus:outline-hidden focus:border-[#0066FF]"
+                        autoFocus
+                      />
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                        Will automatically be created and assigned
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -1621,6 +1851,77 @@ export default function AdminCommandCenter() {
                   className="px-5 py-2.5 rounded-xl bg-[#0066FF] hover:bg-blue-600 text-white font-bold shadow-md"
                 >
                   Create Code
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      {/* ================= MODAL: ADD CATEGORY ================= */}
+      {isAddCategoryOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/70 backdrop-blur-sm animate-in fade-in">
+          <div className="relative w-full max-w-md bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-500/20 text-[#0066FF] dark:text-[#38BDF8]">
+                  <Layers className="w-4 h-4" />
+                </div>
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">Create New Category</h3>
+              </div>
+              <button
+                onClick={() => setIsAddCategoryOpen(false)}
+                className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateCategory} className="space-y-4 text-xs">
+              <div>
+                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                  Category Display Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Luxury Timepieces, Smart Wearables, Perfumery"
+                  value={newCatName}
+                  onChange={(e) => setNewCatName(e.target.value)}
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-[#0066FF]"
+                />
+                {newCatName.trim() && (
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 font-mono">
+                    Generated slug: {newCatName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                  Description
+                </label>
+                <textarea
+                  rows={3}
+                  placeholder="Short summary describing products in this category..."
+                  value={newCatDesc}
+                  onChange={(e) => setNewCatDesc(e.target.value)}
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-[#0066FF]"
+                />
+              </div>
+
+              <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setIsAddCategoryOpen(false)}
+                  className="px-4 py-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-xl bg-[#0066FF] hover:bg-blue-600 text-white font-bold shadow-md shadow-blue-500/25 cursor-pointer"
+                >
+                  Create Category
                 </button>
               </div>
             </form>

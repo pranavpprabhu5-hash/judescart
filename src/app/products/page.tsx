@@ -47,7 +47,14 @@ const SORT_OPTIONS = [
 
 function ProductListingContent() {
   const searchParams = useSearchParams();
-  const { formatAmount } = useStore();
+  const { formatAmount, categories } = useStore();
+
+  const categoriesList = useMemo(() => {
+    return [
+      { label: 'All Products', value: 'all' as ProductCategory },
+      ...(categories || []).map((c) => ({ label: c.name, value: c.slug as ProductCategory })),
+    ];
+  }, [categories]);
 
   const urlCategory = (searchParams.get('category') as ProductCategory) || 'all';
   const urlSearch = searchParams.get('q') || '';
@@ -127,7 +134,7 @@ function ProductListingContent() {
           <span className="text-[#0066FF]">JudesCart Store</span>
           <span>/</span>
           <span className="text-stone-900">
-            {CATEGORIES.find((c) => c.value === selectedCategory)?.label || 'All Products'}
+            {categoriesList.find((c) => c.value === selectedCategory)?.label || 'All Products'}
           </span>
         </div>
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
@@ -164,7 +171,7 @@ function ProductListingContent() {
 
         {/* Category Pills (Desktop) */}
         <div className="hidden lg:flex items-center gap-1.5 overflow-x-auto scrollbar-none">
-          {CATEGORIES.map((cat) => (
+          {categoriesList.map((cat) => (
             <button
               key={cat.value}
               onClick={() => setSelectedCategory(cat.value)}
@@ -232,7 +239,7 @@ function ProductListingContent() {
           <span className="text-xs text-slate-400 font-semibold mr-1">Active filters:</span>
           {selectedCategory !== 'all' && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-[#0066FF] text-xs font-semibold">
-              Category: {CATEGORIES.find((c) => c.value === selectedCategory)?.label}
+              Category: {categoriesList.find((c) => c.value === selectedCategory)?.label}
               <button onClick={() => setSelectedCategory('all')} className="hover:text-blue-900">
                 <X className="w-3 h-3" />
               </button>
@@ -308,7 +315,7 @@ function ProductListingContent() {
           <div className="space-y-2">
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">Category</h4>
             <div className="space-y-1">
-              {CATEGORIES.map((cat) => (
+              {categoriesList.map((cat) => (
                 <button
                   key={cat.value}
                   onClick={() => setSelectedCategory(cat.value)}
@@ -443,7 +450,7 @@ function ProductListingContent() {
             <div className="space-y-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">Category</h4>
               <div className="space-y-1">
-                {CATEGORIES.map((cat) => (
+                {categoriesList.map((cat) => (
                   <button
                     key={cat.value}
                     onClick={() => setSelectedCategory(cat.value)}

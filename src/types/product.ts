@@ -5,7 +5,25 @@ export type ProductCategory =
   | 'footwear'
   | 'leather-goods'
   | 'home-living'
-  | 'beauty';
+  | 'beauty'
+  | (string & {});
+
+export interface CategoryItem {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  isCustom?: boolean;
+}
+
+export const DEFAULT_CATEGORIES: CategoryItem[] = [
+  { id: 'cat-electronics', name: 'Electronics & Audio', slug: 'electronics', description: 'Flagship audio, smart devices, and accessories' },
+  { id: 'cat-apparel', name: 'Apparel & Fashion', slug: 'apparel', description: 'Designer menswear, womenswear, and outerwear' },
+  { id: 'cat-footwear', name: 'Footwear & Boots', slug: 'footwear', description: 'Handmade Italian boots, sneakers, and loafers' },
+  { id: 'cat-leather-goods', name: 'Leather Goods & Bags', slug: 'leather-goods', description: 'Full-grain Tuscan calfskin bags, wallets, and belts' },
+  { id: 'cat-home-living', name: 'Home & Living', slug: 'home-living', description: 'Minimalist decor, acoustics, and lifestyle accents' },
+  { id: 'cat-beauty', name: 'Beauty & Wellness', slug: 'beauty', description: 'Luxury skincare, fragrances, and wellness' },
+];
 
 export interface ProductVariantColor {
   name: string;
