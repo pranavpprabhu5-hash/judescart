@@ -6,6 +6,7 @@ import { useStore } from '@/context/StoreContext';
 import { CartItemRow } from './CartItemRow';
 import { FreeShippingMeter } from './FreeShippingMeter';
 import { X, ShoppingBag, ArrowRight, Tag, ShieldCheck, Lock } from 'lucide-react';
+import { calculatePurchaseCoins } from '@/lib/utils';
 
 export function SlideOverCart() {
   const router = useRouter();
@@ -177,6 +178,19 @@ export function SlideOverCart() {
                 <span>Estimated Total</span>
                 <span className="text-[#0066FF] text-lg">{formatAmount(cartSummary.total)}</span>
               </div>
+            </div>
+
+            {/* JudesCoins Purchase Reward Notice */}
+            <div className="p-2.5 rounded-xl bg-amber-50/90 border border-amber-200/90 flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2">
+                <span className="text-sm">🪙</span>
+                <span className="font-bold text-amber-950">
+                  Earn +{calculatePurchaseCoins(cartSummary.total)} JudesCoins
+                </span>
+              </div>
+              <span className="text-[10px] font-bold text-amber-700">
+                1 coin / ₹100 spent
+              </span>
             </div>
 
             {/* Primary Action Button */}

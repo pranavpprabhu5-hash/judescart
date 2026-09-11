@@ -36,3 +36,15 @@ export function calculateCartSummary(
     isFreeShippingUnlocked,
   };
 }
+
+/**
+ * Calculates JudesCoins earned from a purchase.
+ * Reward rule: Exactly 1 coin for every ₹100 of purchase.
+ * Converts USD base price to INR using the official rate (86.5).
+ */
+export function calculatePurchaseCoins(amountInUSD: number): number {
+  const inrRate = CURRENCIES.INR.rate || 86.5;
+  const inrAmount = amountInUSD * inrRate;
+  return Math.max(0, Math.floor(inrAmount / 100));
+}
+

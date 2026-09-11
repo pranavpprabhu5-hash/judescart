@@ -295,7 +295,7 @@ export function Navbar() {
             <button
               onClick={openDailyMystery}
               className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 border border-purple-200 text-purple-900 transition-all text-xs font-bold cursor-pointer shadow-2xs group"
-              title="Daily JudesCart Mystery Vault & Streak Reward"
+              title="Daily JudesCart Mystery Vault (Max 10 Coins / Day) - Open Everyday to Claim"
             >
               <Gift className="w-3.5 h-3.5 text-purple-600 group-hover:scale-110 transition-transform" />
               <span className="hidden sm:inline">Daily Gift</span>
@@ -555,6 +555,20 @@ export function Navbar() {
               >
                 <User className="w-4 h-4" />
                 <span>{isLoggedIn ? user.name.split(' ')[0] : 'Sign In'}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openDailyMystery();
+                }}
+                className="flex items-center gap-1.5 font-bold text-purple-900 bg-purple-50 px-2.5 py-1 rounded-full border border-purple-200 text-xs cursor-pointer"
+              >
+                <Gift className="w-3.5 h-3.5 text-purple-600" />
+                <span>Daily Gift (Max 10)</span>
+                {!dailyMysteryClaimed && (
+                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
+                )}
               </button>
 
               <button

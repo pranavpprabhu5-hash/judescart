@@ -6,7 +6,7 @@ import { CartItem, PromoCode, CartSummary } from '@/types/cart';
 import { CurrencyCode } from '@/types/currency';
 import { UserProfile, Order, ShippingAddress } from '@/types/user';
 import { CURRENCIES, PROMO_CODES, INITIAL_USER, PRODUCTS } from '@/lib/mock-data';
-import { calculateCartSummary, formatPrice } from '@/lib/utils';
+import { calculateCartSummary, formatPrice, calculatePurchaseCoins } from '@/lib/utils';
 
 export interface AdminWinnerRecord {
   id: string;
@@ -145,21 +145,43 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const today = new Date().toDateString();
+      const today = new Date();
+      const todayStr = today.toDateString();
       const lastClaim = localStorage.getItem('judescart_daily_claimed_date');
-      if (lastClaim === today) {
+      const savedStreak = parseInt(localStorage.getItem('judescart_daily_streak') || '1', 10);
+
+      if (lastClaim === todayStr) {
         setDailyMysteryClaimed(true);
+        setDailyStreak(savedStreak);
+      } else if (lastClaim) {
+        // Check if user missed any calendar days
+        const lastDate = new Date(lastClaim);
+        const diffMs = today.getTime() - lastDate.getTime();
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+        if (diffDays > 1) {
+          // Missed at least one calendar day: Streak resets to 1
+          setDailyStreak(1);
+          localStorage.setItem('judescart_daily_streak', '1');
+        } else {
+          setDailyStreak(savedStreak);
+        }
+        setDailyMysteryClaimed(false);
+      } else {
+        setDailyStreak(savedStreak);
+        setDailyMysteryClaimed(false);
       }
-      const streak = parseInt(localStorage.getItem('judescart_daily_streak') || '3', 10);
-      setDailyStreak(streak);
     }
   }, []);
 
   const claimDailyMystery = (rewardCoins: number) => {
-    addJudesCoins(rewardCoins);
+    // Strictly cap daily claimable coins to maximum of 10
+    const cappedReward = Math.min(10, Math.max(1, Math.round(rewardCoins)));
+    addJudesCoins(cappedReward);
     setDailyMysteryClaimed(true);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('judescart_daily_claimed_date', new Date().toDateString());
+      const todayStr = new Date().toDateString();
+      localStorage.setItem('judescart_daily_claimed_date', todayStr);
       const nextStreak = dailyStreak + 1;
       setDailyStreak(nextStreak);
       localStorage.setItem('judescart_daily_streak', nextStreak.toString());
@@ -401,11 +423,16 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   // User Actions
   const toggleLogin = () => setIsLoggedIn((prev) => !prev);
   const addOrder = (order: Order) => {
-    const earnedCoins = Math.floor(order.total * 10);
+    // Reward against purchase: 1 coin each for every 100 rs purchase
+    const earnedCoins = order.coinsEarned ?? calculatePurchaseCoins(order.total);
+    const orderWithCoins: Order = {
+      ...order,
+      coinsEarned: earnedCoins,
+    };
     setJudesCoins((prev) => prev + earnedCoins);
     setUser((prev) => ({
       ...prev,
-      orders: [order, ...prev.orders],
+      orders: [orderWithCoins, ...prev.orders],
       judesCoins: (prev.judesCoins || 0) + earnedCoins,
     }));
   };

@@ -20,36 +20,36 @@ import { cn } from '@/lib/utils';
 const MYSTERY_REWARDS = [
   {
     id: 1,
-    title: 'Super Coin Stash',
-    coins: 150,
-    bonus: '+1 Lucky Draw Spin',
-    desc: '150 JudesCoins credited straight to your vault, plus a bonus spin token!',
+    title: 'Daily Coin Cache',
+    coins: 6,
+    bonus: '+1 Lucky Draw Spin Token',
+    desc: '6 JudesCoins credited straight to your vault, plus a bonus spin token!',
     color: 'from-amber-500 to-yellow-500',
   },
   {
     id: 2,
     title: 'Jackpot Mystery Chest',
-    coins: 250,
-    bonus: 'VIP Platinum Pass Entry',
-    desc: '250 JudesCoins and automatic entry into the next monthly luxury draw!',
+    coins: 10,
+    bonus: 'Daily Max Cap (10 Coins)',
+    desc: '10 JudesCoins (Maximum Daily Reward Limit) and automatic VIP draw ticket!',
     color: 'from-purple-600 to-indigo-600',
   },
   {
     id: 3,
     title: 'Express Shopper Bundle',
-    coins: 100,
+    coins: 8,
     bonus: 'Free Priority Dispatch Code',
-    desc: '100 JudesCoins plus complimentary express courier upgrade code (FASTJUDES)!',
+    desc: '8 JudesCoins plus complimentary express courier upgrade code (FASTJUDES)!',
     color: 'from-blue-600 to-cyan-600',
   },
 ];
 
 const STREAK_DAYS = [
-  { day: 1, reward: '50 Coins', active: true },
-  { day: 2, reward: '100 Coins', active: true },
-  { day: 3, reward: '150 Coins', active: true },
-  { day: 4, reward: '200 Coins', active: false },
-  { day: 5, reward: '300 Coins + 🎟️ Ticket', active: false },
+  { day: 1, reward: '2 Coins', active: true },
+  { day: 2, reward: '4 Coins', active: true },
+  { day: 3, reward: '6 Coins', active: true },
+  { day: 4, reward: '8 Coins', active: false },
+  { day: 5, reward: '10 Coins (Max)', active: false },
 ];
 
 export function DailyMysteryBoxModal() {
@@ -124,14 +124,14 @@ export function DailyMysteryBoxModal() {
 
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-400 mb-1">
             <Flame className="w-4 h-4 text-amber-400 fill-amber-400 animate-pulse" />
-            <span>Daily Streak: Day {dailyStreak}</span>
+            <span>Daily Streak: Day {dailyStreak} • Max 10 Coins/Day</span>
           </div>
 
           <h3 className="font-sans text-2xl sm:text-3xl font-extrabold">
             Daily JudesCart Mystery Vault
           </h3>
           <p className="text-xs text-slate-300 mt-1">
-            Unlock your free daily chest to reveal mystery JudesCoins, luxury draw tickets, and secret perks!
+            Open JudesCart everyday to claim your daily coins (capped at 10 coins max). Miss a day and your streak resets!
           </p>
 
           {/* Streak Track */}
@@ -256,7 +256,7 @@ export function DailyMysteryBoxModal() {
                   Come Back Tomorrow for Day {dailyStreak + 1}
                 </h4>
                 <p className="text-xs text-slate-500">
-                  Vault resets automatically at midnight. Keep your streak alive for compounding JudesCoins!
+                  Vault resets every midnight. Remember to open the platform everyday to keep your streak alive and claim up to 10 coins daily!
                 </p>
               </div>
 

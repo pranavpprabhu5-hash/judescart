@@ -325,7 +325,7 @@ export function ProfileDrawer() {
                       <span className="text-sm font-bold text-amber-200">Coins</span>
                     </div>
                     <p className="text-[11px] text-white/80 mt-1">
-                      Multiplier: <strong className="text-amber-300">{vipMultiplier}x Coins</strong> on orders • Approx ${(judesCoins / 20).toFixed(2)} store credit
+                      Reward: <strong className="text-amber-300">1 Coin per ₹100 spent</strong> ({vipMultiplier}x Tier Rate) • Approx ${(judesCoins / 20).toFixed(2)} store credit
                     </p>
                   </div>
 
@@ -357,7 +357,7 @@ export function ProfileDrawer() {
                       }}
                       className="text-amber-300 font-bold hover:underline cursor-pointer"
                     >
-                      🎁 Daily Mystery Box →
+                      🎁 Daily Mystery Box (Max 10 Coins) →
                     </button>
                   </div>
                 </div>

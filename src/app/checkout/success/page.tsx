@@ -10,6 +10,7 @@ import { Order } from '@/types/user';
 import { CheckCircle2, Package, Printer, ArrowRight, Truck, MapPin, Sparkles, Gift } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { OrderTrackingMap } from '@/components/checkout/OrderTrackingMap';
+import { calculatePurchaseCoins } from '@/lib/utils';
 
 function OrderSuccessContent() {
   const searchParams = useSearchParams();
@@ -149,6 +150,26 @@ function OrderSuccessContent() {
               <span>Total Paid</span>
               <span>{formatAmount(currentOrder.total)}</span>
             </div>
+          </div>
+
+          {/* JudesCoins Purchase Reward Credited */}
+          <div className="p-4 rounded-xl bg-amber-50/90 border border-amber-200/90 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-base shadow-xs shrink-0">
+                🪙
+              </div>
+              <div>
+                <p className="text-xs font-bold text-amber-950">
+                  +{currentOrder.coinsEarned ?? calculatePurchaseCoins(currentOrder.total)} JudesCoins Credited to Vault
+                </p>
+                <p className="text-[11px] text-amber-700 font-medium">
+                  Reward rule: 1 coin each for every ₹100 purchase
+                </p>
+              </div>
+            </div>
+            <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 shrink-0">
+              ✓ Credited
+            </span>
           </div>
 
           {/* Deluxe Gift Packaging & Handwritten Note Banner */}

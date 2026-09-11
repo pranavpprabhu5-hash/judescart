@@ -58,6 +58,7 @@ export interface Order {
     hidePriceReceipt?: boolean;
     fee: number;
   };
+  coinsEarned?: number;
 }
 
 export interface UserProfile {

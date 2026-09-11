@@ -22,7 +22,7 @@ import {
   ShoppingBag,
   Gift,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, calculatePurchaseCoins } from '@/lib/utils';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -115,6 +115,7 @@ export default function CheckoutPage() {
       tax: cartSummary.estimatedTax,
       total: calculateFinalTotal(),
       currency: 'USD',
+      coinsEarned: calculatePurchaseCoins(calculateFinalTotal()),
       shippingAddress,
       shippingMethod: selectedShipping,
       paymentMethod: {
@@ -656,6 +657,26 @@ export default function CheckoutPage() {
               <span>Total Payment</span>
               <span>{formatAmount(calculateFinalTotal())}</span>
             </div>
+          </div>
+
+          {/* JudesCoins Purchase Reward Notice */}
+          <div className="p-3.5 rounded-xl bg-amber-50/90 border border-amber-200/90 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
+                🪙
+              </div>
+              <div>
+                <p className="text-xs font-bold text-amber-950">
+                  Earn +{calculatePurchaseCoins(calculateFinalTotal())} JudesCoins
+                </p>
+                <p className="text-[10px] text-amber-700 font-medium">
+                  Reward rule: 1 coin for every ₹100 spent
+                </p>
+              </div>
+            </div>
+            <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md bg-amber-200/70 text-amber-900 shrink-0">
+              Auto-Credited
+            </span>
           </div>
 
           <div className="p-3 rounded-xl bg-blue-50/50 border border-blue-100 text-[11px] text-stone-600 space-y-1">
