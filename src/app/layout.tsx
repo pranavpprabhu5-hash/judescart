@@ -2,17 +2,7 @@ import type { Metadata } from 'next';
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { StoreProvider } from '@/context/StoreContext';
-import { Navbar } from '@/components/layout/Navbar';
-import { Footer } from '@/components/layout/Footer';
-import { SlideOverCart } from '@/components/cart/SlideOverCart';
-import { ProfileDrawer } from '@/components/layout/ProfileDrawer';
-import { SearchOverlay } from '@/components/layout/SearchOverlay';
-import { LuckyDrawModal } from '@/components/luckydraw/LuckyDrawModal';
-import { FloatingLuckyDrawCTA } from '@/components/luckydraw/FloatingLuckyDrawCTA';
-import { ProductQuickViewModal } from '@/components/product/ProductQuickViewModal';
-import { DailyMysteryBoxModal } from '@/components/luckydraw/DailyMysteryBoxModal';
-import { ProductComparisonDrawer } from '@/components/product/ProductComparisonDrawer';
-import { CurrencyLocationBanner } from '@/components/layout/CurrencyLocationBanner';
+import { StoreLayoutShell } from '@/components/layout/StoreLayoutShell';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -70,18 +60,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col font-sans bg-[#F8FAFC] dark:bg-[#070F1E] text-slate-900 dark:text-slate-100 selection:bg-[#0066FF] selection:text-white transition-colors duration-200">
         <StoreProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <SlideOverCart />
-          <ProfileDrawer />
-          <SearchOverlay />
-          <LuckyDrawModal />
-          <FloatingLuckyDrawCTA />
-          <ProductQuickViewModal />
-          <DailyMysteryBoxModal />
-          <ProductComparisonDrawer />
-          <CurrencyLocationBanner />
+          <StoreLayoutShell>{children}</StoreLayoutShell>
         </StoreProvider>
       </body>
     </html>
