@@ -42,7 +42,9 @@ import {
   Download,
   FileSpreadsheet,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, formatPrice } from '@/lib/utils';
+import { CURRENCIES } from '@/lib/mock-data';
+import { CurrencyCode } from '@/types/currency';
 
 export default function AdminCommandCenter() {
   const {
@@ -60,6 +62,8 @@ export default function AdminCommandCenter() {
     grantCustomerCoins,
     recentWinners,
     triggerAdminDraw,
+    currency,
+    setCurrency,
     formatAmount,
   } = useStore();
 
@@ -75,11 +79,38 @@ export default function AdminCommandCenter() {
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
   const [newProductName, setNewProductName] = useState('');
   const [newProductCategory, setNewProductCategory] = useState<ProductCategory>('electronics');
-  const [newProductPrice, setNewProductPrice] = useState<number>(149);
+  const [newProductCurrency, setNewProductCurrency] = useState<CurrencyCode>(currency || 'INR');
+  const [newProductPrice, setNewProductPrice] = useState<number>(currency === 'INR' ? 2499 : 149);
   const [newProductStock, setNewProductStock] = useState<number>(25);
   const [newProductImage, setNewProductImage] = useState('https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80');
   const [newProductIsJudes, setNewProductIsJudes] = useState(false);
   const [newProductDrawTier, setNewProductDrawTier] = useState<'platinum' | 'gold' | 'silver'>('gold');
+
+  // Keep modal currency in sync with store currency
+  useEffect(() => {
+    if (currency) {
+      setNewProductCurrency(currency);
+      setNewProductPrice((prev) => {
+        if (!prev || prev === 149 || prev === 2499) {
+          return currency === 'INR' ? 2499 : 149;
+        }
+        return prev;
+      });
+    }
+  }, [currency]);
+
+  // Smooth conversion when switching currency in Add Product form
+  const handleProductCurrencyChange = (targetCurr: CurrencyCode) => {
+    if (targetCurr === newProductCurrency) return;
+    const oldRate = CURRENCIES[newProductCurrency]?.rate || 1;
+    const newRate = CURRENCIES[targetCurr]?.rate || 1;
+    const usdVal = (newProductPrice || 0) / oldRate;
+    const converted = targetCurr === 'INR' || targetCurr === 'JPY'
+      ? Math.round(usdVal * newRate)
+      : Math.round(usdVal * newRate * 100) / 100;
+    setNewProductCurrency(targetCurr);
+    setNewProductPrice(converted || (targetCurr === 'INR' ? 2499 : 149));
+  };
 
   // New Promo Modal State
   const [isAddPromoOpen, setIsAddPromoOpen] = useState(false);
@@ -114,7 +145,9 @@ export default function AdminCommandCenter() {
   };
 
   const handleExportOrdersCSV = () => {
-    const headers = ['Order ID', 'Date', 'Customer Name', 'Items Count', 'Status', 'Shipping Method', 'Gift Wrapped', 'Total ($)'];
+    const rate = CURRENCIES[currency]?.rate || 1;
+    const symbol = CURRENCIES[currency]?.symbol || '$';
+    const headers = ['Order ID', 'Date', 'Customer Name', 'Items Count', 'Status', 'Shipping Method', 'Gift Wrapped', `Total (${symbol} ${currency})`];
     const rows = user.orders.map((o) => [
       o.id,
       o.date,
@@ -123,24 +156,26 @@ export default function AdminCommandCenter() {
       o.status,
       o.shippingMethod?.name || 'Standard',
       o.giftPackaging?.enabled ? 'Yes (Deluxe)' : 'No',
-      o.total.toFixed(2),
+      (o.total * rate).toFixed(2),
     ]);
-    exportCSV(`judescart-orders-${new Date().toISOString().slice(0, 10)}.csv`, [headers, ...rows]);
+    exportCSV(`judescart-orders-${currency.toLowerCase()}-${new Date().toISOString().slice(0, 10)}.csv`, [headers, ...rows]);
   };
 
   const handleExportCatalogCSV = () => {
-    const headers = ['SKU / ID', 'Product Name', 'Category', 'Draw Tier', 'Price ($)', 'Original Price ($)', 'Stock Available', 'Rating'];
+    const rate = CURRENCIES[currency]?.rate || 1;
+    const symbol = CURRENCIES[currency]?.symbol || '$';
+    const headers = ['SKU / ID', 'Product Name', 'Category', 'Draw Tier', `Price (${symbol} ${currency})`, `Original Price (${symbol} ${currency})`, 'Stock Available', 'Rating'];
     const rows = products.map((p) => [
       p.id,
       p.name,
       p.category,
       p.drawTier || 'None',
-      p.price.toFixed(2),
-      p.originalPrice ? p.originalPrice.toFixed(2) : '',
+      (p.price * rate).toFixed(2),
+      (p.originalPrice ? p.originalPrice * rate : p.price * 1.3 * rate).toFixed(2),
       p.sizes.reduce((sum, s) => sum + s.stock, 0),
       p.rating,
     ]);
-    exportCSV(`judescart-catalog-${new Date().toISOString().slice(0, 10)}.csv`, [headers, ...rows]);
+    exportCSV(`judescart-catalog-${currency.toLowerCase()}-${new Date().toISOString().slice(0, 10)}.csv`, [headers, ...rows]);
   };
 
   const handleExportWinnersCSV = () => {
@@ -188,6 +223,12 @@ export default function AdminCommandCenter() {
     e.preventDefault();
     if (!newProductName.trim()) return;
 
+    const rate = CURRENCIES[newProductCurrency]?.rate || 1;
+    // Calculate normalized USD base price (since our store engine stores USD base)
+    const baseUsdPrice = newProductCurrency === 'USD'
+      ? (newProductPrice || 0)
+      : Math.round(((newProductPrice || 0) / rate) * 100) / 100;
+
     const slug = newProductName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     const newProd: Product = {
       id: `prod-${Date.now()}`,
@@ -199,8 +240,8 @@ export default function AdminCommandCenter() {
       brand: newProductIsJudes ? 'JUDES' : 'JudesCart Studio',
       isBumperEligible: newProductIsJudes,
       drawTier: newProductDrawTier,
-      price: newProductPrice,
-      originalPrice: Math.round(newProductPrice * 1.3),
+      price: baseUsdPrice,
+      originalPrice: Math.round(baseUsdPrice * 1.3 * 100) / 100,
       rating: 4.9,
       reviewCount: 14,
       images: [newProductImage],
@@ -220,13 +261,14 @@ export default function AdminCommandCenter() {
     addProduct(newProd);
     setIsAddProductOpen(false);
     setNewProductName('');
-    showToast(`✅ Created product "${newProd.name}" and added to active catalog!`);
+    showToast(`✅ Created "${newProd.name}" at ${CURRENCIES[newProductCurrency]?.symbol || ''}${newProductPrice} (${formatAmount(baseUsdPrice)})!`);
   };
 
   const handleCreatePromo = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPromoCode.trim()) return;
-    const value = newPromoType === 'percentage' ? newPromoVal / 100 : newPromoVal;
+    const rate = CURRENCIES[currency]?.rate || 1;
+    const value = newPromoType === 'percentage' ? newPromoVal / 100 : newPromoVal / rate;
     createPromoCode(newPromoCode, newPromoType, value, newPromoDesc);
     setIsAddPromoOpen(false);
     setNewPromoCode('');
@@ -459,7 +501,7 @@ export default function AdminCommandCenter() {
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-300 font-bold">
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>$10,000 Grand Bumper</span>
+                  <span>{formatAmount(10000)} Grand Bumper</span>
                 </div>
               </div>
             </div>
@@ -603,7 +645,7 @@ export default function AdminCommandCenter() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 text-xs">
                   <span className="text-slate-500 dark:text-slate-400 text-[11px]">Avg Daily Run Rate</span>
-                  <p className="text-sm font-bold text-slate-900 dark:text-white font-mono mt-0.5">$4,850 / day</p>
+                  <p className="text-sm font-bold text-slate-900 dark:text-white font-mono mt-0.5">{formatAmount(4850)} / day</p>
                 </div>
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 text-xs">
                   <span className="text-slate-500 dark:text-slate-400 text-[11px]">Conversion Rate</span>
@@ -636,17 +678,17 @@ export default function AdminCommandCenter() {
 
                 <div className="pt-6 grid grid-cols-7 gap-2 sm:gap-4 items-end h-44 border-b border-slate-200 dark:border-slate-800 pb-3">
                   {[
-                    { day: 'Mon', val: 65, rev: '$14.2k' },
-                    { day: 'Tue', val: 78, rev: '$18.1k' },
-                    { day: 'Wed', val: 54, rev: '$12.0k' },
-                    { day: 'Thu', val: 89, rev: '$22.4k' },
-                    { day: 'Fri', val: 95, rev: '$28.9k' },
-                    { day: 'Sat', val: 100, rev: '$34.5k' },
-                    { day: 'Sun', val: 84, rev: '$20.8k' },
+                    { day: 'Mon', val: 65, revUSD: 14200 },
+                    { day: 'Tue', val: 78, revUSD: 18100 },
+                    { day: 'Wed', val: 54, revUSD: 12000 },
+                    { day: 'Thu', val: 89, revUSD: 22400 },
+                    { day: 'Fri', val: 95, revUSD: 28900 },
+                    { day: 'Sat', val: 100, revUSD: 34500 },
+                    { day: 'Sun', val: 84, revUSD: 20800 },
                   ].map((bar) => (
                     <div key={bar.day} className="flex flex-col items-center gap-2 h-full justify-end group">
-                      <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                        {bar.rev}
+                      <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                        {formatAmount(bar.revUSD)}
                       </span>
                       <div
                         style={{ height: `${bar.val}%` }}
@@ -878,19 +920,37 @@ export default function AdminCommandCenter() {
                 />
               </div>
 
-              <select
-                value={productCategory}
-                onChange={(e) => setProductCategory(e.target.value)}
-                className="w-full sm:w-auto bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-700 dark:text-slate-300 focus:outline-hidden"
-              >
-                <option value="all">All Categories</option>
-                <option value="electronics">Electronics</option>
-                <option value="apparel">Apparel</option>
-                <option value="footwear">Footwear</option>
-                <option value="leather-goods">Leather Goods</option>
-                <option value="home-living">Home & Living</option>
-                <option value="beauty">Beauty</option>
-              </select>
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <select
+                  value={productCategory}
+                  onChange={(e) => setProductCategory(e.target.value)}
+                  className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-700 dark:text-slate-300 focus:outline-hidden"
+                >
+                  <option value="all">All Categories</option>
+                  <option value="electronics">Electronics</option>
+                  <option value="apparel">Apparel</option>
+                  <option value="footwear">Footwear</option>
+                  <option value="leather-goods">Leather Goods</option>
+                  <option value="home-living">Home & Living</option>
+                  <option value="beauty">Beauty</option>
+                </select>
+
+                {/* Quick Currency Selector in Catalog Filter Bar */}
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs">
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">Pricing:</span>
+                  <select
+                    value={currency}
+                    onChange={(e) => setCurrency(e.target.value as CurrencyCode)}
+                    className="bg-transparent font-bold text-slate-900 dark:text-white focus:outline-hidden cursor-pointer"
+                  >
+                    {Object.values(CURRENCIES).map((c) => (
+                      <option key={c.code} value={c.code} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
+                        {c.flag} {c.code} ({c.symbol})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
             </div>
 
             {/* Products Table */}
@@ -902,7 +962,7 @@ export default function AdminCommandCenter() {
                       <th className="p-4">Product Details</th>
                       <th className="p-4">Category</th>
                       <th className="p-4">Draw Tier</th>
-                      <th className="p-4">Live Price</th>
+                      <th className="p-4">Live Price ({CURRENCIES[currency]?.symbol || '$'} {currency})</th>
                       <th className="p-4">Stock Units</th>
                       <th className="p-4 text-right">Actions</th>
                     </tr>
@@ -945,19 +1005,33 @@ export default function AdminCommandCenter() {
                           </td>
                           <td className="p-4 font-mono font-bold text-slate-900 dark:text-white">
                             <div className="flex items-center gap-1.5">
-                              <span>${prod.price}</span>
+                              <span className="text-sm">{formatAmount(prod.price)}</span>
+                              {currency !== 'USD' && (
+                                <span className="text-[10px] text-slate-400 dark:text-slate-500 font-normal">
+                                  (${prod.price.toFixed(2)})
+                                </span>
+                              )}
                               <button
                                 onClick={() => {
-                                  const newPrice = prompt(`Enter new price for ${prod.name}:`, prod.price.toString());
-                                  if (newPrice && !isNaN(parseFloat(newPrice))) {
-                                    updateProductPrice(prod.id, parseFloat(newPrice));
-                                    showToast(`Updated ${prod.name} price to $${newPrice}`);
+                                  const rate = CURRENCIES[currency]?.rate || 1;
+                                  const currentInCurr = currency === 'INR' || currency === 'JPY'
+                                    ? Math.round(prod.price * rate)
+                                    : Math.round(prod.price * rate * 100) / 100;
+                                  const input = prompt(
+                                    `Enter new price for "${prod.name}" in ${currency} (${CURRENCIES[currency]?.symbol}):`,
+                                    currentInCurr.toString()
+                                  );
+                                  if (input && !isNaN(parseFloat(input))) {
+                                    const val = parseFloat(input);
+                                    const baseUsd = currency === 'USD' ? val : Math.round((val / rate) * 100) / 100;
+                                    updateProductPrice(prod.id, baseUsd);
+                                    showToast(`Updated "${prod.name}" price to ${formatAmount(baseUsd)} (${CURRENCIES[currency]?.symbol}${val})`);
                                   }
                                 }}
-                                className="p-1 rounded text-slate-400 hover:text-slate-800 dark:hover:text-white transition-colors"
-                                title="Edit Price"
+                                className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+                                title={`Edit Price in ${currency} (current: ${formatAmount(prod.price)})`}
                               >
-                                <Edit2 className="w-3 h-3" />
+                                <Edit2 className="w-3.5 h-3.5" />
                               </button>
                             </div>
                           </td>
@@ -1192,7 +1266,7 @@ export default function AdminCommandCenter() {
                     <span className="text-xs font-bold font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-200/60 dark:border-transparent">
                       {promo.discountType === 'percentage'
                         ? `${Math.round(promo.discountValue * 100)}% OFF`
-                        : `$${promo.discountValue} OFF`}
+                        : `${formatAmount(promo.discountValue)} OFF`}
                     </span>
                   </div>
 
@@ -1349,37 +1423,79 @@ export default function AdminCommandCenter() {
                     onChange={(e) => setNewProductDrawTier(e.target.value as any)}
                     className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white focus:outline-hidden"
                   >
-                    <option value="platinum">Platinum (&gt;$500)</option>
-                    <option value="gold">Gold ($250-$500)</option>
-                    <option value="silver">Silver ($100-$250)</option>
+                    <option value="platinum">Platinum (&gt;{formatPrice(500, newProductCurrency)})</option>
+                    <option value="gold">Gold ({formatPrice(250, newProductCurrency)} - {formatPrice(500, newProductCurrency)})</option>
+                    <option value="silver">Silver ({formatPrice(100, newProductCurrency)} - {formatPrice(250, newProductCurrency)})</option>
                   </select>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Price (USD)</label>
-                  <input
-                    type="number"
-                    min="1"
-                    required
-                    value={newProductPrice}
-                    onChange={(e) => setNewProductPrice(parseFloat(e.target.value))}
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white font-mono focus:outline-hidden focus:border-[#0066FF]"
-                  />
+              {/* Currency Selector & Price Input */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-slate-700 dark:text-slate-300 font-semibold">
+                    Product Price & Currency
+                  </label>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                    1 USD = {CURRENCIES[newProductCurrency]?.rate} {newProductCurrency}
+                  </span>
                 </div>
 
-                <div>
-                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Initial Stock Units</label>
-                  <input
-                    type="number"
-                    min="1"
-                    required
-                    value={newProductStock}
-                    onChange={(e) => setNewProductStock(parseInt(e.target.value, 10))}
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white font-mono focus:outline-hidden focus:border-[#0066FF]"
-                  />
+                <div className="grid grid-cols-5 gap-2.5">
+                  <div className="col-span-2">
+                    <select
+                      value={newProductCurrency}
+                      onChange={(e) => handleProductCurrencyChange(e.target.value as CurrencyCode)}
+                      className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-2.5 py-2 text-slate-900 dark:text-white font-semibold focus:outline-hidden focus:border-[#0066FF]"
+                    >
+                      {Object.values(CURRENCIES).map((c) => (
+                        <option key={c.code} value={c.code}>
+                          {c.flag} {c.code} ({c.symbol})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="col-span-3 relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 font-bold font-mono">
+                      {CURRENCIES[newProductCurrency]?.symbol || '$'}
+                    </span>
+                    <input
+                      type="number"
+                      min="0.01"
+                      step="any"
+                      required
+                      value={newProductPrice || ''}
+                      onChange={(e) => setNewProductPrice(parseFloat(e.target.value) || 0)}
+                      placeholder={newProductCurrency === 'INR' ? 'e.g. 2499' : 'e.g. 149'}
+                      className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl pl-8 pr-3 py-2 text-slate-900 dark:text-white font-mono font-bold focus:outline-hidden focus:border-[#0066FF]"
+                    />
+                  </div>
                 </div>
+
+                {/* Real-time multi-currency preview */}
+                <div className="flex items-center justify-between text-[11px] text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/70 px-3 py-2 rounded-xl border border-slate-200/80 dark:border-slate-800">
+                  <span className="font-medium">Storefront price preview:</span>
+                  <span className="font-mono font-bold text-[#0066FF] dark:text-[#38BDF8]">
+                    {newProductCurrency === 'INR' ? (
+                      <>₹{(newProductPrice || 0).toLocaleString('en-IN')} INR ≈ ${( (newProductPrice || 0) / (CURRENCIES.INR?.rate || 86.5) ).toFixed(2)} USD base</>
+                    ) : (
+                      <>{CURRENCIES[newProductCurrency]?.symbol}{newProductPrice || 0} {newProductCurrency} ≈ ₹{Math.round( ((newProductPrice || 0) / (CURRENCIES[newProductCurrency]?.rate || 1)) * (CURRENCIES.INR?.rate || 86.5) ).toLocaleString('en-IN')} INR</>
+                    )}
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Initial Stock Units</label>
+                <input
+                  type="number"
+                  min="1"
+                  required
+                  value={newProductStock}
+                  onChange={(e) => setNewProductStock(parseInt(e.target.value, 10))}
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white font-mono focus:outline-hidden focus:border-[#0066FF]"
+                />
               </div>
 
               <div>
@@ -1462,13 +1578,13 @@ export default function AdminCommandCenter() {
                     className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white focus:outline-hidden"
                   >
                     <option value="percentage">Percentage (%)</option>
-                    <option value="fixed">Fixed Dollar ($)</option>
+                    <option value="fixed">Fixed Amount ({CURRENCIES[currency]?.symbol || '$'} {currency})</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
-                    Value {newPromoType === 'percentage' ? '(e.g. 25 for 25%)' : '($ USD)'}
+                    Value {newPromoType === 'percentage' ? '(e.g. 25 for 25%)' : `(${CURRENCIES[currency]?.symbol || '$'} ${currency})`}
                   </label>
                   <input
                     type="number"
