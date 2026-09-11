@@ -3,10 +3,11 @@
 import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import { Product } from '@/types/product';
 import { CartItem, PromoCode, CartSummary } from '@/types/cart';
-import { CurrencyCode } from '@/types/currency';
+import { CurrencyCode, DetectedLocation } from '@/types/currency';
 import { UserProfile, Order, ShippingAddress } from '@/types/user';
 import { CURRENCIES, PROMO_CODES, INITIAL_USER, PRODUCTS } from '@/lib/mock-data';
 import { calculateCartSummary, formatPrice, calculatePurchaseCoins } from '@/lib/utils';
+import { detectUserLocation } from '@/lib/geo-currency';
 
 export interface AdminWinnerRecord {
   id: string;
@@ -41,10 +42,15 @@ interface StoreContextType {
   toggleWishlist: (productId: string) => void;
   isInWishlist: (productId: string) => boolean;
 
-  // Currency
+  // Currency & Location
   currency: CurrencyCode;
-  setCurrency: (currency: CurrencyCode) => void;
+  setCurrency: (currency: CurrencyCode, isManualChange?: boolean) => void;
   formatAmount: (amount: number) => string;
+  detectedLocation: DetectedLocation | null;
+  isDetectingLocation: boolean;
+  detectUserLocationCurrency: (force?: boolean) => Promise<void>;
+  hasAutoSwitchedCurrency: boolean;
+  dismissAutoSwitchedBanner: () => void;
 
   // User & Orders
   user: UserProfile;
@@ -140,8 +146,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   // Wishlist State
   const [wishlist, setWishlist] = useState<string[]>([]);
 
-  // Currency State
+  // Currency & Location State
   const [currency, setCurrencyState] = useState<CurrencyCode>('USD');
+  const [detectedLocation, setDetectedLocation] = useState<DetectedLocation | null>(null);
+  const [isDetectingLocation, setIsDetectingLocation] = useState<boolean>(false);
+  const [hasAutoSwitchedCurrency, setHasAutoSwitchedCurrency] = useState<boolean>(false);
 
   // User State
   const [user, setUser] = useState<UserProfile>(INITIAL_USER);
@@ -278,7 +287,28 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
 
       const savedCurrency = localStorage.getItem('judescart_currency');
-      if (savedCurrency && savedCurrency in CURRENCIES) setCurrencyState(savedCurrency as CurrencyCode);
+      const savedCurrencySource = localStorage.getItem('judescart_currency_source');
+      const savedLocation = localStorage.getItem('judescart_detected_location');
+      const bannerDismissed = sessionStorage.getItem('judescart_geo_currency_banner_dismissed') === 'true';
+
+      if (savedLocation) {
+        try {
+          setDetectedLocation(JSON.parse(savedLocation));
+        } catch {}
+      }
+
+      if (savedCurrency && savedCurrency in CURRENCIES) {
+        setCurrencyState(savedCurrency as CurrencyCode);
+      }
+
+      // If user hasn't explicitly set manual currency or no location detected yet, run detection
+      if (!savedCurrencySource || savedCurrencySource !== 'manual' || !savedLocation) {
+        detectUserLocationCurrency(false).then(() => {
+          if (bannerDismissed) {
+            setHasAutoSwitchedCurrency(false);
+          }
+        });
+      }
 
       const savedCoins = localStorage.getItem('judescart_coins');
       if (savedCoins) setJudesCoins(parseInt(savedCoins, 10));
@@ -430,8 +460,55 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const isInWishlist = (productId: string) => wishlist.includes(productId);
 
-  // Currency
-  const setCurrency = (c: CurrencyCode) => setCurrencyState(c);
+  // Currency & Location
+  const setCurrency = (c: CurrencyCode, isManualChange: boolean = true) => {
+    setCurrencyState(c);
+    if (isManualChange && typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('judescart_currency_source', 'manual');
+        localStorage.setItem('judescart_currency', c);
+      } catch {}
+    }
+  };
+
+  const detectUserLocationCurrency = async (force: boolean = false) => {
+    setIsDetectingLocation(true);
+    try {
+      const loc = await detectUserLocation((fastLoc) => {
+        const isManual = typeof window !== 'undefined' && localStorage.getItem('judescart_currency_source') === 'manual';
+        if (!isManual || force) {
+          setCurrencyState(fastLoc.currency);
+          setDetectedLocation(fastLoc);
+        }
+      });
+
+      setDetectedLocation(loc);
+      const isManual = typeof window !== 'undefined' && localStorage.getItem('judescart_currency_source') === 'manual';
+      if (!isManual || force) {
+        setCurrencyState(loc.currency);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('judescart_currency', loc.currency);
+          localStorage.setItem('judescart_currency_source', force ? 'manual' : 'auto');
+        }
+        setHasAutoSwitchedCurrency(true);
+      }
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('judescart_detected_location', JSON.stringify(loc));
+      }
+    } catch (err) {
+      console.warn('Currency auto-detection failed:', err);
+    } finally {
+      setIsDetectingLocation(false);
+    }
+  };
+
+  const dismissAutoSwitchedBanner = () => {
+    setHasAutoSwitchedCurrency(false);
+    try {
+      sessionStorage.setItem('judescart_geo_currency_banner_dismissed', 'true');
+    } catch {}
+  };
+
   const formatAmount = (amount: number) => formatPrice(amount, currency);
 
   // User Actions
@@ -686,6 +763,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         currency,
         setCurrency,
         formatAmount,
+        detectedLocation,
+        isDetectingLocation,
+        detectUserLocationCurrency,
+        hasAutoSwitchedCurrency,
+        dismissAutoSwitchedBanner,
 
         user,
         isLoggedIn,

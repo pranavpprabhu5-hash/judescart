@@ -31,6 +31,8 @@ export default function CheckoutPage() {
     cartSummary,
     clearCart,
     formatAmount,
+    currency,
+    detectedLocation,
     addOrder,
     user,
     appliedPromo,
@@ -53,7 +55,7 @@ export default function CheckoutPage() {
     city: user.savedAddresses[0]?.city || 'San Francisco',
     state: user.savedAddresses[0]?.state || 'CA',
     postalCode: user.savedAddresses[0]?.postalCode || '94107',
-    country: user.savedAddresses[0]?.country || 'United States',
+    country: user.savedAddresses[0]?.country || detectedLocation?.countryName || 'United States',
   });
 
   // Step 2: Shipping Method
@@ -129,7 +131,7 @@ export default function CheckoutPage() {
       shipping: effectiveShippingCost,
       tax: cartSummary.estimatedTax,
       total: calculateFinalTotal(),
-      currency: 'USD',
+      currency: currency,
       coinsEarned: calculatePurchaseCoins(calculateFinalTotal()),
       shippingAddress,
       shippingMethod: selectedShipping,
