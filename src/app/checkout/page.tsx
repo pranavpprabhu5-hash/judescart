@@ -20,6 +20,7 @@ import {
   ArrowLeft,
   Sparkles,
   ShoppingBag,
+  Gift,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -54,6 +55,12 @@ export default function CheckoutPage() {
   const [cardExpiry, setCardExpiry] = useState('11/28');
   const [cardCvv, setCardCvv] = useState('888');
 
+  // Gift Packaging State
+  const [isGiftWrap, setIsGiftWrap] = useState(false);
+  const [giftNote, setGiftNote] = useState('');
+  const [hidePriceReceipt, setHidePriceReceipt] = useState(false);
+  const giftWrapFee = isGiftWrap ? 4.99 : 0;
+
   // If cart is empty and user navigates here directly, handle gracefully
   useEffect(() => {
     if (cart.length === 0) {
@@ -79,7 +86,7 @@ export default function CheckoutPage() {
   const calculateFinalTotal = () => {
     const shippingCost = selectedShipping.price;
     const effectiveShipping = cartSummary.isFreeShippingUnlocked && selectedShipping.id === 'standard' ? 0 : shippingCost;
-    return cartSummary.subtotal - cartSummary.discount + effectiveShipping + cartSummary.estimatedTax;
+    return cartSummary.subtotal - cartSummary.discount + effectiveShipping + cartSummary.estimatedTax + giftWrapFee;
   };
 
   const handlePlaceOrder = async () => {
@@ -116,6 +123,12 @@ export default function CheckoutPage() {
         brand: 'Visa',
       },
       estimatedDelivery: selectedShipping.estimatedDays,
+      giftPackaging: {
+        enabled: isGiftWrap,
+        note: isGiftWrap && giftNote.trim() ? giftNote.trim() : undefined,
+        hidePriceReceipt: isGiftWrap ? hidePriceReceipt : false,
+        fee: giftWrapFee,
+      },
     });
 
     addOrder(newOrder);
@@ -347,6 +360,61 @@ export default function CheckoutPage() {
                 })}
               </div>
 
+              {/* Deluxe Gift Packaging Option */}
+              <div className="p-4 rounded-2xl border border-purple-200/80 bg-gradient-to-r from-purple-50/60 to-indigo-50/40 space-y-3">
+                <div className="flex items-start justify-between">
+                  <label className="flex items-center gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={isGiftWrap}
+                      onChange={(e) => setIsGiftWrap(e.target.checked)}
+                      className="w-4 h-4 rounded text-[#0066FF] focus:ring-[#0066FF] border-slate-300"
+                    />
+                    <div>
+                      <span className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                        <Gift className="w-4 h-4 text-purple-600" />
+                        <span>Deluxe JudesCart Gift Packaging (+{formatAmount(4.99)})</span>
+                      </span>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Hand-packaged in our signature midnight navy magnetic box with gold satin ribbon.
+                      </p>
+                    </div>
+                  </label>
+                  <span className="text-xs font-bold text-purple-800 bg-purple-100 px-2.5 py-0.5 rounded-full shrink-0">
+                    Premium
+                  </span>
+                </div>
+
+                {isGiftWrap && (
+                  <div className="pt-2 border-t border-purple-200/60 space-y-3 animate-in fade-in">
+                    <div>
+                      <div className="flex items-center justify-between text-xs mb-1">
+                        <label className="font-semibold text-slate-700">Handwritten Greeting Card Note</label>
+                        <span className="text-[11px] text-slate-400">{giftNote.length}/150</span>
+                      </div>
+                      <textarea
+                        rows={2}
+                        maxLength={150}
+                        value={giftNote}
+                        onChange={(e) => setGiftNote(e.target.value)}
+                        placeholder="e.g. Happy Birthday! Wishing you endless joy and adventures ahead..."
+                        className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-purple-400 text-slate-800"
+                      />
+                    </div>
+
+                    <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-700">
+                      <input
+                        type="checkbox"
+                        checked={hidePriceReceipt}
+                        onChange={(e) => setHidePriceReceipt(e.target.checked)}
+                        className="w-3.5 h-3.5 rounded text-[#0066FF] border-slate-300"
+                      />
+                      <span>Gift Receipt (Omit all prices on the packing slip)</span>
+                    </label>
+                  </div>
+                )}
+              </div>
+
               <div className="pt-4 flex items-center justify-between">
                 <Button
                   variant="outline"
@@ -571,6 +639,15 @@ export default function CheckoutPage() {
                 )}
               </span>
             </div>
+            {isGiftWrap && (
+              <div className="flex justify-between text-purple-900 font-medium">
+                <span className="flex items-center gap-1.5">
+                  <Gift className="w-3.5 h-3.5 text-purple-600" />
+                  <span>Deluxe Gift Packaging</span>
+                </span>
+                <span>{formatAmount(4.99)}</span>
+              </div>
+            )}
             <div className="flex justify-between">
               <span>Estimated Sales Tax (8.5%)</span>
               <span className="font-medium text-stone-900">{formatAmount(cartSummary.estimatedTax)}</span>

@@ -52,6 +52,12 @@ export interface Order {
   status: 'Processing' | 'Shipped' | 'Out for Delivery' | 'Delivered';
   trackingNumber: string;
   estimatedDelivery: string;
+  giftPackaging?: {
+    enabled: boolean;
+    note?: string;
+    hidePriceReceipt?: boolean;
+    fee: number;
+  };
 }
 
 export interface UserProfile {

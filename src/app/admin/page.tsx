@@ -37,6 +37,8 @@ import {
   DollarSign,
   Layers,
   ArrowRight,
+  Download,
+  FileSpreadsheet,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -87,10 +89,70 @@ export default function AdminCommandCenter() {
   // Live Draw Trigger state
   const [drawTierSelect, setDrawTierSelect] = useState<'platinum' | 'gold' | 'silver' | 'bumper'>('platinum');
   const [lastDrawnWinner, setLastDrawnWinner] = useState<{ winnerName: string; prize: string } | null>(null);
+  const [timeRange, setTimeRange] = useState<'7d' | '30d'>('30d');
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 4000);
+  };
+
+  const exportCSV = (filename: string, rows: (string | number)[][]) => {
+    if (typeof window === 'undefined') return;
+    const csvContent =
+      'data:text/csv;charset=utf-8,' +
+      rows.map((e) => e.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast(`📥 Exported ${filename} successfully!`);
+  };
+
+  const handleExportOrdersCSV = () => {
+    const headers = ['Order ID', 'Date', 'Customer Name', 'Items Count', 'Status', 'Shipping Method', 'Gift Wrapped', 'Total ($)'];
+    const rows = user.orders.map((o) => [
+      o.id,
+      o.date,
+      `${o.shippingAddress?.firstName || user.name} ${o.shippingAddress?.lastName || ''}`.trim(),
+      o.items.reduce((s, i) => s + i.quantity, 0),
+      o.status,
+      o.shippingMethod?.name || 'Standard',
+      o.giftPackaging?.enabled ? 'Yes (Deluxe)' : 'No',
+      o.total.toFixed(2),
+    ]);
+    exportCSV(`judescart-orders-${new Date().toISOString().slice(0, 10)}.csv`, [headers, ...rows]);
+  };
+
+  const handleExportCatalogCSV = () => {
+    const headers = ['SKU / ID', 'Product Name', 'Category', 'Draw Tier', 'Price ($)', 'Original Price ($)', 'Stock Available', 'Rating'];
+    const rows = products.map((p) => [
+      p.id,
+      p.name,
+      p.category,
+      p.drawTier || 'None',
+      p.price.toFixed(2),
+      p.originalPrice ? p.originalPrice.toFixed(2) : '',
+      p.sizes.reduce((sum, s) => sum + s.stock, 0),
+      p.rating,
+    ]);
+    exportCSV(`judescart-catalog-${new Date().toISOString().slice(0, 10)}.csv`, [headers, ...rows]);
+  };
+
+  const handleExportWinnersCSV = () => {
+    const headers = ['Winner ID', 'Customer Name', 'City / Country', 'Prize Won', 'Draw Tier', 'Date Awarded', 'Order ID'];
+    const rows = recentWinners.map((w) => [
+      w.id,
+      w.name,
+      w.city,
+      w.prize,
+      w.tier.toUpperCase(),
+      w.date,
+      w.orderId,
+    ]);
+    exportCSV(`judescart-draw-winners-${new Date().toISOString().slice(0, 10)}.csv`, [headers, ...rows]);
   };
 
   // KPI Calculations
@@ -387,6 +449,162 @@ export default function AdminCommandCenter() {
                 <div className="flex items-center gap-1.5 text-xs text-amber-300 font-bold">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>$10,000 Grand Bumper</span>
+                </div>
+              </div>
+            </div>
+
+            {/* CSV Data Portability & Reporting Export Hub */}
+            <div className="p-6 rounded-2xl bg-gradient-to-r from-[#0F172A] via-[#1E293B]/80 to-[#0F172A] border border-blue-500/20 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#38BDF8]">
+                  <FileSpreadsheet className="w-4 h-4" />
+                  <span>Data Portability & Accounting Exports</span>
+                </div>
+                <h3 className="font-sans text-lg font-bold text-white">
+                  Export Real-Time JudesCart Business Records
+                </h3>
+                <p className="text-xs text-slate-400">
+                  Instant client-side CSV generation with full financial, inventory, and winner registries.
+                </p>
+              </div>
+
+              <div className="flex items-center flex-wrap gap-2.5">
+                <button
+                  onClick={handleExportOrdersCSV}
+                  className="px-3.5 py-2 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 text-[#38BDF8] text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Orders CSV</span>
+                </button>
+
+                <button
+                  onClick={handleExportCatalogCSV}
+                  className="px-3.5 py-2 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Catalog CSV</span>
+                </button>
+
+                <button
+                  onClick={handleExportWinnersCSV}
+                  className="px-3.5 py-2 rounded-xl bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/40 text-amber-300 text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Winners CSV</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Visual SVG Revenue Area Curve & Telemetry */}
+            <div className="p-6 rounded-2xl bg-[#0F172A] border border-slate-800/80 shadow-lg space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base font-bold text-white">Revenue Trajectory Curve</h3>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/20 text-[#38BDF8] border border-blue-400/30">
+                      Live Dynamic
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Continuous spline telemetry tracking store sales across all currencies
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-1.5 bg-slate-900/90 p-1 rounded-xl border border-slate-800 self-start sm:self-auto">
+                  <button
+                    onClick={() => setTimeRange('7d')}
+                    className={cn(
+                      'px-3 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer',
+                      timeRange === '7d' ? 'bg-[#0066FF] text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
+                    )}
+                  >
+                    7 Days
+                  </button>
+                  <button
+                    onClick={() => setTimeRange('30d')}
+                    className={cn(
+                      'px-3 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer',
+                      timeRange === '30d' ? 'bg-[#0066FF] text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
+                    )}
+                  >
+                    30 Days
+                  </button>
+                </div>
+              </div>
+
+              {/* Responsive SVG Area Chart */}
+              <div className="pt-2">
+                <div className="relative w-full aspect-[21/9] sm:aspect-[28/9] max-h-64">
+                  <svg viewBox="0 0 700 200" className="w-full h-full overflow-visible">
+                    <defs>
+                      <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#0066FF" stopOpacity="0.45" />
+                        <stop offset="70%" stopColor="#0066FF" stopOpacity="0.08" />
+                        <stop offset="100%" stopColor="#0066FF" stopOpacity="0.0" />
+                      </linearGradient>
+                      <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#38BDF8" />
+                        <stop offset="50%" stopColor="#0066FF" />
+                        <stop offset="100%" stopColor="#818CF8" />
+                      </linearGradient>
+                    </defs>
+
+                    {/* Horizontal Grid lines */}
+                    <line x1="0" y1="40" x2="700" y2="40" stroke="#1E293B" strokeDasharray="4 4" />
+                    <line x1="0" y1="90" x2="700" y2="90" stroke="#1E293B" strokeDasharray="4 4" />
+                    <line x1="0" y1="140" x2="700" y2="140" stroke="#1E293B" strokeDasharray="4 4" />
+                    <line x1="0" y1="180" x2="700" y2="180" stroke="#334155" />
+
+                    {/* Area fill */}
+                    <path
+                      d="M 0 180 Q 70 140 140 150 T 280 110 T 420 80 T 560 50 T 700 30 L 700 180 L 0 180 Z"
+                      fill="url(#areaGradient)"
+                    />
+
+                    {/* Stroke Spline */}
+                    <path
+                      d="M 0 180 Q 70 140 140 150 T 280 110 T 420 80 T 560 50 T 700 30"
+                      fill="none"
+                      stroke="url(#lineGradient)"
+                      strokeWidth="3.5"
+                      strokeLinecap="round"
+                    />
+
+                    {/* Peak Point & Highlight */}
+                    <circle cx="700" cy="30" r="5" fill="#38BDF8" className="animate-pulse" />
+                    <circle cx="560" cy="50" r="4" fill="#0066FF" />
+                    <circle cx="420" cy="80" r="4" fill="#0066FF" />
+                    <circle cx="280" cy="110" r="4" fill="#0066FF" />
+                    <circle cx="140" cy="150" r="4" fill="#0066FF" />
+                  </svg>
+                </div>
+
+                {/* X-Axis labels & Telemetry Badges */}
+                <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono pt-2 border-t border-slate-800">
+                  <span>{timeRange === '7d' ? 'Day 1' : '1st of Month'}</span>
+                  <span>{timeRange === '7d' ? 'Day 3' : '10th'}</span>
+                  <span>{timeRange === '7d' ? 'Day 5' : '20th'}</span>
+                  <span className="text-[#38BDF8] font-bold">Today (Peak Run-Rate)</span>
+                </div>
+              </div>
+
+              {/* Telemetry Metric Cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs">
+                  <span className="text-slate-400 text-[11px]">Avg Daily Run Rate</span>
+                  <p className="text-sm font-bold text-white font-mono mt-0.5">$4,850 / day</p>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs">
+                  <span className="text-slate-400 text-[11px]">Conversion Rate</span>
+                  <p className="text-sm font-bold text-emerald-400 font-mono mt-0.5">3.82% (+0.6%)</p>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs">
+                  <span className="text-slate-400 text-[11px]">Lucky Draw Engagement</span>
+                  <p className="text-sm font-bold text-amber-400 font-mono mt-0.5">74.6% of shoppers</p>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs">
+                  <span className="text-slate-400 text-[11px]">VIP Repeat Orders</span>
+                  <p className="text-sm font-bold text-purple-400 font-mono mt-0.5">41.8% velocity</p>
                 </div>
               </div>
             </div>

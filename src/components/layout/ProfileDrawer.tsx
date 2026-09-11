@@ -33,6 +33,14 @@ export function ProfileDrawer() {
     judesCoins,
     redeemCoinsForSpin,
     redeemCoinsForDiscount,
+    vipTier,
+    lifetimeSpend,
+    vipMultiplier,
+    nextTierSpendRemaining,
+    tierProgressPct,
+    dailyStreak,
+    openDailyMystery,
+    dailyMysteryClaimed,
   } = useStore();
 
   const [activeTab, setActiveTab] = useState<'orders' | 'rewards' | 'addresses' | 'security'>('orders');
@@ -86,9 +94,19 @@ export function ProfileDrawer() {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-bold text-[#0A192F]">{isLoggedIn ? user.name : 'Guest Customer'}</h3>
-                <span className="text-[10px] font-bold text-amber-700 bg-amber-100 px-1.5 py-0.2 rounded-md">
-                  VIP
-                </span>
+                {vipTier === 'black' ? (
+                  <span className="text-[10px] font-extrabold text-amber-300 bg-slate-900 border border-amber-400/40 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    👑 Judes Black
+                  </span>
+                ) : vipTier === 'gold' ? (
+                  <span className="text-[10px] font-bold text-amber-800 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    🏆 Gold VIP
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    🛡️ Silver
+                  </span>
+                )}
               </div>
               <p className="text-xs text-slate-500">{isLoggedIn ? user.email : 'Browsing as visitor'}</p>
             </div>
@@ -101,8 +119,8 @@ export function ProfileDrawer() {
           </button>
         </div>
 
-        {/* JudesCoins Quick Bar */}
-        <div className="px-5 py-2.5 bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-transparent border-b border-amber-100 flex items-center justify-between">
+        {/* JudesCoins & Daily Gift Bar */}
+        <div className="px-5 py-2.5 bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-purple-500/10 border-b border-amber-100 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-600">
               <Coins className="w-3.5 h-3.5" />
@@ -113,13 +131,27 @@ export function ProfileDrawer() {
               </span>
             </div>
           </div>
-          <button
-            onClick={() => setActiveTab('rewards')}
-            className="text-[11px] font-bold text-amber-800 hover:text-amber-950 hover:underline flex items-center gap-1"
-          >
-            <span>Rewards Hub</span>
-            <ArrowRight className="w-3 h-3" />
-          </button>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                closeProfile();
+                openDailyMystery();
+              }}
+              className="text-[11px] font-bold text-purple-700 hover:text-purple-900 bg-purple-100/70 hover:bg-purple-200/70 px-2.5 py-1 rounded-full flex items-center gap-1 transition-colors"
+              title="Open Daily Mystery Gift"
+            >
+              <span>🎁 Day {dailyStreak}</span>
+              {!dailyMysteryClaimed && <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />}
+            </button>
+            <button
+              onClick={() => setActiveTab('rewards')}
+              className="text-[11px] font-bold text-amber-800 hover:text-amber-950 hover:underline flex items-center gap-0.5"
+            >
+              <span>Perks</span>
+              <ArrowRight className="w-3 h-3" />
+            </button>
+          </div>
         </div>
 
         {/* Tab Navigation */}
@@ -266,31 +298,67 @@ export function ProfileDrawer() {
 
           {activeTab === 'rewards' && (
             <div className="space-y-4 text-xs">
-              {/* Gold VIP Pass Card */}
-              <div className="relative p-5 rounded-2xl bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 text-white shadow-lg overflow-hidden">
+              {/* Dynamic VIP Club Pass Card */}
+              <div
+                className={cn(
+                  'relative p-5 rounded-2xl text-white shadow-lg overflow-hidden border',
+                  vipTier === 'black'
+                    ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-amber-950 border-amber-500/40 shadow-amber-950/20'
+                    : vipTier === 'gold'
+                    ? 'bg-gradient-to-br from-amber-600 via-amber-500 to-yellow-600 border-amber-300/40'
+                    : 'bg-gradient-to-br from-slate-800 via-slate-700 to-blue-900 border-slate-600/50'
+                )}
+              >
                 <div className="absolute top-0 right-0 -mr-6 -mt-6 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none" />
                 <div className="relative z-10 space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] uppercase tracking-widest font-extrabold text-amber-200 bg-black/20 px-2 py-0.5 rounded-full">
-                      VIP Gold Rewards Pass
+                    <span className="text-[10px] uppercase tracking-widest font-extrabold text-amber-200 bg-black/30 px-2.5 py-0.5 rounded-full border border-white/10">
+                      {vipTier === 'black' ? '👑 Judes Black Elite VIP' : vipTier === 'gold' ? '🏆 Judes Gold VIP' : '🛡️ Judes Silver Member'}
                     </span>
-                    <Sparkles className="w-4 h-4 text-amber-200 animate-pulse" />
+                    <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
                   </div>
 
                   <div>
-                    <span className="text-xs text-amber-100 font-medium">Available Balance</span>
+                    <span className="text-xs text-amber-100/90 font-medium">Available Balance</span>
                     <div className="flex items-baseline gap-2 mt-0.5">
                       <span className="text-3xl font-black tracking-tight">{judesCoins.toLocaleString()}</span>
                       <span className="text-sm font-bold text-amber-200">Coins</span>
                     </div>
-                    <p className="text-[11px] text-amber-100/90 mt-1">
-                      Approx. value ${(judesCoins / 20).toFixed(2)} USD in store credits & spins
+                    <p className="text-[11px] text-white/80 mt-1">
+                      Multiplier: <strong className="text-amber-300">{vipMultiplier}x Coins</strong> on orders • Approx ${(judesCoins / 20).toFixed(2)} store credit
                     </p>
                   </div>
 
-                  <div className="pt-2 border-t border-white/20 flex items-center justify-between text-[10px] text-amber-100 font-medium">
-                    <span>Earning Rate: 10 Coins / $1</span>
-                    <span className="font-bold text-white">Tier: Platinum VIP</span>
+                  {/* Tier Progress Bar */}
+                  <div className="space-y-1.5 pt-1">
+                    <div className="flex items-center justify-between text-[11px] text-white/90">
+                      <span>Lifetime Spend: {formatAmount(lifetimeSpend)}</span>
+                      <span>{tierProgressPct}%</span>
+                    </div>
+                    <div className="h-2 bg-black/30 rounded-full overflow-hidden p-0.5 border border-white/10">
+                      <div
+                        className="h-full bg-gradient-to-r from-amber-300 to-yellow-200 rounded-full transition-all duration-700"
+                        style={{ width: `${tierProgressPct}%` }}
+                      />
+                    </div>
+                    <p className="text-[10px] text-white/70">
+                      {vipTier === 'black'
+                        ? '✨ Highest VIP Tier reached! Concierge & permanent express delivery active.'
+                        : `Spend ${formatAmount(nextTierSpendRemaining)} more to upgrade to ${vipTier === 'silver' ? 'Gold VIP' : 'Judes Black Elite'}.`}
+                    </p>
+                  </div>
+
+                  <div className="pt-2 border-t border-white/15 flex items-center justify-between text-[10px] text-white/80">
+                    <span>Perk: {vipTier === 'black' ? 'Free Express Delivery' : vipTier === 'gold' ? 'Priority Dispatch' : 'Free Standard Over $75'}</span>
+                    <button
+                      onClick={() => {
+                        closeProfile();
+                        openDailyMystery();
+                      }}
+                      className="text-amber-300 font-bold hover:underline cursor-pointer"
+                    >
+                      🎁 Daily Mystery Box →
+                    </button>
                   </div>
                 </div>
               </div>

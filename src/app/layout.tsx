@@ -11,6 +11,7 @@ import { LuckyDrawModal } from '@/components/luckydraw/LuckyDrawModal';
 import { FloatingLuckyDrawCTA } from '@/components/luckydraw/FloatingLuckyDrawCTA';
 import { ProductQuickViewModal } from '@/components/product/ProductQuickViewModal';
 import { ExitIntentModal } from '@/components/luckydraw/ExitIntentModal';
+import { DailyMysteryBoxModal } from '@/components/luckydraw/DailyMysteryBoxModal';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -59,6 +60,7 @@ export default function RootLayout({
           <FloatingLuckyDrawCTA />
           <ProductQuickViewModal />
           <ExitIntentModal />
+          <DailyMysteryBoxModal />
         </StoreProvider>
       </body>
     </html>

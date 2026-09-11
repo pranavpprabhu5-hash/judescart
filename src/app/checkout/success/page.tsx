@@ -7,7 +7,7 @@ import Image from 'next/image';
 import confetti from 'canvas-confetti';
 import { useStore } from '@/context/StoreContext';
 import { Order } from '@/types/user';
-import { CheckCircle2, Package, Printer, ArrowRight, Truck, MapPin, Sparkles } from 'lucide-react';
+import { CheckCircle2, Package, Printer, ArrowRight, Truck, MapPin, Sparkles, Gift } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { OrderTrackingMap } from '@/components/checkout/OrderTrackingMap';
 
@@ -136,11 +136,50 @@ function OrderSuccessContent() {
               <span>Estimated Sales Tax</span>
               <span className="font-medium text-stone-900">{formatAmount(currentOrder.tax)}</span>
             </div>
+            {currentOrder.giftPackaging?.enabled && (
+              <div className="flex justify-between text-purple-900 font-medium">
+                <span className="flex items-center gap-1.5">
+                  <Gift className="w-3.5 h-3.5 text-purple-600" />
+                  <span>Deluxe Gift Packaging</span>
+                </span>
+                <span>{formatAmount(currentOrder.giftPackaging.fee || 4.99)}</span>
+              </div>
+            )}
             <div className="flex justify-between text-base font-sans font-extrabold text-[#0A192F] pt-3 border-t border-slate-200">
               <span>Total Paid</span>
               <span>{formatAmount(currentOrder.total)}</span>
             </div>
           </div>
+
+          {/* Deluxe Gift Packaging & Handwritten Note Banner */}
+          {currentOrder.giftPackaging?.enabled && (
+            <div className="p-4 rounded-xl bg-purple-50/70 border border-purple-200 space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-purple-950">
+                  <Gift className="w-4 h-4 text-purple-600" />
+                  <span>Deluxe JudesCart Gift Packaging Included</span>
+                </div>
+                <span className="text-[10px] font-bold text-purple-800 bg-purple-100 px-2 py-0.5 rounded-full">
+                  Midnight Navy Box + Satin Ribbon
+                </span>
+              </div>
+
+              {currentOrder.giftPackaging.note && (
+                <div className="mt-2">
+                  <p className="text-[11px] font-semibold text-purple-900 mb-1">Your Handwritten Greeting Note:</p>
+                  <p className="text-xs italic text-purple-900 bg-white p-3 rounded-lg border border-purple-100 shadow-2xs">
+                    &ldquo;{currentOrder.giftPackaging.note}&rdquo;
+                  </p>
+                </div>
+              )}
+
+              {currentOrder.giftPackaging.hidePriceReceipt && (
+                <p className="text-[10px] text-purple-700 font-medium pt-1">
+                  🔒 Gift receipt active: Prices have been omitted from the courier invoice slip.
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Shipping Address Summary */}
           {currentOrder.shippingAddress && (

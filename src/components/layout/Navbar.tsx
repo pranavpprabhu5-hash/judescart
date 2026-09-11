@@ -23,6 +23,7 @@ import {
   ArrowRight,
   SlidersHorizontal,
   Coins,
+  Gift,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -175,7 +176,19 @@ const DEPARTMENTS: MegaMenuCategory[] = [
 
 export function Navbar() {
   const pathname = usePathname();
-  const { cartCount, openCart, wishlist, openProfile, openSearch, user, isLoggedIn, judesCoins } = useStore();
+  const {
+    cartCount,
+    openCart,
+    wishlist,
+    openProfile,
+    openSearch,
+    user,
+    isLoggedIn,
+    judesCoins,
+    vipTier,
+    openDailyMystery,
+    dailyMysteryClaimed,
+  } = useStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -278,6 +291,19 @@ export function Navbar() {
               )}
             </Link>
 
+            {/* Daily Mystery Gift Button */}
+            <button
+              onClick={openDailyMystery}
+              className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 border border-purple-200 text-purple-900 transition-all text-xs font-bold cursor-pointer shadow-2xs group"
+              title="Daily JudesCart Mystery Vault & Streak Reward"
+            >
+              <Gift className="w-3.5 h-3.5 text-purple-600 group-hover:scale-110 transition-transform" />
+              <span className="hidden sm:inline">Daily Gift</span>
+              {!dailyMysteryClaimed && (
+                <span className="w-2 h-2 rounded-full bg-rose-500 absolute -top-0.5 -right-0.5 animate-ping" />
+              )}
+            </button>
+
             {/* JudesCoins Loyalty Badge */}
             <button
               onClick={openProfile}
@@ -299,9 +325,15 @@ export function Navbar() {
               <span className="hidden xl:inline text-xs font-semibold text-stone-800">
                 {isLoggedIn ? user.name.split(' ')[0] : 'Sign In'}
               </span>
-              {isLoggedIn && (
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              )}
+              {isLoggedIn && vipTier === 'black' ? (
+                <span className="hidden sm:inline-block text-[9px] font-black px-1.5 py-0.2 bg-slate-900 text-amber-300 rounded border border-amber-400/40">
+                  BLACK
+                </span>
+              ) : isLoggedIn && vipTier === 'gold' ? (
+                <span className="hidden sm:inline-block text-[9px] font-black px-1.5 py-0.2 bg-amber-100 text-amber-800 rounded border border-amber-200">
+                  VIP
+                </span>
+              ) : null}
             </button>
 
             {/* Cart Button */}

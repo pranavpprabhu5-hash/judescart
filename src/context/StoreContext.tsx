@@ -62,6 +62,21 @@ interface StoreContextType {
   redeemCoinsForSpin: () => boolean;
   redeemCoinsForDiscount: (coins: number) => boolean;
 
+  // Tiered VIP Loyalty Club
+  lifetimeSpend: number;
+  vipTier: 'silver' | 'gold' | 'black';
+  vipMultiplier: number;
+  nextTierSpendRemaining: number;
+  tierProgressPct: number;
+
+  // Daily Mystery Box Gamification
+  isDailyMysteryOpen: boolean;
+  openDailyMystery: () => void;
+  closeDailyMystery: () => void;
+  dailyStreak: number;
+  dailyMysteryClaimed: boolean;
+  claimDailyMystery: (coins: number) => void;
+
   // Quick View Modal
   quickViewProduct: Product | null;
   openQuickView: (product: Product) => void;
@@ -122,6 +137,65 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [isLuckyDrawOpen, setIsLuckyDrawOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [judesCoins, setJudesCoins] = useState<number>(INITIAL_USER.judesCoins || 650);
+
+  // Daily Mystery Gamification State
+  const [isDailyMysteryOpen, setIsDailyMysteryOpen] = useState(false);
+  const [dailyStreak, setDailyStreak] = useState(3);
+  const [dailyMysteryClaimed, setDailyMysteryClaimed] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const today = new Date().toDateString();
+      const lastClaim = localStorage.getItem('judescart_daily_claimed_date');
+      if (lastClaim === today) {
+        setDailyMysteryClaimed(true);
+      }
+      const streak = parseInt(localStorage.getItem('judescart_daily_streak') || '3', 10);
+      setDailyStreak(streak);
+    }
+  }, []);
+
+  const claimDailyMystery = (rewardCoins: number) => {
+    addJudesCoins(rewardCoins);
+    setDailyMysteryClaimed(true);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('judescart_daily_claimed_date', new Date().toDateString());
+      const nextStreak = dailyStreak + 1;
+      setDailyStreak(nextStreak);
+      localStorage.setItem('judescart_daily_streak', nextStreak.toString());
+    }
+  };
+
+  // Tiered VIP Club Calculations
+  const lifetimeSpend = useMemo(() => {
+    const baseHistorical = 640;
+    const orderSpend = user.orders.reduce((sum, o) => sum + o.total, 0);
+    return baseHistorical + orderSpend;
+  }, [user.orders]);
+
+  const vipTier: 'silver' | 'gold' | 'black' = useMemo(() => {
+    if (lifetimeSpend >= 1500) return 'black';
+    if (lifetimeSpend >= 500) return 'gold';
+    return 'silver';
+  }, [lifetimeSpend]);
+
+  const vipMultiplier = useMemo(() => {
+    if (vipTier === 'black') return 2.0;
+    if (vipTier === 'gold') return 1.5;
+    return 1.0;
+  }, [vipTier]);
+
+  const nextTierSpendRemaining = useMemo(() => {
+    if (vipTier === 'silver') return Math.max(0, 500 - lifetimeSpend);
+    if (vipTier === 'gold') return Math.max(0, 1500 - lifetimeSpend);
+    return 0;
+  }, [vipTier, lifetimeSpend]);
+
+  const tierProgressPct = useMemo(() => {
+    if (vipTier === 'silver') return Math.min(100, Math.round((lifetimeSpend / 500) * 100));
+    if (vipTier === 'gold') return Math.min(100, Math.round(((lifetimeSpend - 500) / 1000) * 100));
+    return 100;
+  }, [vipTier, lifetimeSpend]);
 
   // Recent Winners for Lucky Draw (Admin triggerable)
   const [recentWinners, setRecentWinners] = useState<AdminWinnerRecord[]>([
@@ -528,6 +602,21 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         openLuckyDraw: () => setIsLuckyDrawOpen(true),
         closeLuckyDraw: () => setIsLuckyDrawOpen(false),
         claimLuckyPrize,
+
+        // Tiered VIP Club
+        lifetimeSpend,
+        vipTier,
+        vipMultiplier,
+        nextTierSpendRemaining,
+        tierProgressPct,
+
+        // Daily Mystery Box Gamification
+        isDailyMysteryOpen,
+        openDailyMystery: () => setIsDailyMysteryOpen(true),
+        closeDailyMystery: () => setIsDailyMysteryOpen(false),
+        dailyStreak,
+        dailyMysteryClaimed,
+        claimDailyMystery,
 
         // Admin
         products,
