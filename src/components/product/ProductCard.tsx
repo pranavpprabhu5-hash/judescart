@@ -7,7 +7,7 @@ import { Product } from '@/types/product';
 import { useStore } from '@/context/StoreContext';
 import { Badge } from '@/components/ui/Badge';
 import { RatingStars } from '@/components/ui/RatingStars';
-import { Heart, ShoppingBag, Check, Eye } from 'lucide-react';
+import { Heart, ShoppingBag, Check, Eye, Scale } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
@@ -16,7 +16,16 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
-  const { formatAmount, toggleWishlist, isInWishlist, addToCart, openQuickView } = useStore();
+  const {
+    formatAmount,
+    toggleWishlist,
+    isInWishlist,
+    addToCart,
+    openQuickView,
+    addToCompare,
+    removeFromCompare,
+    isInCompare,
+  } = useStore();
   const [isHovered, setIsHovered] = useState(false);
   const [selectedColor, setSelectedColor] = useState(product.colors[0]?.name || '');
   const [selectedSize, setSelectedSize] = useState(
@@ -26,6 +35,7 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
   const [isAdded, setIsAdded] = useState(false);
 
   const isFavorited = isInWishlist(product.id);
+  const inCompare = isInCompare(product.id);
   const hasSecondaryImage = product.images.length > 1;
 
   // Determine current image
@@ -128,6 +138,24 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
                 <Eye className="w-4 h-4 text-slate-600" />
               </button>
               <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (inCompare) removeFromCompare(product.id);
+                  else addToCompare(product);
+                }}
+                className={cn(
+                  'p-2 rounded-full border transition-colors',
+                  inCompare
+                    ? 'bg-[#0066FF] border-[#0066FF] text-white'
+                    : 'border-slate-200 hover:bg-slate-100 text-slate-700'
+                )}
+                title={inCompare ? 'Remove from comparison' : 'Compare product'}
+                aria-label="Compare"
+              >
+                <Scale className="w-4 h-4" />
+              </button>
+              <button
                 onClick={() => toggleWishlist(product.id)}
                 className="p-2 rounded-full border border-slate-200 hover:bg-rose-50 hover:border-rose-200 text-slate-700 transition-colors"
                 aria-label="Wishlist"
@@ -190,6 +218,27 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
           aria-label={isFavorited ? 'Remove from wishlist' : 'Add to wishlist'}
         >
           <Heart className={cn('w-4 h-4 transition-colors', isFavorited && 'fill-rose-500 text-rose-500')} />
+        </button>
+
+        {/* Compare Button */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (inCompare) removeFromCompare(product.id);
+            else addToCompare(product);
+          }}
+          className={cn(
+            'absolute top-12 right-3 z-10 p-2 rounded-full backdrop-blur-md shadow-xs border transition-all active:scale-90',
+            inCompare
+              ? 'bg-[#0066FF] border-[#0066FF] text-white shadow-md'
+              : 'bg-white/90 border-slate-200/80 text-slate-700 hover:text-[#0066FF] hover:bg-white'
+          )}
+          title={inCompare ? 'Remove from comparison' : 'Compare product'}
+          aria-label="Compare product"
+        >
+          <Scale className="w-4 h-4" />
         </button>
 
         {/* Quick Add / Quick View Overlay on Hover */}

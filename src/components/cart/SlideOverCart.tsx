@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useStore } from '@/context/StoreContext';
 import { CartItemRow } from './CartItemRow';
 import { FreeShippingMeter } from './FreeShippingMeter';
-import { X, ShoppingBag, ArrowRight, Tag, ShieldCheck, Lock } from 'lucide-react';
+import { X, ShoppingBag, ArrowRight, Tag, ShieldCheck, Lock, Plus, Sparkles } from 'lucide-react';
+import Image from 'next/image';
 import { calculatePurchaseCoins } from '@/lib/utils';
 
 export function SlideOverCart() {
@@ -21,6 +22,8 @@ export function SlideOverCart() {
     promoError,
     applyPromo,
     removePromo,
+    products,
+    addToCart,
   } = useStore();
 
   const [promoInput, setPromoInput] = useState('');
@@ -98,10 +101,61 @@ export function SlideOverCart() {
               </div>
             </div>
           ) : (
-            <div className="divide-y divide-slate-100">
-              {cart.map((item) => (
-                <CartItemRow key={item.id} item={item} />
-              ))}
+            <div className="space-y-3">
+              <div className="divide-y divide-slate-100">
+                {cart.map((item) => (
+                  <CartItemRow key={item.id} item={item} />
+                ))}
+              </div>
+
+              {/* Frequently Bought Together Add-ons */}
+              {products.filter((p) => !cart.some((c) => c.productId === p.id)).length > 0 && (
+                <div className="p-3.5 rounded-2xl bg-blue-50/60 border border-blue-100 space-y-2.5 mt-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#0066FF] flex items-center gap-1">
+                      <Sparkles className="w-3 h-3" />
+                      <span>Frequently Paired Add-ons</span>
+                    </span>
+                    <span className="text-[9px] font-bold text-amber-800 bg-amber-200/60 px-1.5 py-0.5 rounded">
+                      Bundle Deal
+                    </span>
+                  </div>
+
+                  <div className="space-y-2">
+                    {products
+                      .filter((p) => !cart.some((c) => c.productId === p.id))
+                      .slice(0, 2)
+                      .map((addon) => (
+                        <div
+                          key={addon.id}
+                          className="flex items-center justify-between p-2 rounded-xl bg-white border border-slate-200/80 shadow-2xs"
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                            <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-slate-100 shrink-0 border border-slate-200">
+                              <Image src={addon.images[0]} alt={addon.name} fill className="object-cover" />
+                            </div>
+                            <div className="min-w-0 text-xs">
+                              <p className="font-medium text-slate-900 truncate text-[11px]">{addon.name}</p>
+                              <p className="font-bold text-[#0066FF] text-[11px]">{formatAmount(addon.price)}</p>
+                            </div>
+                          </div>
+
+                          <button
+                            onClick={() => {
+                              const color = addon.colors[0]?.name || 'Standard';
+                              const size = addon.sizes.find((s) => s.stock > 0)?.name || addon.sizes[0]?.name || 'Standard';
+                              addToCart(addon, color, size, 1);
+                            }}
+                            className="px-2.5 py-1 rounded-lg bg-[#0066FF] hover:bg-[#0052CC] text-white text-[11px] font-bold flex items-center gap-1 transition-colors cursor-pointer shrink-0 shadow-2xs"
+                          >
+                            <Plus className="w-3 h-3" />
+                            <span>Quick Add</span>
+                          </button>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

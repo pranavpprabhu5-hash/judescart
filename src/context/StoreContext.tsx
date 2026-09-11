@@ -61,6 +61,20 @@ interface StoreContextType {
   addJudesCoins: (amount: number) => void;
   redeemCoinsForSpin: () => boolean;
   redeemCoinsForDiscount: (coins: number) => boolean;
+  redeemCoinsDirect: (coins: number) => boolean;
+
+  // 1-Click Re-order
+  reorderItems: (items: Order['items']) => void;
+
+  // Comparison Matrix
+  compareList: Product[];
+  addToCompare: (product: Product) => boolean;
+  removeFromCompare: (productId: string) => void;
+  clearCompare: () => void;
+  isCompareOpen: boolean;
+  openCompare: () => void;
+  closeCompare: () => void;
+  isInCompare: (productId: string) => boolean;
 
   // Tiered VIP Loyalty Club
   lifetimeSpend: number;
@@ -470,6 +484,76 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     return true;
   };
 
+  const redeemCoinsDirect = (coins: number): boolean => {
+    if (coins <= 0 || judesCoins < coins) return false;
+    setJudesCoins((prev) => {
+      const updated = prev - coins;
+      setUser((u) => ({ ...u, judesCoins: updated }));
+      return updated;
+    });
+    return true;
+  };
+
+  // 1-Click Re-order Action
+  const reorderItems = (items: Order['items']) => {
+    items.forEach((item) => {
+      const found = products.find((p) => p.id === item.productId);
+      if (found) {
+        addToCart(found, item.color, item.size, item.quantity);
+      } else {
+        const fallback: Product = {
+          id: item.productId,
+          slug: item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          name: item.name,
+          tagline: 'Premium Pick',
+          description: item.name,
+          category: 'all',
+          price: item.price,
+          rating: 4.9,
+          reviewCount: 38,
+          images: [item.image],
+          colors: [{ name: item.color, hex: '#1E293B' }],
+          sizes: [{ name: item.size, stock: 10 }],
+          details: {
+            materials: 'Artisan Crafted Material',
+            origin: 'Signature Atelier',
+            care: 'Standard Care',
+            sustainability: 'Eco-Minded',
+          },
+          reviews: [],
+        };
+        addToCart(fallback, item.color, item.size, item.quantity);
+      }
+    });
+    setIsCartOpen(true);
+  };
+
+  // Product Comparison State & Actions
+  const [compareList, setCompareList] = useState<Product[]>([]);
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
+
+  const addToCompare = (product: Product): boolean => {
+    if (compareList.length >= 4) return false;
+    if (compareList.some((p) => p.id === product.id)) return true;
+    setCompareList((prev) => [...prev, product]);
+    return true;
+  };
+
+  const removeFromCompare = (productId: string) => {
+    setCompareList((prev) => prev.filter((p) => p.id !== productId));
+  };
+
+  const clearCompare = () => {
+    setCompareList([]);
+  };
+
+  const isInCompare = (productId: string) => {
+    return compareList.some((p) => p.id === productId);
+  };
+
+  const openCompare = () => setIsCompareOpen(true);
+  const closeCompare = () => setIsCompareOpen(false);
+
   const openQuickView = (product: Product) => setQuickViewProduct(product);
   const closeQuickView = () => setQuickViewProduct(null);
 
@@ -616,6 +700,18 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         addJudesCoins,
         redeemCoinsForSpin,
         redeemCoinsForDiscount,
+        redeemCoinsDirect,
+        reorderItems,
+
+        // Comparison
+        compareList,
+        addToCompare,
+        removeFromCompare,
+        clearCompare,
+        isCompareOpen,
+        openCompare,
+        closeCompare,
+        isInCompare,
 
         quickViewProduct,
         openQuickView,

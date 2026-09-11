@@ -26,10 +26,21 @@ import { cn, calculatePurchaseCoins } from '@/lib/utils';
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, cartSummary, clearCart, formatAmount, addOrder, user, appliedPromo } = useStore();
+  const {
+    cart,
+    cartSummary,
+    clearCart,
+    formatAmount,
+    addOrder,
+    user,
+    appliedPromo,
+    judesCoins,
+    redeemCoinsDirect,
+  } = useStore();
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [redeemedCoins, setRedeemedCoins] = useState<number>(0);
 
   // Step 1: Shipping Form State
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress>({
@@ -83,10 +94,14 @@ export default function CheckoutPage() {
     });
   };
 
+  const coinDiscount = redeemedCoins / 20;
+  const maxRedeemableCoins = Math.min(judesCoins, Math.floor((cartSummary.subtotal * 0.5) * 20));
+
   const calculateFinalTotal = () => {
     const shippingCost = selectedShipping.price;
     const effectiveShipping = cartSummary.isFreeShippingUnlocked && selectedShipping.id === 'standard' ? 0 : shippingCost;
-    return cartSummary.subtotal - cartSummary.discount + effectiveShipping + cartSummary.estimatedTax + giftWrapFee;
+    const total = cartSummary.subtotal - cartSummary.discount - coinDiscount + effectiveShipping + cartSummary.estimatedTax + giftWrapFee;
+    return Math.max(0, total);
   };
 
   const handlePlaceOrder = async () => {
@@ -110,7 +125,7 @@ export default function CheckoutPage() {
     const newOrder = await api.createOrder({
       items: orderItems,
       subtotal: cartSummary.subtotal,
-      discount: cartSummary.discount,
+      discount: cartSummary.discount + coinDiscount,
       shipping: effectiveShippingCost,
       tax: cartSummary.estimatedTax,
       total: calculateFinalTotal(),
@@ -131,6 +146,10 @@ export default function CheckoutPage() {
         fee: giftWrapFee,
       },
     });
+
+    if (redeemedCoins > 0) {
+      redeemCoinsDirect(redeemedCoins);
+    }
 
     addOrder(newOrder);
     clearCart();
@@ -565,6 +584,77 @@ export default function CheckoutPage() {
                 </div>
               )}
 
+              {/* JudesCoins Direct Redemption Slider */}
+              <div className="p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-amber-50 to-yellow-50 border border-amber-200/90 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">🪙</span>
+                    <div>
+                      <h4 className="font-sans font-bold text-xs sm:text-sm text-amber-950">
+                        Redeem JudesCoins for Instant Discount
+                      </h4>
+                      <p className="text-[11px] text-amber-800">
+                        Rate: 20 Coins = $1.00 USD off your purchase
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs font-bold text-amber-900 block">
+                      {judesCoins} Coins Available
+                    </span>
+                    <span className="text-[10px] text-amber-700">
+                      (Approx ${(judesCoins / 20).toFixed(2)})
+                    </span>
+                  </div>
+                </div>
+
+                {maxRedeemableCoins > 0 ? (
+                  <div className="space-y-3 pt-1">
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
+                        <span>Redeem Amount</span>
+                        <span className="font-bold text-[#0066FF]">
+                          {redeemedCoins} Coins (-{formatAmount(redeemedCoins / 20)})
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min={0}
+                        max={maxRedeemableCoins}
+                        step={10}
+                        value={redeemedCoins}
+                        onChange={(e) => setRedeemedCoins(Number(e.target.value))}
+                        className="w-full accent-[#0066FF] cursor-pointer h-2 bg-amber-200/60 rounded-lg appearance-none"
+                      />
+                    </div>
+
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {[0, 20, 50, 100, maxRedeemableCoins]
+                        .filter((val, i, arr) => arr.indexOf(val) === i && val <= maxRedeemableCoins)
+                        .map((val) => (
+                          <button
+                            key={val}
+                            type="button"
+                            onClick={() => setRedeemedCoins(val)}
+                            className={cn(
+                              'px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer border',
+                              redeemedCoins === val
+                                ? 'bg-amber-500 text-white border-amber-500 shadow-xs'
+                                : 'bg-white border-amber-200 text-amber-900 hover:bg-amber-100'
+                            )}
+                          >
+                            {val === 0 ? 'None' : val === maxRedeemableCoins ? `Max (${val})` : `${val} Coins`}
+                          </button>
+                        ))}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-[11px] text-amber-800 italic">
+                    Earn more JudesCoins on this order or through daily visits to unlock instant discounts!
+                  </p>
+                )}
+              </div>
+
               <div className="pt-4 flex items-center justify-between">
                 <Button
                   variant="outline"
@@ -628,6 +718,15 @@ export default function CheckoutPage() {
               <div className="flex justify-between text-emerald-700">
                 <span>Promotional Discount ({appliedPromo?.code})</span>
                 <span>-{formatAmount(cartSummary.discount)}</span>
+              </div>
+            )}
+            {redeemedCoins > 0 && (
+              <div className="flex justify-between text-amber-700 font-medium">
+                <span className="flex items-center gap-1">
+                  <span>🪙</span>
+                  <span>JudesCoins Discount ({redeemedCoins} Coins)</span>
+                </span>
+                <span>-{formatAmount(coinDiscount)}</span>
               </div>
             )}
             <div className="flex justify-between">

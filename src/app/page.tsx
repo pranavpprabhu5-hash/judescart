@@ -7,6 +7,7 @@ import { api } from '@/lib/api';
 import { Product } from '@/types/product';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { HeroSlider } from '@/components/home/HeroSlider';
+import { RecentlyViewed } from '@/components/product/RecentlyViewed';
 import { ArrowRight, Sparkles, ShieldCheck, Truck, RefreshCw, ArrowUpRight, Zap, Headphones, Laptop, Shirt, Watch, Home, Sparkle } from 'lucide-react';
 
 const CATEGORIES = [
@@ -197,6 +198,10 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* 6. RECENTLY VIEWED CAROUSEL */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
+        <RecentlyViewed />
+      </section>
     </div>
   );
 }

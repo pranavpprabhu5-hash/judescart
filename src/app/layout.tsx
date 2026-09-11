@@ -11,6 +11,7 @@ import { LuckyDrawModal } from '@/components/luckydraw/LuckyDrawModal';
 import { FloatingLuckyDrawCTA } from '@/components/luckydraw/FloatingLuckyDrawCTA';
 import { ProductQuickViewModal } from '@/components/product/ProductQuickViewModal';
 import { DailyMysteryBoxModal } from '@/components/luckydraw/DailyMysteryBoxModal';
+import { ProductComparisonDrawer } from '@/components/product/ProductComparisonDrawer';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -59,6 +60,7 @@ export default function RootLayout({
           <FloatingLuckyDrawCTA />
           <ProductQuickViewModal />
           <DailyMysteryBoxModal />
+          <ProductComparisonDrawer />
         </StoreProvider>
       </body>
     </html>

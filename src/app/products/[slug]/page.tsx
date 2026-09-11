@@ -29,6 +29,7 @@ import {
   Trophy,
   Crown,
   Gift,
+  Scale,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -38,7 +39,16 @@ export default function ProductDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
-  const { formatAmount, addToCart, isInWishlist, toggleWishlist } = useStore();
+  const {
+    formatAmount,
+    addToCart,
+    isInWishlist,
+    toggleWishlist,
+    addToCompare,
+    removeFromCompare,
+    isInCompare,
+    openCompare,
+  } = useStore();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
@@ -95,6 +105,7 @@ export default function ProductDetailPage({
   }
 
   const isFavorited = isInWishlist(product.id);
+  const inCompare = isInCompare(product.id);
   const selectedSizeObj = product.sizes.find((s) => s.name === selectedSize);
   const isOutOfStock = selectedSizeObj ? selectedSizeObj.stock === 0 : false;
 
@@ -359,6 +370,28 @@ export default function ProductDetailPage({
                   aria-label="Share product"
                 >
                   <Share2 className="w-5 h-5" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (inCompare) {
+                      removeFromCompare(product.id);
+                    } else {
+                      addToCompare(product);
+                      openCompare();
+                    }
+                  }}
+                  className={cn(
+                    'p-3.5 rounded-xl border transition-all shadow-sm cursor-pointer',
+                    inCompare
+                      ? 'bg-[#0066FF] border-[#0066FF] text-white shadow-md'
+                      : 'border-slate-200 hover:border-[#0066FF] text-slate-700 hover:bg-blue-50/50'
+                  )}
+                  title={inCompare ? 'In comparison matrix (Click to remove)' : 'Compare with other products'}
+                  aria-label="Compare"
+                >
+                  <Scale className="w-5 h-5" />
                 </button>
               </div>
 
