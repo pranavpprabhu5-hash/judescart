@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useStore } from '@/context/StoreContext';
 import { CurrencySwitcher } from './CurrencySwitcher';
+import { ThemeToggle } from './ThemeToggle';
 import {
   Search,
   ShoppingBag,
@@ -277,6 +278,9 @@ export function Navbar() {
               <CurrencySwitcher />
             </div>
 
+            {/* Dark Mode Toggle */}
+            <ThemeToggle />
+
             {/* Wishlist Link */}
             <Link
               href="/wishlist"
@@ -520,8 +524,11 @@ export function Navbar() {
         <div className="lg:hidden fixed inset-x-0 top-18 bottom-0 bg-stone-950/40 backdrop-blur-sm z-50">
           <div className="bg-white border-b border-stone-200 p-6 space-y-5 animate-in slide-in-from-top-4 duration-200 max-h-[85vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-stone-100">
-              <span className="text-xs uppercase tracking-wider font-bold text-stone-400">JudesCart Departments</span>
-              <CurrencySwitcher />
+              <span className="text-xs uppercase tracking-wider font-bold text-stone-400">Settings</span>
+              <div className="flex items-center gap-2">
+                <CurrencySwitcher />
+                <ThemeToggle />
+              </div>
             </div>
 
             <div className="flex flex-col space-y-2">

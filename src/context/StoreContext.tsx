@@ -52,6 +52,11 @@ interface StoreContextType {
   hasAutoSwitchedCurrency: boolean;
   dismissAutoSwitchedBanner: () => void;
 
+  // Theme (Dark / Light)
+  theme: 'light' | 'dark';
+  setTheme: (theme: 'light' | 'dark') => void;
+  toggleTheme: () => void;
+
   // User & Orders
   user: UserProfile;
   isLoggedIn: boolean;
@@ -151,6 +156,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [detectedLocation, setDetectedLocation] = useState<DetectedLocation | null>(null);
   const [isDetectingLocation, setIsDetectingLocation] = useState<boolean>(false);
   const [hasAutoSwitchedCurrency, setHasAutoSwitchedCurrency] = useState<boolean>(false);
+
+  // Theme State
+  const [theme, setThemeState] = useState<'light' | 'dark'>('light');
 
   // User State
   const [user, setUser] = useState<UserProfile>(INITIAL_USER);
@@ -280,6 +288,19 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setIsMounted(true);
     try {
+      const savedTheme = localStorage.getItem('judescart_theme') as 'light' | 'dark' | null;
+      if (savedTheme) {
+        setThemeState(savedTheme);
+        if (savedTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        setThemeState('dark');
+        document.documentElement.classList.add('dark');
+      }
+
       const savedCart = localStorage.getItem('judescart_cart');
       if (savedCart) setCart(JSON.parse(savedCart));
 
@@ -507,6 +528,25 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     try {
       sessionStorage.setItem('judescart_geo_currency_banner_dismissed', 'true');
     } catch {}
+  };
+
+  // Theme Actions
+  const setTheme = (newTheme: 'light' | 'dark') => {
+    setThemeState(newTheme);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('judescart_theme', newTheme);
+        if (newTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch {}
+    }
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
   const formatAmount = (amount: number) => formatPrice(amount, currency);
@@ -768,6 +808,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         detectUserLocationCurrency,
         hasAutoSwitchedCurrency,
         dismissAutoSwitchedBanner,
+        theme,
+        setTheme,
+        toggleTheme,
 
         user,
         isLoggedIn,
