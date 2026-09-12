@@ -22,8 +22,16 @@ export const metadata: Metadata = {
     'Shop all products at JudesCart. Discover top-rated electronics, tech gear, premium apparel, footwear, leather goods, smart home essentials, and beauty items.',
   keywords: ['JudesCart', 'online shopping', 'electronics', 'fashion', 'home goods', 'all products'],
   icons: {
-    icon: '/logo.png',
-    apple: '/logo.png',
+    icon: [
+      { url: '/favicon.ico', sizes: '32x32' },
+      { url: '/logo-icon.png', type: 'image/png' },
+      { url: '/icon.png', type: 'image/png', sizes: '32x32' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+      { url: '/logo-icon.png' },
+    ],
   },
   openGraph: {
     title: 'JudesCart | Shop More. Live Better.',
@@ -40,6 +48,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${jakarta.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
+        <link rel="icon" type="image/png" sizes="32x32" href="/logo-icon.png" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
