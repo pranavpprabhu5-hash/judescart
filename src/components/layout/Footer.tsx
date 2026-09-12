@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, CheckCircle2, ShieldCheck, Zap, Truck, RefreshCw } from 'lucide-react';
+import { ArrowRight, CheckCircle2, ShieldCheck, Zap, Truck, RefreshCw, Download } from 'lucide-react';
 
 export function Footer() {
   const [email, setEmail] = useState('');
@@ -163,6 +163,18 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-blue-950/60 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-4">
         <p>© 2026 JudesCart Inc. All rights reserved. Shop More. Live Better.</p>
         <div className="flex items-center gap-6">
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.dispatchEvent(new CustomEvent('open-pwa-install'));
+              }
+            }}
+            className="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Install App</span>
+          </button>
           <Link href="/admin" className="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1">
             <span>Admin Portal</span>
           </Link>

@@ -38,6 +38,12 @@ export const metadata: Metadata = {
     description: 'The all-in-one destination for electronics, fashion, home essentials, and lifestyle products.',
     type: 'website',
   },
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'JudesCart',
+  },
 };
 
 export default function RootLayout({
@@ -52,6 +58,13 @@ export default function RootLayout({
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon.png" />
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="JudesCart" />
+        <meta name="theme-color" content="#0066FF" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#070F1E" media="(prefers-color-scheme: dark)" />
         <script
           dangerouslySetInnerHTML={{
             __html: `

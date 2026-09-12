@@ -14,6 +14,7 @@ import { DailyMysteryBoxModal } from '@/components/luckydraw/DailyMysteryBoxModa
 import { ProductComparisonDrawer } from '@/components/product/ProductComparisonDrawer';
 import { CurrencyLocationBanner } from '@/components/layout/CurrencyLocationBanner';
 import { JudesAIWidget } from '@/components/ai/JudesAIWidget';
+import { InstallPwaPrompt } from '@/components/ui/InstallPwaPrompt';
 
 export function StoreLayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -38,6 +39,7 @@ export function StoreLayoutShell({ children }: { children: React.ReactNode }) {
       <DailyMysteryBoxModal />
       <ProductComparisonDrawer />
       <CurrencyLocationBanner />
+      <InstallPwaPrompt />
     </>
   );
 }
