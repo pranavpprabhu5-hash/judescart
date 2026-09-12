@@ -38,7 +38,7 @@ export function AdminSecurityTab({ showToast }: AdminSecurityTabProps) {
   } = useStore();
 
   const [slugInput, setSlugInput] = useState(adminAccessSlug || 'portal');
-  const [pinInput, setPinInput] = useState(adminPin || '2026');
+  const [pinInput, setPinInput] = useState(adminPin || '4748');
   const [pinRequiredInput, setPinRequiredInput] = useState(isPinRequired ?? true);
   const [cloakModeInput, setCloakModeInput] = useState<'lockscreen' | 'redirect_slug' | 'redirect_home'>(
     adminCloakMode || 'lockscreen'
@@ -79,7 +79,7 @@ export function AdminSecurityTab({ showToast }: AdminSecurityTabProps) {
     const cleanSlug = slugInput.toLowerCase().replace(/[^a-z0-9-_]/g, '').trim() || 'portal';
     setAdminAccessSettings({
       slug: cleanSlug,
-      pin: pinInput.trim() || '2026',
+      pin: pinInput.trim() || '4748',
       isPinRequired: pinRequiredInput,
       cloakMode: cloakModeInput,
     });
@@ -342,7 +342,7 @@ export function AdminSecurityTab({ showToast }: AdminSecurityTabProps) {
                   value={pinInput}
                   onChange={(e) => setPinInput(e.target.value)}
                   maxLength={8}
-                  placeholder="2026"
+                  placeholder="4748"
                   className="w-full bg-zinc-900 border border-zinc-700/80 rounded-2xl px-4 py-3 text-sm text-zinc-100 focus:outline-none focus:border-amber-500 font-mono tracking-widest"
                 />
                 <button
@@ -354,7 +354,7 @@ export function AdminSecurityTab({ showToast }: AdminSecurityTabProps) {
                 </button>
               </div>
               <p className="text-[11px] text-zinc-400">
-                Default: <span className="font-mono text-amber-400">2026</span>. Anyone accessing the command center will need this passcode.
+                Default: <span className="font-mono text-amber-400">4748</span>. Anyone accessing the command center will need this passcode.
               </p>
             </div>
 

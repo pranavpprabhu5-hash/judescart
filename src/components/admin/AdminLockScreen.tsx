@@ -210,7 +210,7 @@ export function AdminLockScreen({ onUnlock, currentSlug = 'portal' }: AdminLockS
         <div className="text-center pt-2 border-t border-white/5 flex flex-col items-center gap-2">
           <div className="inline-flex items-center gap-1.5 text-[11px] text-zinc-400">
             <ShieldCheck className="w-3.5 h-3.5 text-amber-400/80" />
-            <span>Default Master PIN: <strong className="text-amber-400 font-mono">2026</strong> (configurable in settings)</span>
+            <span>Default Master PIN: <strong className="text-amber-400 font-mono">4748</strong> (configurable in settings)</span>
           </div>
 
           <Link
