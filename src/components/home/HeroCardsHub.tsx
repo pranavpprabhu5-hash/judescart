@@ -22,10 +22,10 @@ import { useStore } from '@/context/StoreContext';
 import { Product } from '@/types/product';
 
 const CAMPAIGN_TABS = [
-  { id: 'offers', label: 'Flash Deals', badgeColor: 'from-amber-500 to-orange-500', activeBorder: 'border-amber-400', icon: Flame },
-  { id: 'sales', label: 'Sale Events', badgeColor: 'from-indigo-500 to-blue-600', activeBorder: 'border-indigo-400', icon: Calendar },
-  { id: 'draws', label: 'Lucky Draws', badgeColor: 'from-emerald-500 to-teal-600', activeBorder: 'border-emerald-400', icon: Trophy },
-  { id: 'bumper', label: 'JUDES Jackpot', badgeColor: 'from-purple-500 to-amber-500', activeBorder: 'border-amber-400', icon: Crown },
+  { id: 'offers', label: 'Flash Deals', badgeColor: 'from-amber-500 to-orange-500', icon: Flame },
+  { id: 'sales', label: 'Sale Events', badgeColor: 'from-indigo-500 to-blue-600', icon: Calendar },
+  { id: 'draws', label: 'Lucky Draws', badgeColor: 'from-emerald-500 to-teal-600', icon: Trophy },
+  { id: 'bumper', label: 'JUDES Jackpot', badgeColor: 'from-purple-500 to-amber-500', icon: Crown },
 ];
 
 export function HeroCardsHub() {
@@ -109,13 +109,11 @@ export function HeroCardsHub() {
   }, []);
 
   // --------------------------------------------------------------------------
-  // MOBILE OVERLAPPING CARDS STACK STATE & GESTURE LOGIC
+  // MOBILE PARTIALLY OVERLAPPING CARDS CAROUSEL STATE & GESTURE LOGIC
   // --------------------------------------------------------------------------
   const [activeCardIndex, setActiveCardIndex] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [animDirection, setAnimDirection] = useState<'next' | 'prev' | null>(null);
-  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const touchStartXRef = useRef(0);
   const touchStartYRef = useRef(0);
@@ -123,32 +121,17 @@ export function HeroCardsHub() {
   const justSwipedRef = useRef(false);
 
   const handleNext = () => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setAnimDirection('next');
-    setTimeout(() => {
-      setActiveCardIndex((prev) => (prev + 1) % 4);
-      setAnimDirection(null);
-      setIsTransitioning(false);
-      setDragOffset(0);
-    }, 280);
+    setActiveCardIndex((prev) => (prev + 1) % 4);
+    setDragOffset(0);
   };
 
   const handlePrev = () => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setAnimDirection('prev');
-    setTimeout(() => {
-      setActiveCardIndex((prev) => (prev - 1 + 4) % 4);
-      setAnimDirection(null);
-      setIsTransitioning(false);
-      setDragOffset(0);
-    }, 280);
+    setActiveCardIndex((prev) => (prev - 1 + 4) % 4);
+    setDragOffset(0);
   };
 
-  // Touch Handlers for Mobile Swipe
+  // Touch Handlers
   const onTouchStart = (e: React.TouchEvent) => {
-    if (isTransitioning) return;
     touchStartXRef.current = e.touches[0].clientX;
     touchStartYRef.current = e.touches[0].clientY;
     isHorizontalDragRef.current = false;
@@ -156,24 +139,22 @@ export function HeroCardsHub() {
   };
 
   const onTouchMove = (e: React.TouchEvent) => {
-    if (isTransitioning) return;
     const currentX = e.touches[0].clientX;
     const currentY = e.touches[0].clientY;
     const deltaX = currentX - touchStartXRef.current;
     const deltaY = currentY - touchStartYRef.current;
 
-    // Detect horizontal drag intent vs vertical scroll
+    // Detect horizontal drag vs vertical page scroll
     if (!isHorizontalDragRef.current) {
-      if (Math.abs(deltaX) > 10 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (Math.abs(deltaX) > 8 && Math.abs(deltaX) > Math.abs(deltaY)) {
         isHorizontalDragRef.current = true;
         setIsDragging(true);
       }
     }
 
     if (isHorizontalDragRef.current) {
-      // Dampen drag
-      const resistance = 0.85;
-      setDragOffset(deltaX * resistance);
+      // Elastic resistance
+      setDragOffset(deltaX * 0.75);
     }
   };
 
@@ -182,9 +163,9 @@ export function HeroCardsHub() {
       justSwipedRef.current = true;
       setTimeout(() => {
         justSwipedRef.current = false;
-      }, 200);
+      }, 250);
 
-      const threshold = 45;
+      const threshold = 38;
       if (dragOffset < -threshold) {
         handleNext();
       } else if (dragOffset > threshold) {
@@ -199,10 +180,9 @@ export function HeroCardsHub() {
     isHorizontalDragRef.current = false;
   };
 
-  // Mouse Drag Handlers (for Dev/Emulator testing)
+  // Mouse Drag Handlers (for Dev & Desktop preview)
   const isMouseDownRef = useRef(false);
   const onMouseDown = (e: React.MouseEvent) => {
-    if (isTransitioning) return;
     isMouseDownRef.current = true;
     touchStartXRef.current = e.clientX;
     touchStartYRef.current = e.clientY;
@@ -210,12 +190,12 @@ export function HeroCardsHub() {
   };
 
   const onMouseMove = (e: React.MouseEvent) => {
-    if (!isMouseDownRef.current || isTransitioning) return;
+    if (!isMouseDownRef.current) return;
     const deltaX = e.clientX - touchStartXRef.current;
     if (Math.abs(deltaX) > 8) {
       isHorizontalDragRef.current = true;
       setIsDragging(true);
-      setDragOffset(deltaX * 0.85);
+      setDragOffset(deltaX * 0.75);
     }
   };
 
@@ -226,11 +206,11 @@ export function HeroCardsHub() {
         justSwipedRef.current = true;
         setTimeout(() => {
           justSwipedRef.current = false;
-        }, 200);
+        }, 250);
 
-        if (dragOffset < -45) {
+        if (dragOffset < -38) {
           handleNext();
-        } else if (dragOffset > 45) {
+        } else if (dragOffset > 38) {
           handlePrev();
         } else {
           setDragOffset(0);
@@ -244,10 +224,10 @@ export function HeroCardsHub() {
   };
 
   // --------------------------------------------------------------------------
-  // CARD RENDERERS (Cleanly reusable for both Mobile Stack & Desktop Grid)
+  // CARD RENDERERS
   // --------------------------------------------------------------------------
-  const renderCard1 = (isMobile = false) => (
-    <div className="w-full h-full rounded-2xl overflow-hidden flex flex-col justify-between p-3.5 sm:p-4 md:p-5 lg:p-6 bg-gradient-to-b from-[#1c0d02] via-[#2a1304] to-[#120701] border border-amber-500/30 shadow-xl shadow-amber-950/20 text-white relative">
+  const renderCard1 = () => (
+    <div className="w-full h-full rounded-2xl overflow-hidden flex flex-col justify-between p-3.5 sm:p-4 md:p-5 lg:p-6 bg-gradient-to-b from-[#1c0d02] via-[#2a1304] to-[#120701] border border-amber-500/40 text-white relative select-none">
       <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
         <Image
           src={activeDeal?.images[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80'}
@@ -279,9 +259,9 @@ export function HeroCardsHub() {
         </div>
 
         {activeDeal && (
-          <div className="p-2.5 rounded-lg bg-white/10 backdrop-blur-md border border-white/15 space-y-2">
-            <div className="flex items-center gap-2.5">
-              <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-black/40 shrink-0 border border-white/20">
+          <div className="p-2 sm:p-2.5 rounded-lg bg-white/10 backdrop-blur-md border border-white/15 space-y-2">
+            <div className="flex items-center gap-2 sm:gap-2.5">
+              <div className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-lg overflow-hidden bg-black/40 shrink-0 border border-white/20">
                 <Image
                   src={activeDeal.images[0]}
                   alt={activeDeal.name}
@@ -387,8 +367,8 @@ export function HeroCardsHub() {
     </div>
   );
 
-  const renderCard2 = (isMobile = false) => (
-    <div className="w-full h-full rounded-2xl overflow-hidden flex flex-col justify-between p-3.5 sm:p-4 md:p-5 lg:p-6 bg-gradient-to-b from-[#0a1128] via-[#11193d] to-[#070b1c] border border-indigo-500/30 shadow-xl shadow-indigo-950/20 text-white relative">
+  const renderCard2 = () => (
+    <div className="w-full h-full rounded-2xl overflow-hidden flex flex-col justify-between p-3.5 sm:p-4 md:p-5 lg:p-6 bg-gradient-to-b from-[#0a1128] via-[#11193d] to-[#070b1c] border border-indigo-500/40 text-white relative select-none">
       <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
         <Image
           src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=600&q=80"
@@ -419,7 +399,7 @@ export function HeroCardsHub() {
           </p>
         </div>
 
-        <div className="p-2.5 rounded-lg bg-white/10 backdrop-blur-md border border-white/15">
+        <div className="p-2 sm:p-2.5 rounded-lg bg-white/10 backdrop-blur-md border border-white/15">
           <div className="text-[9px] font-extrabold text-indigo-300 uppercase tracking-wider mb-1.5 flex items-center gap-1">
             <Clock className="w-2.5 h-2.5 text-cyan-400 animate-spin" style={{ animationDuration: '6s' }} />
             <span>Autumn Bash Countdown</span>
@@ -497,8 +477,8 @@ export function HeroCardsHub() {
     </div>
   );
 
-  const renderCard3 = (isMobile = false) => (
-    <div className="w-full h-full rounded-2xl overflow-hidden flex flex-col justify-between p-3.5 sm:p-4 md:p-5 lg:p-6 bg-gradient-to-b from-[#02231c] via-[#04382c] to-[#011c16] border border-emerald-500/30 shadow-xl shadow-emerald-950/20 text-white relative">
+  const renderCard3 = () => (
+    <div className="w-full h-full rounded-2xl overflow-hidden flex flex-col justify-between p-3.5 sm:p-4 md:p-5 lg:p-6 bg-gradient-to-b from-[#02231c] via-[#04382c] to-[#011c16] border border-emerald-500/40 text-white relative select-none">
       <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
         <Image
           src="https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=600&q=80"
@@ -603,8 +583,8 @@ export function HeroCardsHub() {
     </div>
   );
 
-  const renderCard4 = (isMobile = false) => (
-    <div className="w-full h-full rounded-2xl overflow-hidden flex flex-col justify-between p-3.5 sm:p-4 md:p-5 lg:p-6 bg-gradient-to-b from-[#1b0633] via-[#2f0d57] to-[#120324] border border-amber-400/40 shadow-xl shadow-purple-950/30 text-white relative">
+  const renderCard4 = () => (
+    <div className="w-full h-full rounded-2xl overflow-hidden flex flex-col justify-between p-3.5 sm:p-4 md:p-5 lg:p-6 bg-gradient-to-b from-[#1b0633] via-[#2f0d57] to-[#120324] border border-amber-400/50 text-white relative select-none">
       <div className="absolute inset-0 z-0 opacity-25 pointer-events-none">
         <Image
           src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80"
@@ -706,11 +686,11 @@ export function HeroCardsHub() {
       </div>
 
       {/* =========================================================================
-          1. MOBILE VIEW: LUXURY OVERLAPPING 3D SWIPEABLE CARD DECK (< md)
+          1. MOBILE VIEW: PARTIALLY OVERLAPPING SWIPEABLE CAROUSEL (< md)
           ========================================================================= */}
-      <div className="block md:hidden pb-2">
+      <div className="block md:hidden pb-3">
         {/* Category Pill Switcher for direct jump */}
-        <div className="flex items-center justify-between gap-1 overflow-x-auto scrollbar-none pb-3 pt-1">
+        <div className="flex items-center justify-between gap-1 overflow-x-auto scrollbar-none pb-3 pt-1 px-1">
           {CAMPAIGN_TABS.map((tab, idx) => {
             const Icon = tab.icon;
             const isActive = activeCardIndex === idx;
@@ -718,8 +698,8 @@ export function HeroCardsHub() {
               <button
                 key={tab.id}
                 onClick={() => {
-                  if (isTransitioning) return;
                   setActiveCardIndex(idx);
+                  setDragOffset(0);
                 }}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all duration-300 shrink-0 cursor-pointer ${
                   isActive
@@ -735,9 +715,9 @@ export function HeroCardsHub() {
           })}
         </div>
 
-        {/* 3D Overlapping Deck Container */}
+        {/* Partially Overlapping Carousel Stage */}
         <div
-          className="relative w-full max-w-[340px] sm:max-w-[380px] mx-auto h-[440px] pt-9 select-none touch-pan-y cursor-grab active:cursor-grabbing"
+          className="relative w-full h-[410px] overflow-hidden flex items-center justify-center select-none touch-pan-y cursor-grab active:cursor-grabbing"
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
@@ -747,121 +727,85 @@ export function HeroCardsHub() {
           onMouseLeave={onMouseUp}
         >
           {cardRenderers.map((renderer, idx) => {
-            // Circular offset relative to active card
-            const diff = (idx - activeCardIndex + 4) % 4;
+            // Circular shortest distance from active card (-1, 0, 1, or 2)
+            let diff = idx - activeCardIndex;
+            if (diff > 2) diff -= 4;
+            if (diff < -1) diff += 4;
 
-            // Compute dynamic 3D stack transforms
-            let transformStyle = '';
+            // Distance base: 142px creates a ~45% partial overlap with a 265px card width
+            const offsetStep = 142;
+            const targetX = diff * offsetStep + dragOffset;
+
+            // Compute dynamic stacking parameters
             let zIndex = 10;
-            let opacity = 1;
-            let filter = 'none';
+            let scale = 0.82;
+            let opacity = 0.5;
+            let filter = 'brightness(0.75)';
             let pointerEvents: 'auto' | 'none' = 'none';
-            let transitionStyle = isDragging
-              ? 'none'
-              : 'transform 0.42s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, filter 0.4s ease';
+            let shadowClass = 'shadow-xl';
 
             if (diff === 0) {
-              // ACTIVE FRONT CARD
-              zIndex = 40;
-              pointerEvents = 'auto';
-
-              if (animDirection === 'next') {
-                transformStyle = 'translate3d(-125%, 0, 0) rotate(-14deg) scale(0.95)';
-                opacity = 0;
-                transitionStyle = 'transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.24s ease-out';
-              } else if (animDirection === 'prev') {
-                transformStyle = 'translate3d(125%, 0, 0) rotate(14deg) scale(0.95)';
-                opacity = 0;
-                transitionStyle = 'transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.24s ease-out';
-              } else if (isDragging) {
-                transformStyle = `translate3d(${dragOffset}px, ${Math.abs(dragOffset) * 0.04}px, 0) rotate(${dragOffset * 0.04}deg) scale(1)`;
-                opacity = 1;
-              } else {
-                transformStyle = 'translate3d(0, 0, 0) rotate(0deg) scale(1)';
-                opacity = 1;
-              }
-            } else if (diff === 1) {
-              // SECOND CARD (peeks slightly above and behind)
+              // Active Center Card (Front & Center)
               zIndex = 30;
-              const dragProgress = Math.min(1, Math.abs(dragOffset) / 160);
-
-              if (animDirection === 'next') {
-                transformStyle = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
-                opacity = 1;
-                filter = 'brightness(1)';
-                transitionStyle = 'all 0.28s cubic-bezier(0.16, 1, 0.3, 1)';
-              } else if (isDragging && dragOffset < 0) {
-                // Dragging left brings card 2 forward smoothly
-                const scale = 0.94 + dragProgress * 0.06;
-                const translateY = -13 + dragProgress * 13;
-                const op = 0.88 + dragProgress * 0.12;
-                transformStyle = `translate3d(0, ${translateY}px, 0) scale(${scale})`;
-                opacity = op;
-                filter = `brightness(${0.9 + dragProgress * 0.1})`;
-              } else {
-                transformStyle = 'translate3d(0, -13px, 0) scale(0.94)';
-                opacity = 0.88;
-                filter = 'brightness(0.9)';
-              }
-            } else if (diff === 2) {
-              // THIRD CARD (peeks further behind)
+              scale = isDragging ? Math.max(0.92, 1 - Math.abs(dragOffset) * 0.0008) : 1;
+              opacity = 1;
+              filter = 'brightness(1)';
+              pointerEvents = 'auto';
+              shadowClass = 'shadow-2xl ring-1 ring-white/20';
+            } else if (diff === 1) {
+              // Right Card (Partially overlapping behind active card on the right)
               zIndex = 20;
-              const dragProgress = Math.min(1, Math.abs(dragOffset) / 160);
-
-              if (animDirection === 'next') {
-                transformStyle = 'translate3d(0, -13px, 0) scale(0.94)';
-                opacity = 0.88;
-                filter = 'brightness(0.9)';
-                transitionStyle = 'all 0.28s cubic-bezier(0.16, 1, 0.3, 1)';
-              } else if (isDragging && dragOffset < 0) {
-                const scale = 0.88 + dragProgress * 0.06;
-                const translateY = -24 + dragProgress * 11;
-                transformStyle = `translate3d(0, ${translateY}px, 0) scale(${scale})`;
-                opacity = 0.65 + dragProgress * 0.23;
-                filter = `brightness(${0.75 + dragProgress * 0.15})`;
-              } else {
-                transformStyle = 'translate3d(0, -24px, 0) scale(0.88)';
-                opacity = 0.65;
-                filter = 'brightness(0.75)';
-              }
-            } else if (diff === 3) {
-              // FOURTH CARD (bottom of deck, or swooping in if prev)
-              zIndex = animDirection === 'prev' ? 45 : 10;
-              
-              if (animDirection === 'prev') {
-                transformStyle = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
-                opacity = 1;
-                filter = 'brightness(1)';
-                transitionStyle = 'all 0.28s cubic-bezier(0.16, 1, 0.3, 1)';
-              } else {
-                transformStyle = 'translate3d(0, -34px, 0) scale(0.82)';
-                opacity = 0.4;
-                filter = 'brightness(0.6)';
-              }
+              scale = 0.90;
+              opacity = 0.88;
+              filter = 'brightness(0.88)';
+              pointerEvents = 'auto'; // Tap to advance
+              shadowClass = 'shadow-[-12px_8px_25px_rgba(0,0,0,0.5)]';
+            } else if (diff === -1) {
+              // Left Card (Partially overlapping behind active card on the left)
+              zIndex = 20;
+              scale = 0.90;
+              opacity = 0.88;
+              filter = 'brightness(0.88)';
+              pointerEvents = 'auto'; // Tap to go back
+              shadowClass = 'shadow-[12px_8px_25px_rgba(0,0,0,0.5)]';
+            } else {
+              // Back/Far Card
+              zIndex = 10;
+              scale = 0.78;
+              opacity = 0.35;
+              filter = 'brightness(0.65)';
+              pointerEvents = 'none';
             }
 
             return (
               <div
                 key={idx}
+                onClick={() => {
+                  if (justSwipedRef.current) return;
+                  if (diff === 1) handleNext();
+                  if (diff === -1) handlePrev();
+                }}
                 style={{
-                  transform: transformStyle,
+                  transform: `translate3d(${targetX}px, 0, 0) scale(${scale})`,
                   zIndex,
                   opacity,
                   filter,
                   pointerEvents,
-                  transition: transitionStyle,
-                  transformOrigin: 'bottom center',
+                  transition: isDragging
+                    ? 'none'
+                    : 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease, filter 0.35s ease',
+                  transformOrigin: 'center center',
                 }}
-                className="absolute inset-x-0 bottom-0 h-[395px] will-change-transform shadow-2xl rounded-2xl"
+                className={`absolute w-[265px] sm:w-[285px] h-[390px] rounded-2xl will-change-transform ${shadowClass} cursor-pointer`}
               >
-                {renderer(true)}
+                {renderer()}
               </div>
             );
           })}
         </div>
 
         {/* Mobile Swipe Navigation Controls & Dot Indicators */}
-        <div className="flex items-center justify-between mt-3 px-2">
+        <div className="flex items-center justify-between mt-3 px-3">
           {/* Previous Card Button */}
           <button
             onClick={handlePrev}
@@ -880,7 +824,8 @@ export function HeroCardsHub() {
                   <button
                     key={dotIdx}
                     onClick={() => {
-                      if (!isTransitioning) setActiveCardIndex(dotIdx);
+                      setActiveCardIndex(dotIdx);
+                      setDragOffset(0);
                     }}
                     aria-label={`Go to card ${dotIdx + 1}`}
                     className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
@@ -914,10 +859,10 @@ export function HeroCardsHub() {
           2. DESKTOP VIEW: MULTI-COLUMN RESPONSIVE GRID (md: and above)
           ========================================================================= */}
       <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 items-stretch">
-        <div className="w-full h-full">{renderCard1(false)}</div>
-        <div className="w-full h-full">{renderCard2(false)}</div>
-        <div className="w-full h-full">{renderCard3(false)}</div>
-        <div className="w-full h-full">{renderCard4(false)}</div>
+        <div className="w-full h-full">{renderCard1()}</div>
+        <div className="w-full h-full">{renderCard2()}</div>
+        <div className="w-full h-full">{renderCard3()}</div>
+        <div className="w-full h-full">{renderCard4()}</div>
       </div>
     </section>
   );
