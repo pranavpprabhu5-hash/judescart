@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { api } from '@/lib/api';
 import { Product } from '@/types/product';
 import { ProductGrid } from '@/components/product/ProductGrid';
-import { HeroSlider } from '@/components/home/HeroSlider';
+import { HeroCardsHub } from '@/components/home/HeroCardsHub';
 import { RecentlyViewed } from '@/components/product/RecentlyViewed';
 import { ArrowRight, Sparkles, ShieldCheck, Truck, RefreshCw, ArrowUpRight, Zap, Headphones, Laptop, Shirt, Watch, Home, Sparkle } from 'lucide-react';
 
@@ -67,8 +67,8 @@ export default function HomePage() {
 
   return (
     <div className="space-y-12 sm:space-y-14 pb-20">
-      {/* 1. HERO SLIDING WINDOW (Framed, non full-bleed) */}
-      <HeroSlider />
+      {/* 1. HERO CAMPAIGN CARDS HUB (Displayed all at once: Offers, Sales, Lucky Draws, Bumper Draws) */}
+      <HeroCardsHub />
 
       {/* 2. CURATED DEPARTMENTS / CATEGORIES */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
