@@ -46,8 +46,8 @@ export default function RootLayout({
               (function() {
                 try {
                   var saved = localStorage.getItem('judescart_theme');
-                  var pref = saved ? saved : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-                  if (pref === 'dark') {
+                  // Default to light mode; only activate dark mode if user explicitly saved 'dark'
+                  if (saved === 'dark') {
                     document.documentElement.classList.add('dark');
                   } else {
                     document.documentElement.classList.remove('dark');

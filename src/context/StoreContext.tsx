@@ -349,16 +349,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     setIsMounted(true);
     try {
       const savedTheme = localStorage.getItem('judescart_theme') as 'light' | 'dark' | null;
-      if (savedTheme) {
-        setThemeState(savedTheme);
-        if (savedTheme === 'dark') {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      if (savedTheme === 'dark') {
         setThemeState('dark');
         document.documentElement.classList.add('dark');
+      } else {
+        setThemeState('light');
+        document.documentElement.classList.remove('dark');
       }
 
       const savedCart = localStorage.getItem('judescart_cart');
