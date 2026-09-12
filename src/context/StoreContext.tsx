@@ -122,15 +122,21 @@ interface StoreContextType {
   products: Product[];
   updateProductStock: (id: string, newStock: number) => void;
   updateProductPrice: (id: string, newPrice: number) => void;
+  updateProduct: (id: string, updates: Partial<Product>) => void;
   addProduct: (product: Product) => void;
   deleteProduct: (id: string) => void;
   updateOrderStatus: (orderId: string, status: Order['status']) => void;
+  updateOrder: (orderId: string, updates: Partial<Order>) => void;
   promoCodes: Record<string, PromoCode>;
   createPromoCode: (code: string, discountType: 'percentage' | 'fixed', discountValue: number, description: string) => void;
   deletePromoCode: (code: string) => void;
   grantCustomerCoins: (amount: number) => void;
   recentWinners: AdminWinnerRecord[];
   triggerAdminDraw: (tier: string) => { winnerName: string; prize: string };
+  prizePools: Record<string, string[]>;
+  updatePrizePool: (tier: string, prizes: string[]) => void;
+  drawCriteria: Record<string, number>;
+  updateDrawCriteria: (tier: string, minSpend: number) => void;
   // Categories
   categories: CategoryItem[];
   addCategory: (name: string, description?: string) => string;
@@ -718,6 +724,44 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
+  const INITIAL_PRIZE_POOLS: Record<string, string[]> = {
+    platinum: ['Apple iPhone 16 Pro Max', 'MacBook Air M3', '$1,000 Luxury Shopping Credit', 'iPad Pro M4 OLED'],
+    gold: ['Sony WH-1000XM5 Headphones', 'Apple Watch Series 10', '$500 Tech Voucher', 'Dyson Supersonic'],
+    silver: ['Apple AirPods 4 (ANC)', 'Hasami Porcelain Coffee Set', '$100 Store Voucher', 'Kindle Paperwhite'],
+    bumper: ['Brand New Mercedes-Benz C-Class', 'Luxury 7-Day Swiss Alps Holiday', '$25,000 Direct Cash Jackpot', 'Tesla Model 3'],
+  };
+
+  const INITIAL_DRAW_CRITERIA: Record<string, number> = {
+    platinum: 500,
+    gold: 250,
+    silver: 100,
+    bumper: 0,
+  };
+
+  const [prizePools, setPrizePools] = useState<Record<string, string[]>>(INITIAL_PRIZE_POOLS);
+  const [drawCriteria, setDrawCriteria] = useState<Record<string, number>>(INITIAL_DRAW_CRITERIA);
+
+  const updateProduct = (id: string, updates: Partial<Product>) => {
+    setProducts((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, ...updates } : p))
+    );
+  };
+
+  const updateOrder = (orderId: string, updates: Partial<Order>) => {
+    setUser((prev) => ({
+      ...prev,
+      orders: prev.orders.map((o) => (o.id === orderId ? { ...o, ...updates } : o)),
+    }));
+  };
+
+  const updatePrizePool = (tier: string, prizes: string[]) => {
+    setPrizePools((prev) => ({ ...prev, [tier.toLowerCase()]: prizes }));
+  };
+
+  const updateDrawCriteria = (tier: string, minSpend: number) => {
+    setDrawCriteria((prev) => ({ ...prev, [tier.toLowerCase()]: minSpend }));
+  };
+
   const updateProductPrice = (id: string, newPrice: number) => {
     setProducts((prev) =>
       prev.map((p) => (p.id === id ? { ...p, price: Math.max(1, newPrice) } : p))
@@ -802,17 +846,13 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       { name: 'Sarah Chen', city: 'Toronto, CA', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=150&q=80' },
       { name: 'Devon Patel', city: 'London, UK', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80' },
       { name: 'Elena Rostova', city: 'Berlin, DE', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80' },
+      { name: 'Aarav Sharma', city: 'New Delhi, IN', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80' },
+      { name: 'Chloe Dubois', city: 'Paris, FR', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80' },
     ];
-    const candidatePrizes: Record<string, string[]> = {
-      platinum: ['Apple iPhone 16 Pro Max', 'MacBook Air M3', '$1,000 Luxury Shopping Credit'],
-      gold: ['Sony WH-1000XM5 Headphones', 'Apple Watch Series 10', '$500 Tech Voucher'],
-      silver: ['Apple AirPods 4 (ANC)', 'Hasami Porcelain Coffee Set', '$100 Store Voucher'],
-      bumper: ['Brand New Mercedes-Benz C-Class', 'Luxury 7-Day Swiss Alps Holiday', '$25,000 Direct Cash Jackpot'],
-    };
 
     const winner = candidateNames[Math.floor(Math.random() * candidateNames.length)];
-    const prizes = candidatePrizes[tier.toLowerCase()] || candidatePrizes.platinum;
-    const prize = prizes[Math.floor(Math.random() * prizes.length)];
+    const pool = prizePools[tier.toLowerCase()] || INITIAL_PRIZE_POOLS[tier.toLowerCase()] || INITIAL_PRIZE_POOLS.platinum;
+    const prize = pool[Math.floor(Math.random() * pool.length)];
     const newRecord: AdminWinnerRecord = {
       id: `win-${Date.now()}`,
       name: winner.name,
@@ -920,15 +960,21 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         products,
         updateProductStock,
         updateProductPrice,
+        updateProduct,
         addProduct,
         deleteProduct,
         updateOrderStatus,
+        updateOrder,
         promoCodes,
         createPromoCode,
         deletePromoCode,
         grantCustomerCoins,
         recentWinners,
         triggerAdminDraw,
+        prizePools,
+        updatePrizePool,
+        drawCriteria,
+        updateDrawCriteria,
 
         // Categories
         categories,

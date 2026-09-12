@@ -49,9 +49,12 @@ export interface Order {
     last4?: string;
     brand?: string;
   };
-  status: 'Processing' | 'Shipped' | 'Out for Delivery' | 'Delivered';
+  status: 'Processing' | 'Confirmed' | 'Shipped' | 'Out for Delivery' | 'Delivered' | 'Cancelled';
   trackingNumber: string;
   estimatedDelivery: string;
+  courierPartner?: string;
+  shippingNotes?: string;
+  invoiceNumber?: string;
   giftPackaging?: {
     enabled: boolean;
     note?: string;
