@@ -48,17 +48,22 @@ import {
   Award,
   Calendar,
   UserCheck,
+  Shield,
+  Lock,
+  Copy,
 } from 'lucide-react';
 import { cn, formatPrice } from '@/lib/utils';
 import { CURRENCIES, INITIAL_USER } from '@/lib/mock-data';
 import { CurrencyCode } from '@/types/currency';
 
-// Modular Admin Modals
+// Modular Admin Modals & Panels
 import { OrderInvoiceModal } from '@/components/admin/OrderInvoiceModal';
 import { OrderEditModal } from '@/components/admin/OrderEditModal';
 import { ProductEditModal } from '@/components/admin/ProductEditModal';
 import { CustomerDetailModal } from '@/components/admin/CustomerDetailModal';
 import { LuckyDrawConfigModal } from '@/components/admin/LuckyDrawConfigModal';
+import { AdminLockScreen } from '@/components/admin/AdminLockScreen';
+import { AdminSecurityTab } from '@/components/admin/AdminSecurityTab';
 
 // Sample CRM Customer Directory
 const CRM_CUSTOMERS: UserProfile[] = [
@@ -234,9 +239,17 @@ export default function AdminCommandCenter() {
     addCategory,
     deleteCategory,
     vipTier,
+    adminAccessSlug,
+    adminPin,
+    isPinRequired,
+    adminCloakMode,
+    isConsoleLocked,
+    setAdminAccessSettings,
+    unlockConsole,
+    lockConsole,
   } = useStore();
 
-  const [activeTab, setActiveTab] = useState<'analytics' | 'orders' | 'products' | 'categories' | 'luckydraw' | 'promos' | 'customers'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'orders' | 'products' | 'categories' | 'luckydraw' | 'promos' | 'customers' | 'security'>('analytics');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Filter & Search states
@@ -517,38 +530,78 @@ export default function AdminCommandCenter() {
     showToast(`🎉 WINNER SELECTED! ${res.winnerName} won ${res.prize}!`);
   };
 
+  // Zero-Trust Master Gatekeeper: Show Lock Screen if Console is Locked
+  if (isConsoleLocked && isPinRequired) {
+    return <AdminLockScreen onUnlock={unlockConsole} currentSlug={adminAccessSlug} />;
+  }
+
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#070F1E] text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#07090e] text-slate-900 dark:text-zinc-100 font-sans transition-colors duration-200 selection:bg-amber-500 selection:text-black">
       {/* Top Admin Telemetry Ribbon */}
-      <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#0A192F]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-xs dark:shadow-xl transition-colors duration-200">
+      <header className="sticky top-0 z-40 bg-white/95 dark:bg-zinc-950/90 backdrop-blur-xl border-b border-slate-200 dark:border-amber-500/20 shadow-xs dark:shadow-2xl transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-18">
-            <div className="flex items-center gap-3">
-              <Link href="/" className="flex items-center gap-2 group">
-                <div className="w-8 h-8 rounded-lg bg-[#0066FF] flex items-center justify-center text-white font-black text-sm shadow-md shadow-blue-500/25 group-hover:scale-105 transition-transform">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <Link href="/" className="flex items-center gap-2.5 group">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 via-amber-400 to-amber-600 flex items-center justify-center text-zinc-950 font-black text-sm shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform">
                   JC
                 </div>
                 <div>
-                  <span className="font-bold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-1.5">
-                    Judes<span className="text-[#0066FF]">Cart</span>
-                    <span className="text-[10px] uppercase tracking-wider font-extrabold bg-blue-50 dark:bg-blue-500/20 text-[#0066FF] dark:text-[#38BDF8] border border-blue-200 dark:border-blue-400/30 px-1.5 py-0.5 rounded-md">
-                      Command Center
+                  <div className="flex items-center gap-2">
+                    <span className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white tracking-tight flex items-center gap-1">
+                      JUDES<span className="text-amber-500 dark:text-amber-400 font-light">CART</span>
                     </span>
-                  </span>
+                    <span className="text-[10px] uppercase tracking-wider font-extrabold bg-amber-50 dark:bg-amber-500/15 text-amber-600 dark:text-amber-300 border border-amber-200 dark:border-amber-500/30 px-2 py-0.5 rounded-full shadow-2xs">
+                      Executive Console
+                    </span>
+                  </div>
                 </div>
               </Link>
 
-              <div className="hidden md:flex items-center gap-2 pl-4 border-l border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
+              {/* Status Beacon */}
+              <div className="hidden xl:flex items-center gap-2 pl-4 border-l border-slate-200 dark:border-zinc-800 text-xs text-slate-500 dark:text-zinc-400">
                 <span className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Live Production Node</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Engine Online</span>
                 </span>
                 <span>•</span>
-                <span>iad1-cluster</span>
+                <span className="font-mono text-[11px]">v3.2 Sync Active</span>
               </div>
             </div>
 
-            <div className="flex items-center gap-2.5 sm:gap-3">
+            {/* Middle: Private Access Link Badge */}
+            <div className="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-zinc-900/90 border border-slate-200 dark:border-amber-500/30 text-xs shadow-inner">
+              <Lock className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+              <span className="text-slate-500 dark:text-zinc-400 font-mono text-[11px]">Private Route:</span>
+              <span className="text-amber-600 dark:text-amber-300 font-mono font-semibold">/{adminAccessSlug || 'portal'}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  if (typeof navigator !== 'undefined' && typeof window !== 'undefined') {
+                    navigator.clipboard.writeText(`${window.location.origin}/${adminAccessSlug || 'portal'}`);
+                    showToast(`📋 Copied: ${window.location.origin}/${adminAccessSlug || 'portal'}`);
+                  }
+                }}
+                className="ml-1 text-slate-400 hover:text-amber-500 dark:hover:text-amber-300 transition-colors p-0.5 cursor-pointer"
+                title="Copy Private Access URL"
+              >
+                <Copy className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Right Controls */}
+            <div className="flex items-center gap-2 sm:gap-2.5">
+              {/* Lock Console Button */}
+              <button
+                type="button"
+                onClick={lockConsole}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-zinc-900 hover:bg-slate-200 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-200 hover:text-amber-600 dark:hover:text-amber-300 border border-slate-200 dark:border-zinc-700 hover:border-amber-500/40 text-xs font-semibold transition-all active:scale-95 shadow-2xs cursor-pointer"
+                title="Lock Administrative Console"
+              >
+                <Lock className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+                <span className="hidden sm:inline">Lock Console</span>
+              </button>
+
               {/* Currency Switcher */}
               <div className="hidden sm:block">
                 <CurrencySwitcher />
@@ -560,13 +613,13 @@ export default function AdminCommandCenter() {
               {/* View Storefront */}
               <Link
                 href="/"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-all text-xs font-semibold shadow-2xs"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-zinc-900 hover:bg-slate-200 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-200 border border-slate-200 dark:border-zinc-700 transition-all text-xs font-semibold shadow-2xs"
               >
-                <span>View Storefront</span>
+                <span className="hidden md:inline">View Storefront</span>
                 <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
               </Link>
 
-              <div className="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 overflow-hidden bg-slate-100 dark:bg-slate-800 relative">
+              <div className="w-8 h-8 rounded-full border border-amber-500/30 overflow-hidden bg-slate-100 dark:bg-zinc-800 relative shadow-xs">
                 <Image src={user.avatar} alt="Admin" fill className="object-cover" />
               </div>
             </div>
@@ -574,17 +627,17 @@ export default function AdminCommandCenter() {
         </div>
 
         {/* Tab Navigation Ribbon */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-1 overflow-x-auto no-scrollbar border-t border-slate-200/80 dark:border-slate-800/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-1 overflow-x-auto no-scrollbar border-t border-slate-200/80 dark:border-zinc-800/80">
           <button
             onClick={() => setActiveTab('analytics')}
             className={cn(
               'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
               activeTab === 'analytics'
-                ? 'border-[#0066FF] text-[#0066FF] dark:text-white bg-blue-50/80 dark:bg-blue-500/10'
-                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/60 dark:hover:bg-slate-800/40'
+                ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/10'
+                : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
             )}
           >
-            <LayoutDashboard className="w-3.5 h-3.5 text-[#0066FF] dark:text-[#38BDF8]" />
+            <LayoutDashboard className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
             <span>Executive Analytics</span>
           </button>
 
@@ -593,11 +646,11 @@ export default function AdminCommandCenter() {
             className={cn(
               'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
               activeTab === 'orders'
-                ? 'border-[#0066FF] text-[#0066FF] dark:text-white bg-blue-50/80 dark:bg-blue-500/10'
-                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/60 dark:hover:bg-slate-800/40'
+                ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/10'
+                : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
             )}
           >
-            <Truck className="w-3.5 h-3.5 text-[#0066FF] dark:text-[#38BDF8]" />
+            <Truck className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
             <span>Orders & Fulfillment ({allOrders.length})</span>
           </button>
 
@@ -606,11 +659,11 @@ export default function AdminCommandCenter() {
             className={cn(
               'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
               activeTab === 'products'
-                ? 'border-[#0066FF] text-[#0066FF] dark:text-white bg-blue-50/80 dark:bg-blue-500/10'
-                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/60 dark:hover:bg-slate-800/40'
+                ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/10'
+                : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
             )}
           >
-            <Package className="w-3.5 h-3.5 text-[#0066FF] dark:text-[#38BDF8]" />
+            <Package className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
             <span>Catalog & Inventory ({products.length})</span>
           </button>
 
@@ -619,11 +672,11 @@ export default function AdminCommandCenter() {
             className={cn(
               'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
               activeTab === 'categories'
-                ? 'border-[#0066FF] text-[#0066FF] dark:text-white bg-blue-50/80 dark:bg-blue-500/10'
-                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/60 dark:hover:bg-slate-800/40'
+                ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/10'
+                : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
             )}
           >
-            <Layers className="w-3.5 h-3.5 text-[#0066FF] dark:text-[#38BDF8]" />
+            <Layers className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
             <span>Categories ({categories.length})</span>
           </button>
 
@@ -632,8 +685,8 @@ export default function AdminCommandCenter() {
             className={cn(
               'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
               activeTab === 'luckydraw'
-                ? 'border-amber-500 text-amber-600 dark:text-white bg-amber-50 dark:bg-amber-500/10'
-                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/60 dark:hover:bg-slate-800/40'
+                ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50 dark:bg-amber-500/10'
+                : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
             )}
           >
             <Trophy className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
@@ -645,11 +698,11 @@ export default function AdminCommandCenter() {
             className={cn(
               'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
               activeTab === 'promos'
-                ? 'border-[#0066FF] text-[#0066FF] dark:text-white bg-blue-50/80 dark:bg-blue-500/10'
-                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/60 dark:hover:bg-slate-800/40'
+                ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/10'
+                : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
             )}
           >
-            <Tag className="w-3.5 h-3.5 text-[#0066FF] dark:text-[#38BDF8]" />
+            <Tag className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
             <span>Promotions & Vouchers</span>
           </button>
 
@@ -658,12 +711,26 @@ export default function AdminCommandCenter() {
             className={cn(
               'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
               activeTab === 'customers'
-                ? 'border-[#0066FF] text-[#0066FF] dark:text-white bg-blue-50/80 dark:bg-blue-500/10'
-                : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/60 dark:hover:bg-slate-800/40'
+                ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/10'
+                : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
             )}
           >
             <Coins className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
-            <span>Customers & CRM Ledger</span>
+            <span>Customers & CRM</span>
+          </button>
+
+          {/* Security & Access Link Tab */}
+          <button
+            onClick={() => setActiveTab('security')}
+            className={cn(
+              'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
+              activeTab === 'security'
+                ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/15'
+                : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
+            )}
+          >
+            <Shield className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+            <span>Security & Access Link</span>
           </button>
         </div>
       </header>
@@ -1994,6 +2061,11 @@ export default function AdminCommandCenter() {
               })}
             </div>
           </div>
+        )}
+
+        {/* ================= TAB 8: SECURITY & ACCESS LINK ================= */}
+        {activeTab === 'security' && (
+          <AdminSecurityTab showToast={showToast} />
         )}
       </main>
 

@@ -141,6 +141,21 @@ interface StoreContextType {
   categories: CategoryItem[];
   addCategory: (name: string, description?: string) => string;
   deleteCategory: (slug: string) => boolean;
+
+  // Admin Security & Custom Access Link
+  adminAccessSlug: string;
+  adminPin: string;
+  isPinRequired: boolean;
+  adminCloakMode: 'lockscreen' | 'redirect_slug' | 'redirect_home';
+  isConsoleLocked: boolean;
+  setAdminAccessSettings: (settings: {
+    slug?: string;
+    pin?: string;
+    isPinRequired?: boolean;
+    cloakMode?: 'lockscreen' | 'redirect_slug' | 'redirect_home';
+  }) => void;
+  unlockConsole: (enteredPin: string) => boolean;
+  lockConsole: () => void;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -172,6 +187,13 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   // Theme State
   const [theme, setThemeState] = useState<'light' | 'dark'>('light');
+
+  // Admin Security & Custom Access Link State
+  const [adminAccessSlug, setAdminAccessSlug] = useState<string>('portal');
+  const [adminPin, setAdminPin] = useState<string>('2026');
+  const [isPinRequired, setIsPinRequired] = useState<boolean>(true);
+  const [adminCloakMode, setAdminCloakMode] = useState<'lockscreen' | 'redirect_slug' | 'redirect_home'>('lockscreen');
+  const [isConsoleLocked, setIsConsoleLocked] = useState<boolean>(true);
 
   // User State
   const [user, setUser] = useState<UserProfile>(INITIAL_USER);
@@ -880,6 +902,91 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     return { winnerName: winner.name, prize };
   };
 
+  // Hydrate admin security settings from localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const savedSec = localStorage.getItem('judescart_admin_security_v1');
+        if (savedSec) {
+          const parsed = JSON.parse(savedSec);
+          if (parsed.slug) setAdminAccessSlug(parsed.slug);
+          if (parsed.pin) setAdminPin(parsed.pin);
+          if (typeof parsed.isPinRequired === 'boolean') setIsPinRequired(parsed.isPinRequired);
+          if (parsed.cloakMode) setAdminCloakMode(parsed.cloakMode);
+        }
+        const sessionUnlock = sessionStorage.getItem('judescart_admin_unlocked');
+        if (sessionUnlock === 'true') {
+          setIsConsoleLocked(false);
+        }
+      } catch (e) {
+        console.error('Failed to load admin security settings', e);
+      }
+    }
+  }, []);
+
+  const unlockConsole = (enteredPin: string): boolean => {
+    if (!isPinRequired || enteredPin.trim() === adminPin.trim()) {
+      setIsConsoleLocked(false);
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('judescart_admin_unlocked', 'true');
+      }
+      return true;
+    }
+    return false;
+  };
+
+  const lockConsole = () => {
+    setIsConsoleLocked(true);
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('judescart_admin_unlocked');
+    }
+  };
+
+  const setAdminAccessSettings = (settings: {
+    slug?: string;
+    pin?: string;
+    isPinRequired?: boolean;
+    cloakMode?: 'lockscreen' | 'redirect_slug' | 'redirect_home';
+  }) => {
+    let nextSlug = adminAccessSlug;
+    let nextPin = adminPin;
+    let nextIsPinRequired = isPinRequired;
+    let nextCloakMode = adminCloakMode;
+
+    if (settings.slug !== undefined) {
+      nextSlug = settings.slug.toLowerCase().replace(/[^a-z0-9-_]/g, '').trim() || 'portal';
+      setAdminAccessSlug(nextSlug);
+    }
+    if (settings.pin !== undefined) {
+      nextPin = settings.pin.trim();
+      setAdminPin(nextPin);
+    }
+    if (settings.isPinRequired !== undefined) {
+      nextIsPinRequired = settings.isPinRequired;
+      setIsPinRequired(nextIsPinRequired);
+    }
+    if (settings.cloakMode !== undefined) {
+      nextCloakMode = settings.cloakMode;
+      setAdminCloakMode(nextCloakMode);
+    }
+
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(
+          'judescart_admin_security_v1',
+          JSON.stringify({
+            slug: nextSlug,
+            pin: nextPin,
+            isPinRequired: nextIsPinRequired,
+            cloakMode: nextCloakMode,
+          })
+        );
+      } catch (e) {
+        console.error('Failed to save admin security settings', e);
+      }
+    }
+  };
+
   return (
     <StoreContext.Provider
       value={{
@@ -992,6 +1099,16 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         categories,
         addCategory,
         deleteCategory,
+
+        // Admin Security & Custom Access Link
+        adminAccessSlug,
+        adminPin,
+        isPinRequired,
+        adminCloakMode,
+        isConsoleLocked,
+        setAdminAccessSettings,
+        unlockConsole,
+        lockConsole,
       }}
     >
       {children}
