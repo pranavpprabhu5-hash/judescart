@@ -211,68 +211,69 @@ export function Navbar() {
   }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-stone-200/80 shadow-xs transition-all duration-200">
+    <header className="sticky top-0 z-40 w-full bg-white/95 dark:bg-[#0A192F]/95 backdrop-blur-md border-b border-stone-200/80 dark:border-slate-800 shadow-xs transition-all duration-200">
       {/* Top Header Row */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-18 sm:h-20 gap-4">
-          {/* Mobile Menu Toggle */}
-          <div className="flex items-center lg:hidden">
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 -ml-2 text-stone-700 dark:text-stone-300 hover:text-[#0066FF] dark:hover:text-[#38BDF8] hover:bg-stone-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
-              aria-label="Toggle menu"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-
-            <button
-              onClick={openSearch}
-              className="p-2 ml-1 text-stone-700 dark:text-stone-300 hover:text-[#0066FF] dark:hover:text-[#38BDF8] hover:bg-stone-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
-              aria-label="Search"
-            >
-              <Search className="w-4 h-4" />
-            </button>
-          </div>
-
-          {/* JudesCart Brand Logo - Clean, NO slogan */}
-          <div className="flex items-center">
-            <Link href="/" className="group flex items-center gap-2.5">
-              <div className="relative w-9 h-9 sm:w-10 sm:h-10 shrink-0">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-16 gap-2 sm:gap-4">
+          
+          {/* Left Side: Logo (Logo Only, No Name) + Options Icon + Search */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 flex-1 min-w-0">
+            {/* 1. Logo Only (No Name Text) at far left end */}
+            <Link href="/" className="group flex items-center shrink-0 pr-0.5" aria-label="JudesCart Home">
+              <div className="relative w-8 h-8 sm:w-9 sm:h-9 shrink-0">
                 <Image
                   src="/logo-icon.png"
                   alt="JudesCart Logo"
                   fill
-                  sizes="40px"
+                  sizes="36px"
                   priority
                   className="object-contain group-hover:scale-105 transition-transform"
                 />
               </div>
-              <span className="font-sans text-2xl sm:text-[26px] font-black tracking-tight text-[#0A192F] flex items-center select-none">
-                Judes<span className="text-[#0066FF]">Cart</span>
-              </span>
             </Link>
-          </div>
 
-          {/* Center Search Input Trigger */}
-          <div className="hidden md:flex flex-1 max-w-md mx-4">
+            {/* 2. Options Icon (Menu Toggle) right next to Logo */}
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 text-stone-700 dark:text-stone-300 hover:text-[#0066FF] dark:hover:text-[#38BDF8] hover:bg-stone-100 dark:hover:bg-slate-800 rounded-xl transition-colors shrink-0"
+              aria-label="Toggle navigation menu"
+              title="Menu & Options"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+
+            {/* 3. Search right next to Options */}
+            {/* Mobile Search Button (<md) */}
             <button
               onClick={openSearch}
-              className="w-full flex items-center justify-between px-4 py-2.5 rounded-full text-xs text-stone-500 bg-stone-100/90 hover:bg-stone-200/80 hover:text-stone-900 border border-stone-200 transition-all duration-150 shadow-2xs group"
-              aria-label="Open search dialog"
+              className="md:hidden p-2 text-stone-700 dark:text-stone-300 hover:text-[#0066FF] dark:hover:text-[#38BDF8] hover:bg-stone-100 dark:hover:bg-slate-800 rounded-xl transition-colors shrink-0"
+              aria-label="Search catalog"
+              title="Search"
             >
-              <div className="flex items-center gap-2.5">
-                <Search className="w-4 h-4 text-[#0066FF] group-hover:scale-110 transition-transform" />
-                <span className="font-medium">Search all products, brands & categories...</span>
-              </div>
-              <kbd className="inline-flex items-center gap-0.5 px-2 py-0.5 text-[10px] font-mono font-semibold text-stone-400 bg-white rounded-md border border-stone-200 shadow-2xs">
-                ⌘K
-              </kbd>
+              <Search className="w-4 h-4" />
             </button>
+
+            {/* Desktop Search Input Trigger (>=md) */}
+            <div className="hidden md:flex flex-1 max-w-md ml-1 lg:ml-2">
+              <button
+                onClick={openSearch}
+                className="w-full flex items-center justify-between px-3.5 py-2 rounded-full text-xs text-stone-500 dark:text-stone-400 bg-stone-100/90 dark:bg-slate-800/80 hover:bg-stone-200/80 dark:hover:bg-slate-700 hover:text-stone-900 dark:hover:text-white border border-stone-200 dark:border-slate-700 transition-all duration-150 shadow-2xs group"
+                aria-label="Open search dialog"
+              >
+                <div className="flex items-center gap-2">
+                  <Search className="w-3.5 h-3.5 text-[#0066FF] group-hover:scale-110 transition-transform" />
+                  <span className="font-medium text-[11px] lg:text-xs">Search all products, brands & categories...</span>
+                </div>
+                <kbd className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-mono font-semibold text-stone-400 bg-white dark:bg-slate-900 rounded border border-stone-200 dark:border-slate-700 shadow-2xs">
+                  ⌘K
+                </kbd>
+              </button>
+            </div>
           </div>
 
-          {/* Right Action Icons */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          {/* Right Side: Rest of Menu Bar Icons */}
+          <div className="flex items-center gap-1 sm:gap-2.5 shrink-0">
             {/* Currency Switcher */}
             <div className="hidden sm:block">
               <CurrencySwitcher />
@@ -284,12 +285,12 @@ export function Navbar() {
             {/* Wishlist Link */}
             <Link
               href="/wishlist"
-              className="relative p-2.5 rounded-full text-stone-700 hover:text-[#0066FF] hover:bg-stone-100 transition-all"
+              className="relative p-2 rounded-full text-stone-700 dark:text-stone-300 hover:text-[#0066FF] dark:hover:text-[#38BDF8] hover:bg-stone-100 dark:hover:bg-slate-800 transition-all shrink-0"
               aria-label="Wishlist"
             >
               <Heart className="w-4 h-4" />
               {wishlist.length > 0 && (
-                <span className="absolute top-1 right-1 flex items-center justify-center w-4 h-4 text-[9px] font-bold text-white bg-[#0066FF] rounded-full animate-badge-pop">
+                <span className="absolute top-0.5 right-0.5 flex items-center justify-center w-4 h-4 text-[9px] font-bold text-white bg-[#0066FF] rounded-full animate-badge-pop">
                   {wishlist.length}
                 </span>
               )}
@@ -298,35 +299,35 @@ export function Navbar() {
             {/* Daily Mystery Gift Button */}
             <button
               onClick={openDailyMystery}
-              className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 border border-purple-200 text-purple-900 transition-all text-xs font-bold cursor-pointer shadow-2xs group"
-              title="Daily JudesCart Mystery Vault (Max 10 Coins / Day) - Open Everyday to Claim"
+              className="relative flex items-center gap-1 p-2 sm:px-3 sm:py-1.5 rounded-full bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/40 dark:to-indigo-950/40 hover:from-purple-100 hover:to-indigo-100 dark:hover:from-purple-900/60 dark:hover:to-indigo-900/60 border border-purple-200 dark:border-purple-800/60 text-purple-900 dark:text-purple-300 transition-all text-xs font-bold cursor-pointer shadow-2xs group shrink-0"
+              title="Daily JudesCart Mystery Vault - Open Everyday to Claim"
             >
-              <Gift className="w-3.5 h-3.5 text-purple-600 group-hover:scale-110 transition-transform" />
+              <Gift className="w-4 h-4 text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform" />
               <span className="hidden sm:inline">Daily Gift</span>
               {!dailyMysteryClaimed && (
                 <span className="w-2 h-2 rounded-full bg-rose-500 absolute -top-0.5 -right-0.5 animate-ping" />
               )}
             </button>
 
-            {/* JudesCoins Loyalty Badge */}
+            {/* JudesCoins Loyalty Badge (Desktop Only) */}
             <button
               onClick={openProfile}
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 border border-amber-200/80 text-amber-900 transition-all text-xs font-bold group cursor-pointer shadow-2xs"
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-200/80 dark:border-amber-800/60 text-amber-900 dark:text-amber-300 transition-all text-xs font-bold group cursor-pointer shadow-2xs shrink-0"
               title="JudesCoins Rewards Balance - Click to Redeem"
             >
               <Coins className="w-3.5 h-3.5 text-amber-500 group-hover:scale-110 transition-transform" />
               <span>{judesCoins.toLocaleString()}</span>
-              <span className="text-[10px] text-amber-700/80 font-bold uppercase tracking-wider">Coins</span>
+              <span className="text-[10px] text-amber-700/80 dark:text-amber-400 font-bold uppercase tracking-wider">Coins</span>
             </button>
 
             {/* User Profile */}
             <button
               onClick={openProfile}
-              className="flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-full text-stone-700 hover:text-[#0066FF] hover:bg-stone-100 transition-all relative"
+              className="flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-full text-stone-700 dark:text-stone-300 hover:text-[#0066FF] dark:hover:text-[#38BDF8] hover:bg-stone-100 dark:hover:bg-slate-800 transition-all relative shrink-0"
               aria-label="Account Profile"
             >
               <User className="w-4 h-4" />
-              <span className="hidden xl:inline text-xs font-semibold text-stone-800">
+              <span className="hidden xl:inline text-xs font-semibold text-stone-800 dark:text-stone-200">
                 {isLoggedIn ? user.name.split(' ')[0] : 'Sign In'}
               </span>
               {isLoggedIn && vipTier === 'black' ? (
@@ -343,7 +344,7 @@ export function Navbar() {
             {/* Cart Button */}
             <button
               onClick={openCart}
-              className="relative flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#0A192F] text-white hover:bg-[#0066FF] transition-all duration-150 active:scale-95 shadow-xs font-sans"
+              className="relative flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full bg-[#0A192F] text-white hover:bg-[#0066FF] transition-all duration-150 active:scale-95 shadow-xs font-sans shrink-0"
               aria-label="Shopping Cart"
             >
               <ShoppingBag className="w-4 h-4 text-white" />
@@ -521,7 +522,7 @@ export function Navbar() {
 
       {/* Beautified Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-x-0 top-18 bottom-0 bg-stone-950/60 backdrop-blur-sm z-50">
+        <div className="lg:hidden fixed inset-x-0 top-14 sm:top-16 bottom-0 bg-stone-950/60 backdrop-blur-sm z-50">
           <div className="bg-white dark:bg-[#070F1E] border-b border-stone-200 dark:border-slate-800 p-5 sm:p-6 space-y-4 animate-in slide-in-from-top-4 duration-200 max-h-[85vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-stone-100 dark:border-slate-800">
               <span className="text-xs uppercase tracking-wider font-bold text-stone-400 dark:text-slate-400">Settings</span>
