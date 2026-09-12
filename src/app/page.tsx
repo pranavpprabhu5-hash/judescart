@@ -118,19 +118,19 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <span className="text-xs uppercase tracking-widest font-bold text-[#0066FF]">Top Trending Picks</span>
-            <h2 className="font-sans text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-white mt-1">
+            <span className="text-[10px] sm:text-xs uppercase tracking-widest font-bold text-[#0066FF]">Top Trending Picks</span>
+            <h2 className="font-sans text-xl sm:text-3xl font-extrabold text-stone-900 dark:text-white mt-0.5 sm:mt-1">
               Featured at JudesCart
             </h2>
           </div>
 
           {/* Department Filter Pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+          <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto pb-1 scrollbar-none">
             {(['all', 'electronics', 'apparel', 'leather-goods', 'footwear', 'home-living'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors shrink-0 ${
+                className={`px-2.5 py-1 sm:px-4 sm:py-2 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-colors shrink-0 ${
                   activeTab === tab
                     ? 'bg-[#0066FF] text-white shadow-sm'
                     : 'bg-stone-100 dark:bg-slate-800 text-stone-700 dark:text-slate-200 hover:bg-stone-200 dark:hover:bg-slate-700'

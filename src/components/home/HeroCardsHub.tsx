@@ -125,17 +125,17 @@ export function HeroCardsHub() {
         </p>
       </div>
 
-      {/* 4 CARDS DISPLAYED ALL AT ONCE (RESPONSIVE SNAP-RAIL ON MOBILE / GRID ON DESKTOP) */}
-      <div className="flex md:grid md:grid-cols-2 xl:grid-cols-4 overflow-x-auto snap-x snap-mandatory gap-4 sm:gap-6 items-stretch pb-2 px-1 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
+      {/* 4 CARDS DISPLAYED ALL AT ONCE (COMPACT RESPONSIVE SNAP-RAIL ON MOBILE / GRID ON DESKTOP) */}
+      <div className="flex md:grid md:grid-cols-2 xl:grid-cols-4 overflow-x-auto snap-x snap-mandatory gap-3 sm:gap-4 items-stretch pb-2 px-1 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
         
         {/* =========================================================================
             CARD 1: ITEMS WITH OFFERS (Deals Showcase)
             ========================================================================= */}
-        <div className="w-[86vw] sm:w-[380px] md:w-auto shrink-0 snap-center group relative rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col justify-between p-5 sm:p-6 bg-gradient-to-b from-[#1c0d02] via-[#2a1304] to-[#120701] border border-amber-500/30 shadow-xl shadow-amber-950/20 hover:border-amber-400/60 transition-all duration-300 text-white">
+        <div className="w-[70vw] max-w-[260px] sm:w-[280px] md:w-auto shrink-0 snap-center group relative rounded-xl sm:rounded-2xl overflow-hidden flex flex-col justify-between p-3.5 sm:p-4 md:p-5 lg:p-6 bg-gradient-to-b from-[#1c0d02] via-[#2a1304] to-[#120701] border border-amber-500/30 shadow-lg shadow-amber-950/20 hover:border-amber-400/60 transition-all duration-300 text-white">
           {/* Subtle Ambient Background Image with Dark Glow */}
           <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
             <Image
-              src={activeDeal?.images[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80'}
+              src={activeDeal?.images[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80'}
               alt="Special Offers"
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -143,62 +143,62 @@ export function HeroCardsHub() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#120701] via-[#120701]/80 to-transparent" />
           </div>
 
-          <div className="relative z-10 space-y-4">
+          <div className="relative z-10 space-y-2 sm:space-y-2.5 md:space-y-3">
             {/* Header Badge */}
             <div className="flex items-center justify-between">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[11px] font-extrabold uppercase tracking-wider shadow-xs">
-                <Flame className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+              <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[10px] font-extrabold uppercase tracking-wider">
+                <Flame className="w-3 h-3 text-amber-400 animate-pulse" />
                 <span>Special Offers</span>
               </div>
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-rose-500/90 text-white shadow-xs">
+              <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-rose-500/90 text-white">
                 Save Up To {discountPercent}%
               </span>
             </div>
 
             <div>
-              <h2 className="font-sans text-xl font-bold text-white leading-tight">
+              <h2 className="font-sans text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white leading-tight">
                 Discounted &amp; Flash Deals
               </h2>
-              <p className="text-xs text-amber-200/80 mt-1 line-clamp-2">
-                Handpicked premium products on immediate limited-time discount.
+              <p className="text-[11px] sm:text-xs text-amber-200/80 mt-0.5 line-clamp-1">
+                Handpicked premium products on immediate discount.
               </p>
             </div>
 
             {/* Interactive Deal Preview Box */}
             {activeDeal && (
-              <div className="p-3.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 space-y-3">
-                <div className="flex items-center gap-3">
-                  <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-black/40 shrink-0 border border-white/20">
+              <div className="p-2.5 rounded-lg bg-white/10 backdrop-blur-md border border-white/15 space-y-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-black/40 shrink-0 border border-white/20">
                     <Image
                       src={activeDeal.images[0]}
                       alt={activeDeal.name}
                       fill
                       className="object-cover"
                     />
-                    <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded text-[9px] font-black bg-rose-600 text-white leading-none">
+                    <div className="absolute top-0.5 left-0.5 px-1 py-0.2 rounded text-[8px] font-black bg-rose-600 text-white leading-none">
                       -{discountPercent}%
                     </div>
                   </div>
                   <div className="min-w-0 flex-1">
                     <Link
                       href={`/products/${activeDeal.slug}`}
-                      className="text-xs font-bold text-white hover:text-amber-300 transition-colors line-clamp-1 block"
+                      className="text-[11px] font-bold text-white hover:text-amber-300 transition-colors line-clamp-1 block"
                       title={activeDeal.name}
                     >
                       {activeDeal.name}
                     </Link>
-                    <div className="flex items-baseline gap-2 mt-1">
-                      <span className="text-sm font-black text-amber-300">
+                    <div className="flex items-baseline gap-1.5 mt-0.5">
+                      <span className="text-xs font-black text-amber-300">
                         {formatAmount(activeDeal.price)}
                       </span>
                       {activeDeal.originalPrice && (
-                        <span className="text-xs text-stone-400 line-through">
+                        <span className="text-[10px] text-stone-400 line-through">
                           {formatAmount(activeDeal.originalPrice)}
                         </span>
                       )}
                     </div>
-                    <span className="text-[10px] text-emerald-300 font-semibold block mt-0.5">
-                      In Stock • Instant Dispatch
+                    <span className="text-[9px] text-emerald-300 font-semibold block">
+                      In Stock • Ready to Ship
                     </span>
                   </div>
                 </div>
@@ -206,7 +206,7 @@ export function HeroCardsHub() {
                 {/* Quick Add To Cart Button */}
                 <button
                   onClick={(e) => handleQuickAdd(activeDeal, e)}
-                  className={`w-full py-2 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-all duration-200 shadow-sm ${
+                  className={`w-full py-1.5 px-2.5 rounded-md font-bold text-[11px] flex items-center justify-center gap-1 transition-all duration-200 shadow-xs ${
                     addedItemEffect === activeDeal.id
                       ? 'bg-emerald-500 text-white'
                       : 'bg-amber-500 hover:bg-amber-400 text-slate-950 hover:shadow-amber-500/30'
@@ -214,12 +214,12 @@ export function HeroCardsHub() {
                 >
                   {addedItemEffect === activeDeal.id ? (
                     <>
-                      <Check className="w-3.5 h-3.5 stroke-[3]" />
+                      <Check className="w-3 h-3 stroke-[3]" />
                       <span>Added to Cart!</span>
                     </>
                   ) : (
                     <>
-                      <ShoppingBag className="w-3.5 h-3.5" />
+                      <ShoppingBag className="w-3 h-3" />
                       <span>Quick Add Deal</span>
                     </>
                   )}
@@ -229,8 +229,8 @@ export function HeroCardsHub() {
 
             {/* Deal Switcher Dots / Controls */}
             {discountedProducts.length > 1 && (
-              <div className="flex items-center justify-between pt-1">
-                <span className="text-[10px] text-stone-400 font-medium">
+              <div className="flex items-center justify-between pt-0.5">
+                <span className="text-[9px] text-stone-400 font-medium">
                   Deal {activeDealIndex + 1} of {discountedProducts.length}
                 </span>
                 <div className="flex items-center gap-1">
@@ -238,10 +238,10 @@ export function HeroCardsHub() {
                     <button
                       key={deal.id}
                       onClick={() => setActiveDealIndex(idx)}
-                      className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                      className={`h-1.5 rounded-full transition-all duration-200 ${
                         activeDealIndex === idx
-                          ? 'w-5 bg-amber-400'
-                          : 'bg-white/30 hover:bg-white/60'
+                          ? 'w-4 bg-amber-400'
+                          : 'w-1.5 bg-white/30 hover:bg-white/60'
                       }`}
                       aria-label={`Show deal ${idx + 1}`}
                     />
@@ -252,13 +252,13 @@ export function HeroCardsHub() {
           </div>
 
           {/* Card Footer CTA */}
-          <div className="relative z-10 pt-4 mt-2 border-t border-white/10">
+          <div className="relative z-10 pt-2.5 mt-2 border-t border-white/10">
             <Link
               href="/products"
-              className="group/link flex items-center justify-between text-xs font-bold text-amber-300 hover:text-amber-200 transition-colors"
+              className="group/link flex items-center justify-between text-[11px] font-bold text-amber-300 hover:text-amber-200 transition-colors"
             >
               <span>Explore All Catalog Offers</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+              <ArrowRight className="w-3 h-3 group-hover/link:translate-x-1 transition-transform" />
             </Link>
           </div>
         </div>
@@ -266,10 +266,10 @@ export function HeroCardsHub() {
         {/* =========================================================================
             CARD 2: UPCOMING SALE DAYS (Flash & Festival Calendar)
             ========================================================================= */}
-        <div className="w-[86vw] sm:w-[380px] md:w-auto shrink-0 snap-center group relative rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col justify-between p-5 sm:p-6 bg-gradient-to-b from-[#0a1128] via-[#11193d] to-[#070b1c] border border-indigo-500/30 shadow-xl shadow-indigo-950/20 hover:border-indigo-400/60 transition-all duration-300 text-white">
+        <div className="w-[70vw] max-w-[260px] sm:w-[280px] md:w-auto shrink-0 snap-center group relative rounded-xl sm:rounded-2xl overflow-hidden flex flex-col justify-between p-3.5 sm:p-4 md:p-5 lg:p-6 bg-gradient-to-b from-[#0a1128] via-[#11193d] to-[#070b1c] border border-indigo-500/30 shadow-lg shadow-indigo-950/20 hover:border-indigo-400/60 transition-all duration-300 text-white">
           <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
             <Image
-              src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=800&q=80"
+              src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=600&q=80"
               alt="Sale Calendar"
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -277,77 +277,71 @@ export function HeroCardsHub() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#070b1c] via-[#070b1c]/80 to-transparent" />
           </div>
 
-          <div className="relative z-10 space-y-4">
+          <div className="relative z-10 space-y-2 sm:space-y-2.5 md:space-y-3">
             {/* Header Badge */}
             <div className="flex items-center justify-between">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/40 text-indigo-300 text-[11px] font-extrabold uppercase tracking-wider shadow-xs">
-                <Calendar className="w-3.5 h-3.5 text-indigo-400" />
+              <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-indigo-500/20 border border-indigo-400/40 text-indigo-300 text-[10px] font-extrabold uppercase tracking-wider">
+                <Calendar className="w-3 h-3 text-indigo-400" />
                 <span>Upcoming Sales</span>
               </div>
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-indigo-600/80 text-indigo-100">
-                Next In 3 Days
+              <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-indigo-600/80 text-indigo-100">
+                In 3 Days
               </span>
             </div>
 
             <div>
-              <h2 className="font-sans text-xl font-bold text-white leading-tight">
+              <h2 className="font-sans text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white leading-tight">
                 Sale Days &amp; Events
               </h2>
-              <p className="text-xs text-indigo-200/80 mt-1">
-                Judes Mega Autumn Bash is arriving soon. Unlock site-wide coupons.
+              <p className="text-[11px] sm:text-xs text-indigo-200/80 mt-0.5 line-clamp-1">
+                Judes Mega Autumn Bash arriving soon.
               </p>
             </div>
 
             {/* Live Countdown Clock Blocks */}
-            <div className="p-3.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15">
-              <div className="text-[10px] font-extrabold text-indigo-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <Clock className="w-3 h-3 text-cyan-400 animate-spin" style={{ animationDuration: '6s' }} />
+            <div className="p-2.5 rounded-lg bg-white/10 backdrop-blur-md border border-white/15">
+              <div className="text-[9px] font-extrabold text-indigo-300 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <Clock className="w-2.5 h-2.5 text-cyan-400 animate-spin" style={{ animationDuration: '6s' }} />
                 <span>Autumn Bash Countdown</span>
               </div>
-              <div className="grid grid-cols-4 gap-1.5 text-center">
-                <div className="bg-black/40 rounded-lg p-1.5 border border-indigo-400/20">
-                  <span className="block text-base sm:text-lg font-black text-white leading-none">
+              <div className="grid grid-cols-4 gap-1 text-center">
+                <div className="bg-black/40 rounded p-1 border border-indigo-400/20">
+                  <span className="block text-sm font-black text-white leading-none">
                     {String(saleTimeLeft.days).padStart(2, '0')}
                   </span>
-                  <span className="text-[9px] text-indigo-200 uppercase font-bold tracking-wider">Days</span>
+                  <span className="text-[8px] text-indigo-200 uppercase font-bold">Days</span>
                 </div>
-                <div className="bg-black/40 rounded-lg p-1.5 border border-indigo-400/20">
-                  <span className="block text-base sm:text-lg font-black text-white leading-none">
+                <div className="bg-black/40 rounded p-1 border border-indigo-400/20">
+                  <span className="block text-sm font-black text-white leading-none">
                     {String(saleTimeLeft.hours).padStart(2, '0')}
                   </span>
-                  <span className="text-[9px] text-indigo-200 uppercase font-bold tracking-wider">Hours</span>
+                  <span className="text-[8px] text-indigo-200 uppercase font-bold">Hours</span>
                 </div>
-                <div className="bg-black/40 rounded-lg p-1.5 border border-indigo-400/20">
-                  <span className="block text-base sm:text-lg font-black text-white leading-none">
+                <div className="bg-black/40 rounded p-1 border border-indigo-400/20">
+                  <span className="block text-sm font-black text-white leading-none">
                     {String(saleTimeLeft.minutes).padStart(2, '0')}
                   </span>
-                  <span className="text-[9px] text-indigo-200 uppercase font-bold tracking-wider">Mins</span>
+                  <span className="text-[8px] text-indigo-200 uppercase font-bold">Mins</span>
                 </div>
-                <div className="bg-black/40 rounded-lg p-1.5 border border-indigo-400/20">
-                  <span className="block text-base sm:text-lg font-black text-cyan-300 leading-none">
+                <div className="bg-black/40 rounded p-1 border border-indigo-400/20">
+                  <span className="block text-sm font-black text-cyan-300 leading-none">
                     {String(saleTimeLeft.seconds).padStart(2, '0')}
                   </span>
-                  <span className="text-[9px] text-indigo-200 uppercase font-bold tracking-wider">Secs</span>
+                  <span className="text-[8px] text-indigo-200 uppercase font-bold">Secs</span>
                 </div>
               </div>
             </div>
 
-            {/* Upcoming Event Schedule Pills */}
-            <div className="space-y-1.5 text-xs">
-              <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/10">
-                <span className="font-semibold text-slate-200 text-[11px]">Sept 18–22: Mega Autumn Bash</span>
-                <span className="text-[10px] font-bold text-amber-300">Up to 60%</span>
-              </div>
-              <div className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/10">
-                <span className="font-semibold text-slate-200 text-[11px]">Friday 10PM: Midnight Rush</span>
-                <span className="text-[10px] font-bold text-cyan-300">Flash Drops</span>
-              </div>
+            {/* Upcoming Event Schedule Pill */}
+            <div className="p-1.5 rounded-md bg-white/5 border border-white/10 flex items-center justify-between text-[10px]">
+              <span className="font-semibold text-slate-200 truncate">Sept 18–22: Mega Autumn Bash</span>
+              <span className="font-bold text-amber-300 shrink-0 ml-1">Up to 60%</span>
             </div>
 
             {/* Interactive Reminder Button */}
             <button
               onClick={() => setReminderActive(!reminderActive)}
-              className={`w-full py-2 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-all duration-200 shadow-sm ${
+              className={`w-full py-1.5 px-2.5 rounded-md font-bold text-[11px] flex items-center justify-center gap-1 transition-all duration-200 shadow-xs ${
                 reminderActive
                   ? 'bg-indigo-600 text-white border border-indigo-400'
                   : 'bg-white/15 hover:bg-white/25 text-indigo-200 border border-white/20'
@@ -355,25 +349,25 @@ export function HeroCardsHub() {
             >
               {reminderActive ? (
                 <>
-                  <BellRing className="w-3.5 h-3.5 text-amber-300" />
-                  <span>Reminder Set for Autumn Bash!</span>
+                  <BellRing className="w-3 h-3 text-amber-300" />
+                  <span>Reminder Set!</span>
                 </>
               ) : (
                 <>
-                  <Bell className="w-3.5 h-3.5 text-indigo-300" />
-                  <span>Set Sale Alert (App &amp; Email)</span>
+                  <Bell className="w-3 h-3 text-indigo-300" />
+                  <span>Set Sale Alert</span>
                 </>
               )}
             </button>
           </div>
 
-          <div className="relative z-10 pt-4 mt-2 border-t border-white/10">
+          <div className="relative z-10 pt-2.5 mt-2 border-t border-white/10">
             <Link
               href="/products"
-              className="group/link flex items-center justify-between text-xs font-bold text-indigo-300 hover:text-indigo-200 transition-colors"
+              className="group/link flex items-center justify-between text-[11px] font-bold text-indigo-300 hover:text-indigo-200 transition-colors"
             >
               <span>Preview Early-Bird Catalog</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+              <ArrowRight className="w-3 h-3 group-hover/link:translate-x-1 transition-transform" />
             </Link>
           </div>
         </div>
@@ -381,10 +375,10 @@ export function HeroCardsHub() {
         {/* =========================================================================
             CARD 3: LUCKY DRAWS (Platinum, Gold & Silver)
             ========================================================================= */}
-        <div className="w-[86vw] sm:w-[380px] md:w-auto shrink-0 snap-center group relative rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col justify-between p-5 sm:p-6 bg-gradient-to-b from-[#02231c] via-[#04382c] to-[#011c16] border border-emerald-500/30 shadow-xl shadow-emerald-950/20 hover:border-emerald-400/60 transition-all duration-300 text-white">
+        <div className="w-[70vw] max-w-[260px] sm:w-[280px] md:w-auto shrink-0 snap-center group relative rounded-xl sm:rounded-2xl overflow-hidden flex flex-col justify-between p-3.5 sm:p-4 md:p-5 lg:p-6 bg-gradient-to-b from-[#02231c] via-[#04382c] to-[#011c16] border border-emerald-500/30 shadow-lg shadow-emerald-950/20 hover:border-emerald-400/60 transition-all duration-300 text-white">
           <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
             <Image
-              src="https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=800&q=80"
+              src="https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=600&q=80"
               alt="Lucky Draws"
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -392,70 +386,70 @@ export function HeroCardsHub() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#011c16] via-[#011c16]/80 to-transparent" />
           </div>
 
-          <div className="relative z-10 space-y-4">
+          <div className="relative z-10 space-y-2 sm:space-y-2.5 md:space-y-3">
             {/* Header Badge */}
             <div className="flex items-center justify-between">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[11px] font-extrabold uppercase tracking-wider shadow-xs">
-                <Trophy className="w-3.5 h-3.5 text-amber-400" />
+              <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[10px] font-extrabold uppercase tracking-wider">
+                <Trophy className="w-3 h-3 text-amber-400" />
                 <span>Weekly Lucky Draws</span>
               </div>
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-600/90 text-white">
-                Tiered Entry
+              <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-600/90 text-white">
+                3 Tiers
               </span>
             </div>
 
             <div>
-              <h2 className="font-sans text-xl font-bold text-white leading-tight">
+              <h2 className="font-sans text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white leading-tight">
                 Shop &amp; Win Every Week
               </h2>
-              <p className="text-xs text-emerald-200/80 mt-1">
-                Receive automatic verified tickets for every qualifying purchase.
+              <p className="text-[11px] sm:text-xs text-emerald-200/80 mt-0.5 line-clamp-1">
+                Receive verified tickets for qualifying orders.
               </p>
             </div>
 
             {/* 3 Tier Snapshot Cards */}
-            <div className="space-y-2">
-              <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-emerald-400/20 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-lg bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-[10px] font-black text-amber-300">
+            <div className="space-y-1.5">
+              <div className="p-1.5 rounded-lg bg-white/10 backdrop-blur-md border border-emerald-400/20 flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-5 h-5 rounded bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-[9px]">
                     💎
                   </span>
                   <div>
-                    <span className="text-xs font-bold text-white block">Platinum Draw</span>
-                    <span className="text-[10px] text-emerald-200">iPhone 16 Pro &amp; MacBooks</span>
+                    <span className="text-[11px] font-bold text-white leading-none block">Platinum</span>
+                    <span className="text-[9px] text-emerald-200">iPhone 16 Pro &amp; Macs</span>
                   </div>
                 </div>
-                <span className="text-[10px] font-extrabold text-amber-300 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">
+                <span className="text-[9px] font-extrabold text-amber-300 bg-amber-400/10 px-1.5 py-0.2 rounded">
                   &gt;₹5,000
                 </span>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-emerald-400/20 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-lg bg-blue-500/20 border border-blue-400/40 flex items-center justify-center text-[10px] font-black text-blue-300">
+              <div className="p-1.5 rounded-lg bg-white/10 backdrop-blur-md border border-emerald-400/20 flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-5 h-5 rounded bg-blue-500/20 border border-blue-400/40 flex items-center justify-center text-[9px]">
                     🥇
                   </span>
                   <div>
-                    <span className="text-xs font-bold text-white block">Gold Draw</span>
-                    <span className="text-[10px] text-emerald-200">Apple Watch &amp; Sony Audio</span>
+                    <span className="text-[11px] font-bold text-white leading-none block">Gold</span>
+                    <span className="text-[9px] text-emerald-200">Apple Watch &amp; Audio</span>
                   </div>
                 </div>
-                <span className="text-[10px] font-extrabold text-blue-300 bg-blue-400/10 px-2 py-0.5 rounded border border-blue-400/20">
+                <span className="text-[9px] font-extrabold text-blue-300 bg-blue-400/10 px-1.5 py-0.2 rounded">
                   ₹2,500+
                 </span>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-emerald-400/20 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-lg bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-[10px] font-black text-cyan-300">
+              <div className="p-1.5 rounded-lg bg-white/10 backdrop-blur-md border border-emerald-400/20 flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-5 h-5 rounded bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-[9px]">
                     🥈
                   </span>
                   <div>
-                    <span className="text-xs font-bold text-white block">Silver Draw</span>
-                    <span className="text-[10px] text-emerald-200">AirPods &amp; Cash Raffles</span>
+                    <span className="text-[11px] font-bold text-white leading-none block">Silver</span>
+                    <span className="text-[9px] text-emerald-200">AirPods &amp; Raffles</span>
                   </div>
                 </div>
-                <span className="text-[10px] font-extrabold text-cyan-300 bg-cyan-400/10 px-2 py-0.5 rounded border border-cyan-400/20">
+                <span className="text-[9px] font-extrabold text-cyan-300 bg-cyan-400/10 px-1.5 py-0.2 rounded">
                   ₹1,000+
                 </span>
               </div>
@@ -464,20 +458,20 @@ export function HeroCardsHub() {
             {/* Direct Wheel Modal Trigger */}
             <button
               onClick={openLuckyDraw}
-              className="w-full py-2 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-all duration-200 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white shadow-md shadow-emerald-600/30"
+              className="w-full py-1.5 px-2.5 rounded-md font-bold text-[11px] flex items-center justify-center gap-1 transition-all duration-200 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white shadow-xs"
             >
-              <Trophy className="w-3.5 h-3.5 text-amber-200" />
-              <span>Open Interactive Draw Wheel</span>
+              <Trophy className="w-3 h-3 text-amber-200" />
+              <span>Open Prize Wheel</span>
             </button>
           </div>
 
-          <div className="relative z-10 pt-4 mt-2 border-t border-white/10">
+          <div className="relative z-10 pt-2.5 mt-2 border-t border-white/10">
             <Link
               href="/lucky-draw#regular-draws"
-              className="group/link flex items-center justify-between text-xs font-bold text-emerald-300 hover:text-emerald-200 transition-colors"
+              className="group/link flex items-center justify-between text-[11px] font-bold text-emerald-300 hover:text-emerald-200 transition-colors"
             >
-              <span>Weekly Draw Rules &amp; Winners</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+              <span>Weekly Draw Rules</span>
+              <ArrowRight className="w-3 h-3 group-hover/link:translate-x-1 transition-transform" />
             </Link>
           </div>
         </div>
@@ -485,10 +479,10 @@ export function HeroCardsHub() {
         {/* =========================================================================
             CARD 4: BUMPER DRAWS (Brand JUDES Exclusive)
             ========================================================================= */}
-        <div className="w-[86vw] sm:w-[380px] md:w-auto shrink-0 snap-center group relative rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col justify-between p-5 sm:p-6 bg-gradient-to-b from-[#1b0633] via-[#2f0d57] to-[#120324] border border-amber-400/40 shadow-xl shadow-purple-950/30 hover:border-amber-300 transition-all duration-300 text-white">
+        <div className="w-[70vw] max-w-[260px] sm:w-[280px] md:w-auto shrink-0 snap-center group relative rounded-xl sm:rounded-2xl overflow-hidden flex flex-col justify-between p-3.5 sm:p-4 md:p-5 lg:p-6 bg-gradient-to-b from-[#1b0633] via-[#2f0d57] to-[#120324] border border-amber-400/40 shadow-lg shadow-purple-950/30 hover:border-amber-300 transition-all duration-300 text-white">
           <div className="absolute inset-0 z-0 opacity-25 pointer-events-none">
             <Image
-              src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80"
+              src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80"
               alt="Bumper Draw"
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -496,77 +490,68 @@ export function HeroCardsHub() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#120324] via-[#120324]/80 to-transparent" />
           </div>
 
-          <div className="relative z-10 space-y-4">
+          <div className="relative z-10 space-y-2 sm:space-y-2.5 md:space-y-3">
             {/* Header Badge */}
             <div className="flex items-center justify-between">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/25 border border-amber-400/50 text-amber-300 text-[11px] font-extrabold uppercase tracking-wider shadow-xs">
-                <Crown className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-                <span>Brand JUDES Exclusive</span>
+              <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-purple-500/25 border border-amber-400/50 text-amber-300 text-[10px] font-extrabold uppercase tracking-wider">
+                <Crown className="w-3 h-3 text-amber-400 animate-pulse" />
+                <span>JUDES Exclusive</span>
               </div>
-              <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-400 text-slate-950 shadow-xs">
-                6–12 Mo Draw
+              <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-400 text-slate-950">
+                6–12 Mo
               </span>
             </div>
 
             <div>
-              <h2 className="font-sans text-xl font-bold text-white leading-tight">
+              <h2 className="font-sans text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white leading-tight">
                 Grand Bumper Jackpot
               </h2>
-              <p className="text-xs text-amber-200/90 mt-1">
-                Held every 6–12 months. Every Brand JUDES product purchase enters automatically.
+              <p className="text-[11px] sm:text-xs text-amber-200/90 mt-0.5 line-clamp-1">
+                Every Brand JUDES product enters automatically.
               </p>
             </div>
 
             {/* Mega Jackpot Prize Highlights */}
-            <div className="p-3.5 rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/30 space-y-2.5">
-              <div className="flex items-center gap-2.5 text-xs text-white">
-                <span className="w-7 h-7 rounded-lg bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-sm shrink-0">
+            <div className="p-2 rounded-lg bg-white/10 backdrop-blur-md border border-amber-400/30 space-y-1.5">
+              <div className="flex items-center gap-2 text-[11px] text-white">
+                <span className="w-5 h-5 rounded bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-xs shrink-0">
                   🚗
                 </span>
-                <div>
-                  <span className="font-bold text-amber-200 block text-xs">Luxury SUV &amp; Vehicle</span>
-                  <span className="text-[10px] text-stone-300">Grand Winner Jackpot Reward</span>
-                </div>
+                <span className="font-bold text-amber-200 truncate">Luxury SUV &amp; Vehicle</span>
               </div>
 
-              <div className="flex items-center gap-2.5 text-xs text-white">
-                <span className="w-7 h-7 rounded-lg bg-pink-400/20 border border-pink-400/40 flex items-center justify-center text-sm shrink-0">
+              <div className="flex items-center gap-2 text-[11px] text-white">
+                <span className="w-5 h-5 rounded bg-pink-400/20 border border-pink-400/40 flex items-center justify-center text-xs shrink-0">
                   ✈️
                 </span>
-                <div>
-                  <span className="font-bold text-pink-200 block text-xs">7-Day International Trip</span>
-                  <span className="text-[10px] text-stone-300">All-expenses-paid luxury holiday</span>
-                </div>
+                <span className="font-bold text-pink-200 truncate">7-Day International Tour</span>
               </div>
 
-              <div className="flex items-center gap-2.5 text-xs text-white">
-                <span className="w-7 h-7 rounded-lg bg-yellow-400/20 border border-yellow-400/40 flex items-center justify-center text-sm shrink-0">
+              <div className="flex items-center gap-2 text-[11px] text-white">
+                <span className="w-5 h-5 rounded bg-yellow-400/20 border border-yellow-400/40 flex items-center justify-center text-xs shrink-0">
                   💰
                 </span>
-                <div>
-                  <span className="font-bold text-yellow-200 block text-xs">₹5,00,000 Mega Cash Prize</span>
-                  <span className="text-[10px] text-stone-300">Direct cash jackpot transfer</span>
-                </div>
+                <span className="font-bold text-yellow-200 truncate">₹5,00,000 Cash Spree</span>
               </div>
             </div>
 
             {/* Shop Brand JUDES CTA */}
             <Link
               href="/products?brand=JUDES"
-              className="w-full py-2 px-3 rounded-lg font-black text-xs flex items-center justify-center gap-1.5 transition-all duration-200 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:brightness-110 text-slate-950 shadow-md shadow-amber-500/30"
+              className="w-full py-1.5 px-2.5 rounded-md font-black text-[11px] flex items-center justify-center gap-1 transition-all duration-200 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:brightness-110 text-slate-950 shadow-xs"
             >
-              <Crown className="w-3.5 h-3.5 text-slate-950" />
-              <span>Shop Brand JUDES Products</span>
+              <Crown className="w-3 h-3 text-slate-950" />
+              <span>Shop Brand JUDES</span>
             </Link>
           </div>
 
-          <div className="relative z-10 pt-4 mt-2 border-t border-white/10">
+          <div className="relative z-10 pt-2.5 mt-2 border-t border-white/10">
             <Link
               href="/lucky-draw#bumper-draw"
-              className="group/link flex items-center justify-between text-xs font-bold text-amber-300 hover:text-amber-200 transition-colors"
+              className="group/link flex items-center justify-between text-[11px] font-bold text-amber-300 hover:text-amber-200 transition-colors"
             >
-              <span>View Bumper Draw Rules &amp; Tiers</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+              <span>View Bumper Draw Rules</span>
+              <ArrowRight className="w-3 h-3 group-hover/link:translate-x-1 transition-transform" />
             </Link>
           </div>
         </div>
