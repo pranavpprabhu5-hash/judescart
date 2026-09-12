@@ -5,7 +5,7 @@ import { Order, UserProfile } from '@/types/user';
 
 // Keys for local storage persistence
 const STORAGE_KEYS = {
-  PRODUCTS: 'judescart_products_v2',
+  PRODUCTS: 'judescart_products_v3',
   USER: 'judescart_user_v2',
   ORDERS: 'judescart_orders_v2',
   WISHLIST: 'judescart_wishlist_v2',
@@ -34,7 +34,11 @@ export const api = {
   // Products
   async getProducts(filters?: Partial<FilterState>): Promise<Product[]> {
     let items = getStorageItem<Product[]>(STORAGE_KEYS.PRODUCTS, PRODUCTS);
-    if (!items || items.length === 0) {
+    if (items && items.length > 0) {
+      const defaultIds = new Set(PRODUCTS.map((p) => p.id));
+      const customItems = items.filter((p) => !defaultIds.has(p.id));
+      items = [...PRODUCTS, ...customItems];
+    } else {
       items = PRODUCTS;
       setStorageItem(STORAGE_KEYS.PRODUCTS, items);
     }

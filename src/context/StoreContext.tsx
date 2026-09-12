@@ -347,8 +347,19 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       const savedCoins = localStorage.getItem('judescart_coins');
       if (savedCoins) setJudesCoins(parseInt(savedCoins, 10));
 
-      const savedProducts = localStorage.getItem('judescart_products_v2') || localStorage.getItem('judescart_admin_products');
-      if (savedProducts) setProducts(JSON.parse(savedProducts));
+      const savedProducts = localStorage.getItem('judescart_products_v3');
+      if (savedProducts) {
+        try {
+          const parsed = JSON.parse(savedProducts);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const defaultIds = new Set(PRODUCTS.map((p) => p.id));
+            const customProducts = parsed.filter((p: Product) => !defaultIds.has(p.id));
+            setProducts([...PRODUCTS, ...customProducts]);
+          }
+        } catch {
+          setProducts(PRODUCTS);
+        }
+      }
 
       const savedCategories = localStorage.getItem('judescart_categories');
       if (savedCategories) {
@@ -396,6 +407,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!isMounted) return;
     try {
+      localStorage.setItem('judescart_products_v3', JSON.stringify(products));
       localStorage.setItem('judescart_products_v2', JSON.stringify(products));
       localStorage.setItem('judescart_admin_products', JSON.stringify(products));
     } catch {}
