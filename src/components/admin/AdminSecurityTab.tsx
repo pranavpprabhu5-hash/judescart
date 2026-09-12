@@ -367,7 +367,7 @@ export function AdminSecurityTab({ showToast }: AdminSecurityTabProps) {
               <label className="text-xs font-medium text-zinc-300 flex items-center justify-between">
                 <span>Inactivity Auto-Lock Timeout</span>
                 <span className="text-[10px] text-amber-400 font-mono">
-                  {adminInactivityTimeout === 0 ? 'Disabled' : `${adminInactivityTimeout / 60000} mins`}
+                  {adminInactivityTimeout === 0 ? 'Disabled' : `${Math.round(adminInactivityTimeout / 60000)} mins`}
                 </span>
               </label>
               <select
@@ -375,7 +375,7 @@ export function AdminSecurityTab({ showToast }: AdminSecurityTabProps) {
                 onChange={(e) => {
                   const val = Number(e.target.value);
                   setAdminInactivityTimeout(val);
-                  showToast(`⏱️ Auto-lock timeout set to ${val === 0 ? 'Disabled' : `${val / 60000} minutes`}`);
+                  showToast(`⏱️ Auto-lock timeout set to ${val === 0 ? 'Disabled' : `${Math.round(val / 60000)} minutes`}`);
                 }}
                 className="w-full bg-zinc-900 border border-zinc-700/80 rounded-2xl px-4 py-3 text-xs text-zinc-100 focus:outline-none focus:border-amber-500 font-semibold cursor-pointer"
               >

@@ -261,25 +261,30 @@ export default function AdminCommandCenter() {
 
   // Inactivity Auto-Lock Timer
   useEffect(() => {
-    if (!adminInactivityTimeout || adminInactivityTimeout === 0) return;
+    // Never run inactivity timer if console is already locked
+    if (isConsoleLocked) return;
+    if (!adminInactivityTimeout || adminInactivityTimeout <= 0) return;
+
+    // Enforce safe minimum of 10 seconds to prevent any micro-timeout lock loops
+    const safeTimeout = Math.max(10000, adminInactivityTimeout);
 
     let timeoutId: NodeJS.Timeout;
     const handleActivity = () => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
         lockConsole();
-      }, adminInactivityTimeout);
+      }, safeTimeout);
     };
 
     const listeners = ['mousemove', 'keydown', 'touchstart', 'scroll', 'click'];
-    listeners.forEach((evt) => window.addEventListener(evt, handleActivity));
+    listeners.forEach((evt) => window.addEventListener(evt, handleActivity, { passive: true }));
     handleActivity();
 
     return () => {
       clearTimeout(timeoutId);
       listeners.forEach((evt) => window.removeEventListener(evt, handleActivity));
     };
-  }, [adminInactivityTimeout, lockConsole]);
+  }, [isConsoleLocked, adminInactivityTimeout, lockConsole]);
 
   // Role-Based Allowed Tabs
   const roleAllowedTabs: Record<string, string[]> = {

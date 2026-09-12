@@ -17,8 +17,29 @@ export function AdminLockScreen({ onUnlock, currentSlug = 'portal' }: AdminLockS
   const [isShaking, setIsShaking] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
+  const handleManualUnlock = useCallback(() => {
+    if (isSuccess) return;
+    if (pin.length === 0) {
+      setError('Please enter your 4-digit Master Passcode.');
+      return;
+    }
+    const success = onUnlock(pin);
+    if (success) {
+      setIsSuccess(true);
+      setError(null);
+    } else {
+      setError('Invalid Passcode. Please try again.');
+      setIsShaking(true);
+      setTimeout(() => {
+        setIsShaking(false);
+        setPin('');
+      }, 600);
+    }
+  }, [pin, onUnlock, isSuccess]);
+
   const handleDigit = useCallback(
     (digit: string) => {
+      if (isSuccess) return;
       if (pin.length < 4) {
         const nextPin = pin + digit;
         setPin(nextPin);
@@ -30,6 +51,7 @@ export function AdminLockScreen({ onUnlock, currentSlug = 'portal' }: AdminLockS
             const success = onUnlock(nextPin);
             if (success) {
               setIsSuccess(true);
+              setError(null);
             } else {
               setError('Invalid Passcode. Please try again.');
               setIsShaking(true);
@@ -38,56 +60,43 @@ export function AdminLockScreen({ onUnlock, currentSlug = 'portal' }: AdminLockS
                 setPin('');
               }, 600);
             }
-          }, 150);
+          }, 80);
         }
       }
     },
-    [pin, onUnlock]
+    [pin, onUnlock, isSuccess]
   );
 
   const handleDelete = useCallback(() => {
+    if (isSuccess) return;
     setPin((prev) => prev.slice(0, -1));
     setError(null);
-  }, []);
+  }, [isSuccess]);
 
   const handleClear = useCallback(() => {
+    if (isSuccess) return;
     setPin('');
     setError(null);
-  }, []);
+  }, [isSuccess]);
 
   // Capture physical keyboard inputs
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (isSuccess) return;
       if (/^[0-9]$/.test(e.key)) {
         handleDigit(e.key);
       } else if (e.key === 'Backspace') {
         handleDelete();
       } else if (e.key === 'Escape') {
         handleClear();
+      } else if (e.key === 'Enter') {
+        handleManualUnlock();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleDigit, handleDelete, handleClear]);
-
-  const handleManualUnlock = () => {
-    if (pin.length === 0) {
-      setError('Please enter your 4-digit Master Passcode.');
-      return;
-    }
-    const success = onUnlock(pin);
-    if (success) {
-      setIsSuccess(true);
-    } else {
-      setError('Invalid Passcode. Please try again.');
-      setIsShaking(true);
-      setTimeout(() => {
-        setIsShaking(false);
-        setPin('');
-      }, 600);
-    }
-  };
+  }, [handleDigit, handleDelete, handleClear, handleManualUnlock, isSuccess]);
 
   return (
     <div className="min-h-screen bg-[#07090e] text-zinc-100 flex flex-col items-center justify-center p-4 relative overflow-hidden selection:bg-amber-500 selection:text-black">
@@ -145,20 +154,25 @@ export function AdminLockScreen({ onUnlock, currentSlug = 'portal' }: AdminLockS
                     ? 'bg-amber-400 border-amber-400 scale-110 shadow-lg shadow-amber-400/50'
                     : 'border-zinc-700 bg-zinc-900/50',
                   error && 'border-red-500 bg-red-500/20',
-                  isSuccess && 'border-emerald-400 bg-emerald-400'
+                  isSuccess && 'border-emerald-400 bg-emerald-400 shadow-lg shadow-emerald-400/50 scale-110'
                 )}
               />
             );
           })}
         </div>
 
-        {/* Error Alert */}
-        {error && (
+        {/* Error / Success Alert */}
+        {isSuccess ? (
+          <div className="flex items-center justify-center gap-2 text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-xl py-2 px-3 mb-4 animate-in fade-in">
+            <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+            <span className="font-semibold">Access Granted • Unlocking Console...</span>
+          </div>
+        ) : error ? (
           <div className="flex items-center justify-center gap-2 text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl py-2 px-3 mb-4 animate-in fade-in">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
-        )}
+        ) : null}
 
         {/* Numeric Keypad */}
         <div className="grid grid-cols-3 gap-2.5 mb-6">
@@ -166,30 +180,34 @@ export function AdminLockScreen({ onUnlock, currentSlug = 'portal' }: AdminLockS
             <button
               key={num}
               type="button"
+              disabled={isSuccess}
               onClick={() => handleDigit(num)}
-              className="h-14 rounded-2xl bg-zinc-900/60 hover:bg-zinc-800/80 active:bg-amber-500/20 border border-white/5 hover:border-amber-500/30 text-xl font-semibold text-zinc-100 flex items-center justify-center transition-all duration-150 active:scale-95 shadow-sm"
+              className="h-14 rounded-2xl bg-zinc-900/60 hover:bg-zinc-800/80 active:bg-amber-500/20 border border-white/5 hover:border-amber-500/30 text-xl font-semibold text-zinc-100 flex items-center justify-center transition-all duration-150 active:scale-95 shadow-sm disabled:opacity-50"
             >
               {num}
             </button>
           ))}
           <button
             type="button"
+            disabled={isSuccess}
             onClick={handleClear}
-            className="h-14 rounded-2xl bg-zinc-900/30 hover:bg-zinc-800/60 active:bg-zinc-700/50 border border-white/5 text-xs font-semibold text-zinc-400 hover:text-zinc-200 flex items-center justify-center transition-all duration-150 active:scale-95 uppercase tracking-wider"
+            className="h-14 rounded-2xl bg-zinc-900/30 hover:bg-zinc-800/60 active:bg-zinc-700/50 border border-white/5 text-xs font-semibold text-zinc-400 hover:text-zinc-200 flex items-center justify-center transition-all duration-150 active:scale-95 uppercase tracking-wider disabled:opacity-50"
           >
             Clear
           </button>
           <button
             type="button"
+            disabled={isSuccess}
             onClick={() => handleDigit('0')}
-            className="h-14 rounded-2xl bg-zinc-900/60 hover:bg-zinc-800/80 active:bg-amber-500/20 border border-white/5 hover:border-amber-500/30 text-xl font-semibold text-zinc-100 flex items-center justify-center transition-all duration-150 active:scale-95 shadow-sm"
+            className="h-14 rounded-2xl bg-zinc-900/60 hover:bg-zinc-800/80 active:bg-amber-500/20 border border-white/5 hover:border-amber-500/30 text-xl font-semibold text-zinc-100 flex items-center justify-center transition-all duration-150 active:scale-95 shadow-sm disabled:opacity-50"
           >
             0
           </button>
           <button
             type="button"
+            disabled={isSuccess}
             onClick={handleDelete}
-            className="h-14 rounded-2xl bg-zinc-900/30 hover:bg-zinc-800/60 active:bg-zinc-700/50 border border-white/5 text-sm font-semibold text-zinc-400 hover:text-zinc-200 flex items-center justify-center transition-all duration-150 active:scale-95"
+            className="h-14 rounded-2xl bg-zinc-900/30 hover:bg-zinc-800/60 active:bg-zinc-700/50 border border-white/5 text-sm font-semibold text-zinc-400 hover:text-zinc-200 flex items-center justify-center transition-all duration-150 active:scale-95 disabled:opacity-50"
           >
             ⌫
           </button>
@@ -198,12 +216,25 @@ export function AdminLockScreen({ onUnlock, currentSlug = 'portal' }: AdminLockS
         {/* Action Button */}
         <button
           type="button"
+          disabled={isSuccess}
           onClick={handleManualUnlock}
-          className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-zinc-950 font-bold text-sm tracking-wide flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all shadow-lg shadow-amber-500/20 mb-4"
+          className={cn(
+            'w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-zinc-950 font-bold text-sm tracking-wide flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all shadow-lg shadow-amber-500/20 mb-4',
+            isSuccess && 'from-emerald-500 via-emerald-400 to-emerald-500 text-zinc-950 shadow-emerald-500/30'
+          )}
         >
-          <KeyRound className="w-4 h-4" />
-          <span>Unlock Command Center</span>
-          <ArrowRight className="w-4 h-4 ml-0.5" />
+          {isSuccess ? (
+            <>
+              <CheckCircle2 className="w-4 h-4" />
+              <span>Access Granted • Opening...</span>
+            </>
+          ) : (
+            <>
+              <KeyRound className="w-4 h-4" />
+              <span>Unlock Command Center</span>
+              <ArrowRight className="w-4 h-4 ml-0.5" />
+            </>
+          )}
         </button>
 
         {/* Security Info & Default Hint */}

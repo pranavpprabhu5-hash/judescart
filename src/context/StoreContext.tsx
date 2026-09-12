@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
+import React, { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react';
 import { Product, CategoryItem, DEFAULT_CATEGORIES } from '@/types/product';
 import { CartItem, PromoCode, CartSummary } from '@/types/cart';
 import { CurrencyCode, DetectedLocation } from '@/types/currency';
@@ -989,9 +989,34 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     discountPercent: 15,
   });
 
-  // Admin Security Role & Inactivity Timeout
-  const [adminInactivityTimeout, setAdminInactivityTimeout] = useState<number>(15);
-  const [adminRole, setAdminRole] = useState<'super_admin' | 'logistics' | 'catalog' | 'draw_officer'>('super_admin');
+  // Admin Security Role & Inactivity Timeout (Default: 15 minutes = 900,000 ms)
+  const [adminInactivityTimeout, setAdminInactivityTimeoutState] = useState<number>(15 * 60 * 1000);
+  const [adminRole, setAdminRoleState] = useState<'super_admin' | 'logistics' | 'catalog' | 'draw_officer'>('super_admin');
+
+  const setAdminInactivityTimeout = useCallback((minsOrMs: number) => {
+    // If value passed is in minutes (e.g. 5, 15, 30, 60), convert to ms. If already ms (>= 1000) or 0 (disabled), keep as is.
+    const ms = minsOrMs > 0 && minsOrMs < 1000 ? minsOrMs * 60 * 1000 : minsOrMs;
+    setAdminInactivityTimeoutState(ms);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('judescart_admin_inactivity_timeout', String(ms));
+      } catch (e) {
+        console.error('Failed to save inactivity timeout', e);
+      }
+    }
+  }, []);
+
+  const setAdminRole = useCallback((role: 'super_admin' | 'logistics' | 'catalog' | 'draw_officer') => {
+    setAdminRoleState(role);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('judescart_admin_role', role);
+      } catch (e) {
+        console.error('Failed to save admin role', e);
+      }
+    }
+  }, []);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
@@ -1007,6 +1032,24 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           if (typeof parsed.isPinRequired === 'boolean') setIsPinRequired(parsed.isPinRequired);
           if (parsed.cloakMode) setAdminCloakMode(parsed.cloakMode);
         }
+
+        // Safely load inactivity timeout (sanitize against any old buggy 15ms values)
+        const savedTimeout = localStorage.getItem('judescart_admin_inactivity_timeout');
+        if (savedTimeout) {
+          const parsedTimeout = Number(savedTimeout);
+          if (!isNaN(parsedTimeout)) {
+            setAdminInactivityTimeoutState(
+              parsedTimeout > 0 && parsedTimeout < 1000 ? parsedTimeout * 60 * 1000 : parsedTimeout
+            );
+          }
+        }
+
+        // Safely load active admin operator role
+        const savedRole = localStorage.getItem('judescart_admin_role');
+        if (savedRole && ['super_admin', 'logistics', 'catalog', 'draw_officer'].includes(savedRole)) {
+          setAdminRoleState(savedRole as any);
+        }
+
         const sessionUnlock = sessionStorage.getItem('judescart_admin_unlocked');
         if (sessionUnlock === 'true') {
           setIsConsoleLocked(false);
@@ -1017,8 +1060,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const unlockConsole = (enteredPin: string): boolean => {
-    if (!isPinRequired || enteredPin.trim() === adminPin.trim() || enteredPin.trim() === '4748') {
+  const unlockConsole = useCallback((enteredPin: string): boolean => {
+    const cleanPin = (enteredPin || '').trim();
+    if (!isPinRequired || cleanPin === (adminPin || '').trim() || cleanPin === '4748') {
       setIsConsoleLocked(false);
       if (typeof window !== 'undefined') {
         sessionStorage.setItem('judescart_admin_unlocked', 'true');
@@ -1026,14 +1070,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       return true;
     }
     return false;
-  };
+  }, [isPinRequired, adminPin]);
 
-  const lockConsole = () => {
+  const lockConsole = useCallback(() => {
     setIsConsoleLocked(true);
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem('judescart_admin_unlocked');
     }
-  };
+  }, []);
 
   const setAdminAccessSettings = (settings: {
     slug?: string;
