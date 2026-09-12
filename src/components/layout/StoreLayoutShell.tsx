@@ -13,6 +13,7 @@ import { ProductQuickViewModal } from '@/components/product/ProductQuickViewModa
 import { DailyMysteryBoxModal } from '@/components/luckydraw/DailyMysteryBoxModal';
 import { ProductComparisonDrawer } from '@/components/product/ProductComparisonDrawer';
 import { CurrencyLocationBanner } from '@/components/layout/CurrencyLocationBanner';
+import { JudesAIWidget } from '@/components/ai/JudesAIWidget';
 
 export function StoreLayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -32,6 +33,7 @@ export function StoreLayoutShell({ children }: { children: React.ReactNode }) {
       <SearchOverlay />
       <LuckyDrawModal />
       <FloatingLuckyDrawCTA />
+      <JudesAIWidget />
       <ProductQuickViewModal />
       <DailyMysteryBoxModal />
       <ProductComparisonDrawer />
