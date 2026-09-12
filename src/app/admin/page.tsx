@@ -49,6 +49,7 @@ import {
   Calendar,
   UserCheck,
   Shield,
+  ShieldCheck,
   Lock,
   Copy,
 } from 'lucide-react';
@@ -64,6 +65,7 @@ import { CustomerDetailModal } from '@/components/admin/CustomerDetailModal';
 import { LuckyDrawConfigModal } from '@/components/admin/LuckyDrawConfigModal';
 import { AdminLockScreen } from '@/components/admin/AdminLockScreen';
 import { AdminSecurityTab } from '@/components/admin/AdminSecurityTab';
+import { ProvablyFairModal } from '@/components/luckydraw/ProvablyFairModal';
 
 // Sample CRM Customer Directory
 const CRM_CUSTOMERS: UserProfile[] = [
@@ -247,10 +249,53 @@ export default function AdminCommandCenter() {
     setAdminAccessSettings,
     unlockConsole,
     lockConsole,
+    addOrder,
+    adminInactivityTimeout,
+    adminRole,
+    setAdminRole,
+    setAdminInactivityTimeout,
   } = useStore();
 
   const [activeTab, setActiveTab] = useState<'analytics' | 'orders' | 'products' | 'categories' | 'luckydraw' | 'promos' | 'customers' | 'security'>('analytics');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Inactivity Auto-Lock Timer
+  useEffect(() => {
+    if (!adminInactivityTimeout || adminInactivityTimeout === 0) return;
+
+    let timeoutId: NodeJS.Timeout;
+    const handleActivity = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        lockConsole();
+      }, adminInactivityTimeout);
+    };
+
+    const listeners = ['mousemove', 'keydown', 'touchstart', 'scroll', 'click'];
+    listeners.forEach((evt) => window.addEventListener(evt, handleActivity));
+    handleActivity();
+
+    return () => {
+      clearTimeout(timeoutId);
+      listeners.forEach((evt) => window.removeEventListener(evt, handleActivity));
+    };
+  }, [adminInactivityTimeout, lockConsole]);
+
+  // Role-Based Allowed Tabs
+  const roleAllowedTabs: Record<string, string[]> = {
+    super_admin: ['analytics', 'orders', 'products', 'categories', 'luckydraw', 'promos', 'customers', 'security'],
+    logistics: ['orders', 'analytics', 'customers'],
+    catalog: ['products', 'categories', 'promos'],
+    draw_officer: ['luckydraw', 'analytics'],
+  };
+  const currentAllowedTabs = roleAllowedTabs[adminRole || 'super_admin'] || roleAllowedTabs.super_admin;
+
+  // Auto-switch tab if current tab is forbidden under selected role
+  useEffect(() => {
+    if (!currentAllowedTabs.includes(activeTab)) {
+      setActiveTab(currentAllowedTabs[0] as any);
+    }
+  }, [adminRole, currentAllowedTabs, activeTab]);
 
   // Filter & Search states
   const [orderFilter, setOrderFilter] = useState<string>('all');
@@ -273,6 +318,7 @@ export default function AdminCommandCenter() {
   const [isCustomerDetailModalOpen, setIsCustomerDetailModalOpen] = useState(false);
 
   const [isLuckyDrawConfigOpen, setIsLuckyDrawConfigOpen] = useState(false);
+  const [isProvablyFairModalOpen, setIsProvablyFairModalOpen] = useState(false);
 
   // Category Management Modal State
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
@@ -635,110 +681,126 @@ export default function AdminCommandCenter() {
 
         {/* Tab Navigation Ribbon */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-1 overflow-x-auto no-scrollbar border-t border-slate-200/80 dark:border-zinc-800/80">
-          <button
-            onClick={() => setActiveTab('analytics')}
-            className={cn(
-              'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
-              activeTab === 'analytics'
-                ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/10'
-                : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
-            )}
-          >
-            <LayoutDashboard className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
-            <span>Executive Analytics</span>
-          </button>
+          {currentAllowedTabs.includes('analytics') && (
+            <button
+              onClick={() => setActiveTab('analytics')}
+              className={cn(
+                'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
+                activeTab === 'analytics'
+                  ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/10'
+                  : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
+              )}
+            >
+              <LayoutDashboard className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+              <span>Executive Analytics</span>
+            </button>
+          )}
 
-          <button
-            onClick={() => setActiveTab('orders')}
-            className={cn(
-              'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
-              activeTab === 'orders'
-                ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/10'
-                : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
-            )}
-          >
-            <Truck className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
-            <span>Orders & Fulfillment ({allOrders.length})</span>
-          </button>
+          {currentAllowedTabs.includes('orders') && (
+            <button
+              onClick={() => setActiveTab('orders')}
+              className={cn(
+                'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
+                activeTab === 'orders'
+                  ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/10'
+                  : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
+              )}
+            >
+              <Truck className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+              <span>Orders &amp; Fulfillment ({allOrders.length})</span>
+            </button>
+          )}
 
-          <button
-            onClick={() => setActiveTab('products')}
-            className={cn(
-              'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
-              activeTab === 'products'
-                ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/10'
-                : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
-            )}
-          >
-            <Package className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
-            <span>Catalog & Inventory ({products.length})</span>
-          </button>
+          {currentAllowedTabs.includes('products') && (
+            <button
+              onClick={() => setActiveTab('products')}
+              className={cn(
+                'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
+                activeTab === 'products'
+                  ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/10'
+                  : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
+              )}
+            >
+              <Package className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+              <span>Catalog &amp; Inventory ({products.length})</span>
+            </button>
+          )}
 
-          <button
-            onClick={() => setActiveTab('categories')}
-            className={cn(
-              'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
-              activeTab === 'categories'
-                ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/10'
-                : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
-            )}
-          >
-            <Layers className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
-            <span>Categories ({categories.length})</span>
-          </button>
+          {currentAllowedTabs.includes('categories') && (
+            <button
+              onClick={() => setActiveTab('categories')}
+              className={cn(
+                'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
+                activeTab === 'categories'
+                  ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/10'
+                  : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
+              )}
+            >
+              <Layers className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+              <span>Categories ({categories.length})</span>
+            </button>
+          )}
 
-          <button
-            onClick={() => setActiveTab('luckydraw')}
-            className={cn(
-              'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
-              activeTab === 'luckydraw'
-                ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50 dark:bg-amber-500/10'
-                : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
-            )}
-          >
-            <Trophy className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
-            <span>Lucky Draw & Bumper</span>
-          </button>
+          {currentAllowedTabs.includes('luckydraw') && (
+            <button
+              onClick={() => setActiveTab('luckydraw')}
+              className={cn(
+                'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
+                activeTab === 'luckydraw'
+                  ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50 dark:bg-amber-500/10'
+                  : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
+              )}
+            >
+              <Trophy className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+              <span>Lucky Draw &amp; Bumper</span>
+            </button>
+          )}
 
-          <button
-            onClick={() => setActiveTab('promos')}
-            className={cn(
-              'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
-              activeTab === 'promos'
-                ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/10'
-                : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
-            )}
-          >
-            <Tag className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
-            <span>Promotions & Vouchers</span>
-          </button>
+          {currentAllowedTabs.includes('promos') && (
+            <button
+              onClick={() => setActiveTab('promos')}
+              className={cn(
+                'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
+                activeTab === 'promos'
+                  ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/10'
+                  : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
+              )}
+            >
+              <Tag className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+              <span>Promotions &amp; Vouchers</span>
+            </button>
+          )}
 
-          <button
-            onClick={() => setActiveTab('customers')}
-            className={cn(
-              'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
-              activeTab === 'customers'
-                ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/10'
-                : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
-            )}
-          >
-            <Coins className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
-            <span>Customers & CRM</span>
-          </button>
+          {currentAllowedTabs.includes('customers') && (
+            <button
+              onClick={() => setActiveTab('customers')}
+              className={cn(
+                'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
+                activeTab === 'customers'
+                  ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/10'
+                  : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
+              )}
+            >
+              <Coins className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+              <span>Customers &amp; CRM</span>
+            </button>
+          )}
 
           {/* Security & Access Link Tab */}
-          <button
-            onClick={() => setActiveTab('security')}
-            className={cn(
-              'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
-              activeTab === 'security'
-                ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/15'
-                : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
-            )}
-          >
-            <Shield className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
-            <span>Security & Access Link</span>
-          </button>
+          {currentAllowedTabs.includes('security') && (
+            <button
+              onClick={() => setActiveTab('security')}
+              className={cn(
+                'flex items-center gap-2 py-3 px-3.5 text-xs font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer',
+                activeTab === 'security'
+                  ? 'border-amber-500 text-amber-600 dark:text-amber-300 bg-amber-50/80 dark:bg-amber-500/15'
+                  : 'border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-zinc-900/60'
+              )}
+            >
+              <Shield className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+              <span>Security &amp; Access Link</span>
+            </button>
+          )}
         </div>
       </header>
 
@@ -1845,47 +1907,138 @@ export default function AdminCommandCenter() {
                 </div>
               </div>
 
-              {/* Quick Link to Customer Wheel */}
+              {/* Provably-Fair Cryptographic Seeds & Live Arena */}
               <div className="p-6 rounded-2xl bg-white dark:bg-[#0F172A] border border-slate-200/80 dark:border-slate-800 shadow-sm dark:shadow-xl flex flex-col justify-between space-y-4">
                 <div className="space-y-2">
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Live Customer Arena</h3>
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Cryptographic Proof</h3>
+                    <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                  </div>
                   <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                    View the customer-facing lucky wheel with ticking countdown, prize tiers, and live winner tickers.
+                    Verify server and client seeds with SHA-256 HMAC integrity. Unalterable mathematical guarantee.
                   </p>
+                  <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 font-mono text-[10px] text-slate-600 dark:text-slate-300 break-all border border-slate-200 dark:border-slate-800">
+                    Active Seed: 8f4b2b11a938c20d7e5d84c7...
+                  </div>
                 </div>
-                <Link
-                  href="/lucky-draw"
-                  target="_blank"
-                  className="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs text-center border border-slate-200 dark:border-slate-700 transition-all flex items-center justify-center gap-2"
-                >
-                  <span>Open /lucky-draw Page</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </Link>
+
+                <div className="space-y-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsProvablyFairModalOpen(true)}
+                    className="w-full py-2.5 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-bold text-xs text-center border border-emerald-300 dark:border-emerald-700/60 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>Inspect SHA-256 Algorithm</span>
+                  </button>
+
+                  <Link
+                    href="/lucky-draw"
+                    target="_blank"
+                    className="w-full py-2 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs text-center border border-slate-200 dark:border-slate-700 transition-all flex items-center justify-center gap-2"
+                  >
+                    <span>Open /lucky-draw Arena</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
               </div>
             </div>
 
             {/* Recent Winners Ledger */}
             <div className="p-6 rounded-2xl bg-white dark:bg-[#0F172A] border border-slate-200/80 dark:border-slate-800 shadow-sm dark:shadow-xl space-y-4">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                Recent Winners Wall Ledger ({recentWinners.length} verified)
-              </h3>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                    Recent Winners Wall Ledger ({recentWinners.length} verified)
+                  </h3>
+                  <p className="text-xs text-slate-500">1-click convert any raffle winner into a zero-cost VIP dispatch order</p>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {recentWinners.map((winner) => (
                   <div
                     key={winner.id}
-                    className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex items-center gap-3"
+                    className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between gap-3"
                   >
-                    <div className="relative w-10 h-10 rounded-full overflow-hidden border border-amber-400/40 shrink-0">
-                      <Image src={winner.avatar} alt={winner.name} fill className="object-cover" />
-                    </div>
-                    <div className="flex-1 min-w-0 text-xs">
-                      <div className="flex items-center justify-between">
-                        <p className="font-bold text-slate-900 dark:text-white truncate">{winner.name}</p>
-                        <span className="text-[10px] uppercase font-bold text-amber-500 dark:text-amber-400">{winner.tier}</span>
+                    <div className="flex items-start gap-3">
+                      <div className="relative w-11 h-11 rounded-full overflow-hidden border-2 border-amber-400/60 shrink-0">
+                        <Image src={winner.avatar} alt={winner.name} fill className="object-cover" />
                       </div>
-                      <p className="text-amber-700 dark:text-amber-300 font-medium text-[11px] truncate">{winner.prize}</p>
-                      <p className="text-slate-500 text-[10px]">{winner.city} • {winner.date}</p>
+                      <div className="flex-1 min-w-0 text-xs">
+                        <div className="flex items-center justify-between">
+                          <p className="font-bold text-slate-900 dark:text-white truncate">{winner.name}</p>
+                          <span className="text-[10px] uppercase font-bold text-amber-500 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
+                            {winner.tier}
+                          </span>
+                        </div>
+                        <p className="text-amber-700 dark:text-amber-300 font-bold text-xs truncate mt-0.5">{winner.prize}</p>
+                        <p className="text-slate-500 text-[10px] mt-0.5">{winner.city} • {winner.date}</p>
+                      </div>
                     </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const newOrderId = `JC-WIN-${winner.id.slice(-4) || '9021'}`;
+                        const prizeOrder: Order = {
+                          id: newOrderId,
+                          date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                          items: [
+                            {
+                              id: `prize-item-${winner.id}`,
+                              productId: `prize-${winner.id}`,
+                              name: `Raffle Prize: ${winner.prize}`,
+                              image: winner.avatar,
+                              color: 'Gold Trophy Edition',
+                              size: `${winner.tier} Pool`,
+                              price: 0,
+                              quantity: 1,
+                            },
+                          ],
+                          subtotal: 0,
+                          discount: 0,
+                          shipping: 0,
+                          tax: 0,
+                          total: 0,
+                          currency: currency || 'INR',
+                          shippingAddress: {
+                            firstName: winner.name.split(' ')[0] || 'Lucky',
+                            lastName: winner.name.split(' ')[1] || 'Winner',
+                            email: `${winner.name.toLowerCase().replace(/\s+/g, '.')}@raffle.judescart.com`,
+                            phone: '+91 98840 28192',
+                            street: '77 Winners Promenade, Bay 4',
+                            city: winner.city,
+                            state: 'Verified Dispatch Center',
+                            postalCode: '560001',
+                            country: 'India',
+                          },
+                          shippingMethod: {
+                            id: 'express',
+                            name: 'Judes Express Priority Air',
+                            estimatedDays: '2 Business Days',
+                            price: 0,
+                            description: 'Complimentary VIP Prize Courier',
+                          },
+                          paymentMethod: {
+                            type: 'card',
+                            brand: 'Judes Sponsored',
+                            last4: '7777',
+                          },
+                          status: 'Processing',
+                          trackingNumber: `JC-WIN-${Math.floor(100000 + Math.random() * 900000)}`,
+                          courierPartner: 'Judes Express Priority Fleet',
+                          estimatedDelivery: '2 Business Days',
+                          shippingNotes: `VIP Prize fulfillment for ${winner.name} (${winner.tier} Draw Winner). Packed in JudesCart Luxury Keepsake Box with wax seal.`,
+                        };
+                        addOrder(prizeOrder);
+                        showToast(`🎁 Converted winner ${winner.name} into VIP Dispatch Order ${newOrderId}! Check Orders tab.`);
+                      }}
+                      className="w-full py-2 px-3 rounded-xl bg-[#0066FF] hover:bg-blue-600 text-white font-bold text-xs transition-all shadow-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
+                    >
+                      <Truck className="w-3.5 h-3.5" />
+                      <span>Convert to Fulfilled Order</span>
+                    </button>
                   </div>
                 ))}
               </div>
@@ -2118,6 +2271,12 @@ export default function AdminCommandCenter() {
         isOpen={isLuckyDrawConfigOpen}
         onClose={() => setIsLuckyDrawConfigOpen(false)}
         onSaved={showToast}
+      />
+
+      {/* Cryptographic SHA-256 Provably Fair Verification Modal */}
+      <ProvablyFairModal
+        isOpen={isProvablyFairModalOpen}
+        onClose={() => setIsProvablyFairModalOpen(false)}
       />
 
       {/* Add Product Modal */}

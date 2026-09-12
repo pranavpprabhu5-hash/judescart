@@ -20,6 +20,18 @@ export interface AdminWinnerRecord {
   orderId: string;
 }
 
+export interface CoinStake {
+  id: string;
+  amount: number;
+  durationDays: number;
+  apy: number;
+  startDate: string;
+  maturesDate: string;
+  returnCoins: number;
+  drawTicketAwarded: string;
+  status: 'active' | 'matured' | 'claimed';
+}
+
 interface StoreContextType {
   // Cart
   cart: CartItem[];
@@ -27,7 +39,7 @@ interface StoreContextType {
   isCartOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
-  addToCart: (product: Product, color: string, size: string, quantity?: number) => void;
+  addToCart: (product: Product, color: string, size: string, quantity?: number, monogram?: CartItem['monogram']) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
@@ -156,6 +168,19 @@ interface StoreContextType {
   }) => void;
   unlockConsole: (enteredPin: string) => boolean;
   lockConsole: () => void;
+
+  // VIP Staking & Referrals
+  coinStakes: CoinStake[];
+  stakeCoins: (amount: number, durationDays: number) => boolean;
+  claimMaturedStake: (stakeId: string) => void;
+  referralCode: string;
+  referralStats: { totalReferred: number; coinsEarned: number; discountPercent: number };
+
+  // Admin Inactivity & RBAC
+  adminInactivityTimeout: number;
+  adminRole: 'super_admin' | 'logistics' | 'catalog' | 'draw_officer';
+  setAdminRole: (role: 'super_admin' | 'logistics' | 'catalog' | 'draw_officer') => void;
+  setAdminInactivityTimeout: (mins: number) => void;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -443,10 +468,17 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [categories, isMounted]);
 
   // Cart Actions
-  const addToCart = (product: Product, color: string, size: string, quantity = 1) => {
+  const addToCart = (
+    product: Product,
+    color: string,
+    size: string,
+    quantity = 1,
+    monogram?: CartItem['monogram']
+  ) => {
     const sizeVariant = product.sizes.find((s) => s.name === size);
     const maxStock = sizeVariant ? sizeVariant.stock : 10;
-    const itemId = `${product.id}-${color}-${size}`.toLowerCase().replace(/\s+/g, '-');
+    const baseId = `${product.id}-${color}-${size}`.toLowerCase().replace(/\s+/g, '-');
+    const itemId = monogram ? `${baseId}-mono-${monogram.initials}` : baseId;
 
     setCart((prev) => {
       const existing = prev.find((item) => item.id === itemId);
@@ -468,6 +500,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           size,
           quantity: Math.min(quantity, maxStock),
           maxStock,
+          monogram,
         },
       ];
     });
@@ -902,7 +935,63 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     return { winnerName: winner.name, prize };
   };
 
-  // Hydrate admin security settings from localStorage
+  // VIP Staking State
+  const [coinStakes, setCoinStakes] = useState<CoinStake[]>([
+    {
+      id: 'stake-demo-1',
+      amount: 500,
+      durationDays: 14,
+      apy: 14,
+      startDate: 'Sep 05, 2026',
+      maturesDate: 'Sep 19, 2026',
+      returnCoins: 560,
+      drawTicketAwarded: 'Platinum Luxury Draw Ticket',
+      status: 'active',
+    },
+  ]);
+
+  const stakeCoins = (amount: number, durationDays: number): boolean => {
+    if (judesCoins < amount) return false;
+    const apy = durationDays === 14 ? 14 : 8;
+    const bonus = Math.round(amount * (apy / 100) * (durationDays / 365) * 10);
+    const returnCoins = amount + Math.max(25, bonus);
+    const drawTicketAwarded = amount >= 500 ? 'Platinum Luxury Draw Ticket' : 'Gold Premium Draw Ticket';
+
+    const newStake: CoinStake = {
+      id: `stake-${Date.now()}`,
+      amount,
+      durationDays,
+      apy,
+      startDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      maturesDate: new Date(Date.now() + durationDays * 86400000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      returnCoins,
+      drawTicketAwarded,
+      status: 'active',
+    };
+
+    setJudesCoins((prev) => Math.max(0, prev - amount));
+    setCoinStakes((prev) => [newStake, ...prev]);
+    return true;
+  };
+
+  const claimMaturedStake = (stakeId: string) => {
+    const target = coinStakes.find((s) => s.id === stakeId);
+    if (!target) return;
+    setJudesCoins((prev) => prev + target.returnCoins);
+    setCoinStakes((prev) => prev.map((s) => (s.id === stakeId ? { ...s, status: 'claimed' } : s)));
+  };
+
+  // Referral State
+  const [referralCode] = useState<string>('JUDES-EV99');
+  const [referralStats] = useState({
+    totalReferred: 6,
+    coinsEarned: 1500,
+    discountPercent: 15,
+  });
+
+  // Admin Security Role & Inactivity Timeout
+  const [adminInactivityTimeout, setAdminInactivityTimeout] = useState<number>(15);
+  const [adminRole, setAdminRole] = useState<'super_admin' | 'logistics' | 'catalog' | 'draw_officer'>('super_admin');
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
@@ -1113,6 +1202,19 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         setAdminAccessSettings,
         unlockConsole,
         lockConsole,
+
+        // VIP Staking & Referrals
+        coinStakes,
+        stakeCoins,
+        claimMaturedStake,
+        referralCode,
+        referralStats,
+
+        // Admin Inactivity & RBAC
+        adminInactivityTimeout,
+        adminRole,
+        setAdminRole,
+        setAdminInactivityTimeout,
       }}
     >
       {children}

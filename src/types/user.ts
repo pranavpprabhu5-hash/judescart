@@ -30,6 +30,10 @@ export interface OrderItem {
   size: string;
   price: number;
   quantity: number;
+  monogram?: {
+    initials: string;
+    foilColor: 'gold' | 'silver' | 'blind';
+  };
 }
 
 export interface Order {
@@ -60,6 +64,9 @@ export interface Order {
     note?: string;
     hidePriceReceipt?: boolean;
     fee: number;
+    boxType?: string;
+    ribbonColor?: string;
+    waxSeal?: string;
   };
   coinsEarned?: number;
 }

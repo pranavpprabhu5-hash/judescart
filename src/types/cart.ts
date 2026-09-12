@@ -10,6 +10,10 @@ export interface CartItem {
   size: string;
   quantity: number;
   maxStock: number;
+  monogram?: {
+    initials: string;
+    foilColor: 'gold' | 'silver' | 'blind';
+  };
 }
 
 export interface PromoCode {

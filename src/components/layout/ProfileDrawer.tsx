@@ -26,6 +26,8 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Order } from '@/types/user';
+import { JudesCoinsStakingModal } from '@/components/loyalty/JudesCoinsStakingModal';
+import { ReferralStudioModal } from '@/components/loyalty/ReferralStudioModal';
 
 export function ProfileDrawer() {
   const {
@@ -51,6 +53,8 @@ export function ProfileDrawer() {
 
   const [selectedInvoiceOrder, setSelectedInvoiceOrder] = useState<Order | null>(null);
   const [reorderSuccessId, setReorderSuccessId] = useState<string | null>(null);
+  const [isStakingModalOpen, setIsStakingModalOpen] = useState(false);
+  const [isReferralModalOpen, setIsReferralModalOpen] = useState(false);
 
   const [activeTab, setActiveTab] = useState<'orders' | 'rewards' | 'addresses' | 'security'>('orders');
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -420,6 +424,67 @@ export function ProfileDrawer() {
                 </div>
               </div>
 
+              {/* VIP Loyalty Staking & Referral Dual Feature Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {/* Staking Card */}
+                <div className="p-3.5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-amber-400/5 to-transparent border border-amber-300/70 dark:border-amber-700/50 flex flex-col justify-between space-y-3">
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <span className="p-1.5 rounded-xl bg-amber-500 text-white">
+                        <Coins className="w-4 h-4" />
+                      </span>
+                      <span className="text-[10px] font-black uppercase text-amber-800 dark:text-amber-300 bg-amber-100 dark:bg-amber-950 px-2 py-0.5 rounded-full">
+                        Up to 48% APY
+                      </span>
+                    </div>
+                    <h5 className="font-bold text-slate-900 dark:text-white text-xs mt-2">
+                      JudesCoins Staking Vault
+                    </h5>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+                      Lock coins for 7, 14, or 30 days to earn guaranteed APY yields and free lucky draw tickets.
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsStakingModalOpen(true)}
+                    className="w-full py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95"
+                  >
+                    <span>Open Staking Vault</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {/* Referral Card */}
+                <div className="p-3.5 rounded-2xl bg-gradient-to-br from-blue-500/10 via-blue-400/5 to-transparent border border-blue-300/70 dark:border-blue-700/50 flex flex-col justify-between space-y-3">
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <span className="p-1.5 rounded-xl bg-[#0066FF] text-white">
+                        <Gift className="w-4 h-4" />
+                      </span>
+                      <span className="text-[10px] font-black uppercase text-blue-800 dark:text-blue-300 bg-blue-100 dark:bg-blue-950 px-2 py-0.5 rounded-full">
+                        Give 15%, Get 250
+                      </span>
+                    </div>
+                    <h5 className="font-bold text-slate-900 dark:text-white text-xs mt-2">
+                      Customer Referral Studio
+                    </h5>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+                      Share your exclusive code <span className="font-mono font-bold text-[#0066FF]">JUDES-EV99</span> to earn 250 coins per friend.
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsReferralModalOpen(true)}
+                    className="w-full py-2 px-3 rounded-xl bg-[#0066FF] hover:bg-blue-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95"
+                  >
+                    <span>Share Referral Pass</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+
               {/* Redemption Hub */}
               <div className="space-y-3">
                 <h4 className="font-bold text-stone-900 text-xs uppercase tracking-wider text-stone-500">
@@ -742,6 +807,18 @@ export function ProfileDrawer() {
           </div>
         </div>
       )}
+
+      {/* VIP JudesCoins Staking Hub Modal */}
+      <JudesCoinsStakingModal
+        isOpen={isStakingModalOpen}
+        onClose={() => setIsStakingModalOpen(false)}
+      />
+
+      {/* Customer Referral Studio Modal */}
+      <ReferralStudioModal
+        isOpen={isReferralModalOpen}
+        onClose={() => setIsReferralModalOpen(false)}
+      />
     </div>
   );
 }

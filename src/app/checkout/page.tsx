@@ -68,11 +68,21 @@ export default function CheckoutPage() {
   const [cardExpiry, setCardExpiry] = useState('11/28');
   const [cardCvv, setCardCvv] = useState('888');
 
-  // Gift Packaging State
+  // Luxury Gift Packaging State
   const [isGiftWrap, setIsGiftWrap] = useState(false);
   const [giftNote, setGiftNote] = useState('');
   const [hidePriceReceipt, setHidePriceReceipt] = useState(false);
-  const giftWrapFee = isGiftWrap ? 4.99 : 0;
+  const [giftBoxType, setGiftBoxType] = useState<'midnight_matte' | 'wooden_atelier' | 'emerald_velvet'>('midnight_matte');
+  const [giftRibbonColor, setGiftRibbonColor] = useState<'royal_blue' | 'champagne_gold' | 'scarlet_silk'>('royal_blue');
+  const [hasWaxSeal, setHasWaxSeal] = useState(true);
+
+  const giftWrapFee = isGiftWrap
+    ? giftBoxType === 'wooden_atelier'
+      ? 7.99
+      : giftBoxType === 'emerald_velvet'
+      ? 5.99
+      : 4.99
+    : 0;
 
   // If cart is empty and user navigates here directly, handle gracefully
   useEffect(() => {
@@ -146,6 +156,9 @@ export default function CheckoutPage() {
         note: isGiftWrap && giftNote.trim() ? giftNote.trim() : undefined,
         hidePriceReceipt: isGiftWrap ? hidePriceReceipt : false,
         fee: giftWrapFee,
+        boxType: giftBoxType,
+        ribbonColor: giftRibbonColor,
+        waxSeal: hasWaxSeal ? 'JudesCart Crest Seal' : undefined,
       },
     });
 
@@ -382,8 +395,8 @@ export default function CheckoutPage() {
                 })}
               </div>
 
-              {/* Deluxe Gift Packaging Option */}
-              <div className="p-4 rounded-2xl border border-purple-200/80 bg-gradient-to-r from-purple-50/60 to-indigo-50/40 space-y-3">
+              {/* Deluxe Atelier Gift Packaging Studio */}
+              <div className="p-4 sm:p-5 rounded-2xl border border-purple-200/80 dark:border-purple-800/50 bg-gradient-to-r from-purple-50/70 via-indigo-50/40 to-slate-50 dark:from-purple-950/20 dark:to-slate-900/40 space-y-4">
                 <div className="flex items-start justify-between">
                   <label className="flex items-center gap-2.5 cursor-pointer">
                     <input
@@ -393,25 +406,108 @@ export default function CheckoutPage() {
                       className="w-4 h-4 rounded text-[#0066FF] focus:ring-[#0066FF] border-slate-300"
                     />
                     <div>
-                      <span className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                        <Gift className="w-4 h-4 text-purple-600" />
-                        <span>Deluxe JudesCart Gift Packaging (+{formatAmount(4.99)})</span>
+                      <span className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                        <Gift className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                        <span>Luxury Atelier Gift Packaging Studio (+{formatAmount(giftWrapFee || 4.99)})</span>
                       </span>
-                      <p className="text-xs text-slate-500 mt-0.5">
-                        Hand-packaged in our signature midnight navy magnetic box with gold satin ribbon.
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        Curated packaging with handcrafted boxes, satin ribbons, hand-poured wax seal, and calligraphy card.
                       </p>
                     </div>
                   </label>
-                  <span className="text-xs font-bold text-purple-800 bg-purple-100 px-2.5 py-0.5 rounded-full shrink-0">
-                    Premium
+                  <span className="text-xs font-bold text-purple-800 dark:text-purple-300 bg-purple-100 dark:bg-purple-950/80 px-2.5 py-0.5 rounded-full shrink-0 border border-purple-200 dark:border-purple-800">
+                    Bespoke Atelier
                   </span>
                 </div>
 
                 {isGiftWrap && (
-                  <div className="pt-2 border-t border-purple-200/60 space-y-3 animate-in fade-in">
+                  <div className="pt-3 border-t border-purple-200/60 dark:border-purple-800/40 space-y-4 animate-in fade-in">
+                    {/* Box Type Selector */}
+                    <div>
+                      <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                        1. Select Luxury Presentation Box
+                      </label>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        {[
+                          { id: 'midnight_matte', name: 'Midnight Navy Box', fee: 4.99, desc: 'Matte magnetic finish' },
+                          { id: 'wooden_atelier', name: 'Cedar Keepsake Chest', fee: 7.99, desc: 'Handcrafted solid cedar' },
+                          { id: 'emerald_velvet', name: 'Emerald Velvet Box', fee: 5.99, desc: 'Plush royal emerald wrap' },
+                        ].map((b) => (
+                          <button
+                            key={b.id}
+                            type="button"
+                            onClick={() => setGiftBoxType(b.id as any)}
+                            className={`p-2.5 rounded-xl border text-left transition-all ${
+                              giftBoxType === b.id
+                                ? 'border-purple-500 bg-purple-100/60 dark:bg-purple-950/60 shadow-xs ring-2 ring-purple-400/40'
+                                : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between text-xs font-bold">
+                              <span>{b.name}</span>
+                              <span className="text-purple-600 dark:text-purple-400 font-mono text-[11px]">{formatAmount(b.fee)}</span>
+                            </div>
+                            <span className="text-[10px] text-slate-500 block mt-0.5">{b.desc}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Ribbon Color Selector */}
+                    <div>
+                      <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                        2. Ribbon Finish
+                      </label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {[
+                          { id: 'royal_blue', name: 'Royal Blue Satin', color: 'bg-blue-600' },
+                          { id: 'champagne_gold', name: '24K Champagne Gold', color: 'bg-amber-400' },
+                          { id: 'scarlet_silk', name: 'Scarlet Crimson Silk', color: 'bg-rose-600' },
+                        ].map((r) => (
+                          <button
+                            key={r.id}
+                            type="button"
+                            onClick={() => setGiftRibbonColor(r.id as any)}
+                            className={`p-2 rounded-xl border text-left flex items-center gap-2 transition-all ${
+                              giftRibbonColor === r.id
+                                ? 'border-purple-500 bg-purple-50 dark:bg-purple-950/40 ring-2 ring-purple-400/40 font-bold'
+                                : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800'
+                            }`}
+                          >
+                            <span className={`w-3.5 h-3.5 rounded-full ${r.color} shrink-0 shadow-xs`} />
+                            <span className="text-xs truncate">{r.name}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Wax Seal Toggle */}
+                    <div className="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <span className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                          <span>✨</span> Hand-Poured Wax Seal Stamp
+                        </span>
+                        <p className="text-[10px] text-slate-500">
+                          Authentic JudesCart monogram crest pressed in metallic gold sealing wax
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setHasWaxSeal(!hasWaxSeal)}
+                        className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                          hasWaxSeal
+                            ? 'bg-purple-600 text-white shadow-xs'
+                            : 'bg-slate-200 dark:bg-slate-700 text-slate-500'
+                        }`}
+                      >
+                        {hasWaxSeal ? 'Included ✓' : 'Add Seal'}
+                      </button>
+                    </div>
+
+                    {/* Greeting Note */}
                     <div>
                       <div className="flex items-center justify-between text-xs mb-1">
-                        <label className="font-semibold text-slate-700">Handwritten Greeting Card Note</label>
+                        <label className="font-semibold text-slate-700 dark:text-slate-300">Calligraphy Greeting Card Note</label>
                         <span className="text-[11px] text-slate-400">{giftNote.length}/150</span>
                       </div>
                       <textarea
@@ -419,19 +515,19 @@ export default function CheckoutPage() {
                         maxLength={150}
                         value={giftNote}
                         onChange={(e) => setGiftNote(e.target.value)}
-                        placeholder="e.g. Happy Birthday! Wishing you endless joy and adventures ahead..."
-                        className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-purple-400 text-slate-800"
+                        placeholder="e.g. Happy Birthday! Wishing you endless joy, wonder, and milestones ahead..."
+                        className="w-full text-xs p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-hidden focus:ring-2 focus:ring-purple-400 text-slate-800 dark:text-white"
                       />
                     </div>
 
-                    <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-700">
+                    <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-700 dark:text-slate-300">
                       <input
                         type="checkbox"
                         checked={hidePriceReceipt}
                         onChange={(e) => setHidePriceReceipt(e.target.checked)}
                         className="w-3.5 h-3.5 rounded text-[#0066FF] border-slate-300"
                       />
-                      <span>Gift Receipt (Omit all prices on the packing slip)</span>
+                      <span>Omit prices on packing slip (Send as Gift Receipt)</span>
                     </label>
                   </div>
                 )}

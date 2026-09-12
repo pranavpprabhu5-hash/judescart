@@ -25,6 +25,7 @@ import { useStore } from '@/context/StoreContext';
 import { cn } from '@/lib/utils';
 import { LiveDrawCountdown } from '@/components/luckydraw/LiveDrawCountdown';
 import { RecentWinnersTicker } from '@/components/luckydraw/RecentWinnersTicker';
+import { LiveTumblerArena } from '@/components/luckydraw/LiveTumblerArena';
 
 interface DrawTierInfo {
   id: 'platinum' | 'gold' | 'silver';
@@ -164,6 +165,7 @@ export default function LuckyDrawPage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 space-y-6">
         <LiveDrawCountdown />
         <RecentWinnersTicker />
+        <LiveTumblerArena />
       </section>
 
       {/* 2. PLATINUM, GOLD & SILVER DRAWS */}

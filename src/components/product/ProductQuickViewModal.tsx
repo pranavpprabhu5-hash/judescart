@@ -19,6 +19,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { MonogramCustomizerModal } from './MonogramCustomizerModal';
 
 export function ProductQuickViewModal() {
   const {
@@ -35,6 +36,7 @@ export function ProductQuickViewModal() {
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
+  const [isMonogramOpen, setIsMonogramOpen] = useState(false);
 
   useEffect(() => {
     if (product) {
@@ -265,6 +267,16 @@ export function ProductQuickViewModal() {
               </button>
             </div>
 
+            {/* Bespoke Monogram Trigger */}
+            <button
+              type="button"
+              onClick={() => setIsMonogramOpen(true)}
+              className="w-full py-2.5 px-4 rounded-xl border border-amber-300 dark:border-amber-700 bg-amber-50/70 dark:bg-amber-950/20 hover:bg-amber-100 text-amber-900 dark:text-amber-200 text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <span>Add Free Bespoke Monogram (Gold / Silver Foil)</span>
+            </button>
+
             <Link
               href={`/products/${product.slug}`}
               onClick={closeQuickView}
@@ -276,6 +288,16 @@ export function ProductQuickViewModal() {
           </div>
         </div>
       </div>
+
+      {/* Bespoke Monogramming Customizer Modal */}
+      <MonogramCustomizerModal
+        product={product}
+        isOpen={isMonogramOpen}
+        onClose={() => setIsMonogramOpen(false)}
+        selectedColor={selectedColor}
+        selectedSize={selectedSize}
+        quantity={quantity}
+      />
     </div>
   );
 }

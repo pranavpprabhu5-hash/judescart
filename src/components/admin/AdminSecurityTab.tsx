@@ -33,6 +33,10 @@ export function AdminSecurityTab({ showToast }: AdminSecurityTabProps) {
     adminPin,
     isPinRequired,
     adminCloakMode,
+    adminInactivityTimeout,
+    adminRole,
+    setAdminRole,
+    setAdminInactivityTimeout,
     setAdminAccessSettings,
     lockConsole,
   } = useStore();
@@ -358,13 +362,77 @@ export function AdminSecurityTab({ showToast }: AdminSecurityTabProps) {
               </p>
             </div>
 
+            {/* Inactivity Auto-Lock Timer */}
+            <div className="space-y-2">
+              <label className="text-xs font-medium text-zinc-300 flex items-center justify-between">
+                <span>Inactivity Auto-Lock Timeout</span>
+                <span className="text-[10px] text-amber-400 font-mono">
+                  {adminInactivityTimeout === 0 ? 'Disabled' : `${adminInactivityTimeout / 60000} mins`}
+                </span>
+              </label>
+              <select
+                value={adminInactivityTimeout}
+                onChange={(e) => {
+                  const val = Number(e.target.value);
+                  setAdminInactivityTimeout(val);
+                  showToast(`⏱️ Auto-lock timeout set to ${val === 0 ? 'Disabled' : `${val / 60000} minutes`}`);
+                }}
+                className="w-full bg-zinc-900 border border-zinc-700/80 rounded-2xl px-4 py-3 text-xs text-zinc-100 focus:outline-none focus:border-amber-500 font-semibold cursor-pointer"
+              >
+                <option value={5 * 60 * 1000}>5 Minutes (High Security)</option>
+                <option value={15 * 60 * 1000}>15 Minutes (Default Standard)</option>
+                <option value={30 * 60 * 1000}>30 Minutes (Extended Session)</option>
+                <option value={60 * 60 * 1000}>60 Minutes (Long Operations)</option>
+                <option value={0}>Disabled (Never Auto-Lock)</option>
+              </select>
+              <p className="text-[11px] text-zinc-400">
+                Automatically locks the console and displays the luxury PIN gate if no mouse or keyboard activity is detected.
+              </p>
+            </div>
+
+            {/* Role-Based Access Control (RBAC) */}
+            <div className="space-y-2">
+              <label className="text-xs font-medium text-zinc-300 flex items-center justify-between">
+                <span>Active Operator Role & Permissions</span>
+                <span className="text-[10px] uppercase font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  {adminRole.replace('_', ' ')}
+                </span>
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { id: 'super_admin', label: 'Super Admin', desc: 'Full console access' },
+                  { id: 'logistics', label: 'Logistics Dir.', desc: 'Orders, shipping & CRM' },
+                  { id: 'catalog', label: 'Catalog Lead', desc: 'Products, promos & tags' },
+                  { id: 'draw_officer', label: 'Draw Officer', desc: 'Lucky draw & provably fair' },
+                ].map((r) => (
+                  <button
+                    key={r.id}
+                    type="button"
+                    onClick={() => {
+                      setAdminRole(r.id as any);
+                      showToast(`🛡️ Switched active role to "${r.label}"`);
+                    }}
+                    className={cn(
+                      'p-2.5 rounded-xl border text-left transition-all',
+                      adminRole === r.id
+                        ? 'bg-amber-500/15 border-amber-500/50 text-amber-300'
+                        : 'bg-zinc-900/60 border-zinc-800 text-zinc-400 hover:text-zinc-200'
+                    )}
+                  >
+                    <div className="text-xs font-bold">{r.label}</div>
+                    <div className="text-[10px] opacity-75">{r.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Security Alert box */}
             <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/20 flex items-start gap-3">
               <Fingerprint className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
               <div className="space-y-1">
                 <p className="text-xs font-semibold text-amber-300">Session Protection</p>
                 <p className="text-[11px] text-zinc-400 leading-relaxed">
-                  Locking the console will require immediate re-entry of your Master Passcode. All sensitive client mutations and draw triggers are suspended until unlocked.
+                  Locking the console will require immediate re-entry of your Master Passcode (4748). All sensitive client mutations and draw triggers are suspended until unlocked.
                 </p>
               </div>
             </div>

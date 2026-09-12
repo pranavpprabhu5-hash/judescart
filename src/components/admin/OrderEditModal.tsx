@@ -14,6 +14,9 @@ import {
   Copy,
   Sparkles,
   AlertCircle,
+  MessageSquare,
+  Send,
+  QrCode,
 } from 'lucide-react';
 
 interface OrderEditModalProps {
@@ -302,6 +305,46 @@ export function OrderEditModal({ order, isOpen, onClose, onSaved }: OrderEditMod
               placeholder="e.g. Packed in reinforced double-wall carton. Fragile electronics handle with care. Gate code verified."
               className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:outline-hidden focus:ring-2 focus:ring-[#0066FF]"
             />
+          </div>
+
+          {/* Quick Communication & Dispatch Triggers */}
+          <div className="p-3.5 rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/40 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              <div className="text-xs">
+                <span className="font-bold text-slate-800 dark:text-slate-200">Customer Dispatch Notifier</span>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                  Notify {order.shippingAddress?.firstName || 'Customer'} via WhatsApp or SMS
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(
+                  `📦 *JudesCart Dispatch Alert*\n\nHello ${order.shippingAddress?.firstName || 'Valued Customer'},\nYour order *${order.id}* is currently *${status}* via ${courier}.\n\nWaybill: ${trackingNumber || 'JC-EXP-7729'}\nEst. Delivery: ${estDelivery || '3-5 Business Days'}\n\nTrack live: https://judescart.vercel.app/tracking`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#25D366] hover:bg-[#1ebd5b] text-white text-[11px] font-bold shadow-sm transition-all active:scale-95"
+              >
+                <MessageSquare className="w-3.5 h-3.5" />
+                <span>WhatsApp Alert</span>
+              </a>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (onSaved) {
+                    onSaved(`📲 SMS Notification dispatched to +1 (555) 019-2834 for Order ${order.id}`);
+                  }
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-white text-[11px] font-bold transition-all active:scale-95"
+              >
+                <Send className="w-3 h-3" />
+                <span>Trigger SMS</span>
+              </button>
+            </div>
           </div>
 
           {/* Action Buttons */}
