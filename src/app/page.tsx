@@ -71,41 +71,41 @@ export default function HomePage() {
       <HeroCardsHub />
 
       {/* 2. CURATED DEPARTMENTS / CATEGORIES */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div>
             <span className="text-xs uppercase tracking-widest font-bold text-[#0066FF]">All Departments</span>
-            <h2 className="font-sans text-2xl sm:text-3xl font-extrabold text-stone-900 mt-1">
+            <h2 className="font-sans text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-white mt-1">
               Shop by Department
             </h2>
           </div>
           <Link
             href="/products"
-            className="text-xs font-bold uppercase tracking-wider text-[#0066FF] hover:text-blue-800 flex items-center gap-1.5 transition-colors"
+            className="text-xs font-bold uppercase tracking-wider text-[#0066FF] hover:text-blue-800 dark:hover:text-blue-400 flex items-center gap-1.5 transition-colors"
           >
             <span>View All Products</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
           {CATEGORIES.map((cat) => (
             <Link
               key={cat.slug}
               href={`/products?category=${cat.slug}`}
-              className="group relative aspect-[16/11] rounded-2xl overflow-hidden bg-stone-100 border border-stone-200 shadow-sm flex flex-col justify-end p-6"
+              className="group relative aspect-[16/12] sm:aspect-[16/11] rounded-2xl overflow-hidden bg-stone-100 dark:bg-stone-900 border border-stone-200 dark:border-slate-800 shadow-sm flex flex-col justify-end p-3 sm:p-6"
             >
               <Image
                 src={cat.image}
                 alt={cat.name}
                 fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"
                 className="object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F]/90 via-[#0A192F]/40 to-transparent" />
-              <div className="relative z-10 text-white space-y-1">
-                <span className="text-[11px] uppercase tracking-wider text-blue-300 font-bold">{cat.itemCount}</span>
-                <h3 className="font-sans text-xl font-bold group-hover:translate-x-1 transition-transform duration-200">
+              <div className="relative z-10 text-white space-y-0.5 sm:space-y-1">
+                <span className="text-[9px] sm:text-[11px] uppercase tracking-wider text-blue-300 font-bold">{cat.itemCount}</span>
+                <h3 className="font-sans text-xs sm:text-xl font-bold group-hover:translate-x-1 transition-transform duration-200 line-clamp-1">
                   {cat.name}
                 </h3>
               </div>
@@ -115,11 +115,11 @@ export default function HomePage() {
       </section>
 
       {/* 4. FEATURED PRODUCTS GRID WITH QUICK DEPARTMENT FILTER */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <span className="text-xs uppercase tracking-widest font-bold text-[#0066FF]">Top Trending Picks</span>
-            <h2 className="font-sans text-2xl sm:text-3xl font-extrabold text-stone-900 mt-1">
+            <h2 className="font-sans text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-white mt-1">
               Featured at JudesCart
             </h2>
           </div>
@@ -133,7 +133,7 @@ export default function HomePage() {
                 className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors shrink-0 ${
                   activeTab === tab
                     ? 'bg-[#0066FF] text-white shadow-sm'
-                    : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
+                    : 'bg-stone-100 dark:bg-slate-800 text-stone-700 dark:text-slate-200 hover:bg-stone-200 dark:hover:bg-slate-700'
                 }`}
               >
                 {tab === 'all' ? 'All Products' : tab.replace('-', ' ')}

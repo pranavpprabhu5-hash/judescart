@@ -179,8 +179,13 @@ export function JudesAIChatWindow({ isOpen, onClose }: JudesAIChatWindowProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-x-4 bottom-4 sm:inset-x-auto sm:right-6 sm:bottom-6 z-50 sm:w-[440px] h-[580px] sm:h-[640px] max-h-[85vh] rounded-3xl overflow-hidden flex flex-col bg-[#071328]/95 text-white border border-blue-500/40 shadow-2xl backdrop-blur-xl animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-x-0 bottom-0 top-12 sm:top-auto sm:inset-x-auto sm:right-6 sm:bottom-6 z-50 sm:w-[440px] sm:h-[640px] rounded-t-[28px] sm:rounded-3xl overflow-hidden flex flex-col bg-[#071328]/98 text-white border-t sm:border border-blue-500/40 shadow-2xl backdrop-blur-xl animate-in slide-in-from-bottom duration-200">
       
+      {/* Mobile Grab Handle */}
+      <div className="sm:hidden flex justify-center py-2 bg-[#0B1E3D] border-b border-white/5 shrink-0">
+        <div className="w-12 h-1 rounded-full bg-white/30" />
+      </div>
+
       {/* 1. TOP CONCIERGE HEADER */}
       <div className="flex items-center justify-between px-4 py-3.5 bg-gradient-to-r from-[#0B1E3D] via-[#0E2A56] to-[#12366E] border-b border-blue-500/20 shrink-0">
         <div className="flex items-center gap-2.5">

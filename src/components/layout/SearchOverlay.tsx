@@ -93,7 +93,7 @@ export function SearchOverlay() {
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-[#0A192F]/65 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="w-full bg-white border-b border-slate-200 shadow-2xl px-4 py-5 md:px-8">
+      <div className="w-full bg-white dark:bg-[#070F1E] border-b border-slate-200 dark:border-slate-800 shadow-2xl px-4 py-4 md:px-8">
         <div className="max-w-4xl mx-auto">
           {/* Header & Search Bar */}
           <div className="flex items-center gap-3 relative">
@@ -104,13 +104,13 @@ export function SearchOverlay() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type to search (e.g. headphones, boots, lamp, cashmere) — Press Enter to search all..."
-              className="w-full text-base md:text-lg bg-transparent border-none outline-none text-slate-900 placeholder:text-slate-400 font-normal"
+              placeholder="Search products, brands, deals... (Press Enter to search all)"
+              className="w-full text-base md:text-lg bg-transparent border-none outline-none text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 font-normal"
             />
             {query && (
               <button
                 onClick={() => setQuery('')}
-                className="p-1 text-slate-400 hover:text-slate-700 rounded-full"
+                className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-full"
                 title="Clear input"
               >
                 <X className="w-4 h-4" />
@@ -118,7 +118,7 @@ export function SearchOverlay() {
             )}
             <button
               onClick={closeSearch}
-              className="text-xs uppercase tracking-wider font-bold px-3 py-1.5 rounded-full border border-slate-200 hover:border-[#0066FF] hover:text-[#0066FF] text-slate-700 transition-colors ml-1"
+              className="text-xs uppercase tracking-wider font-bold px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 hover:border-[#0066FF] hover:text-[#0066FF] text-slate-700 dark:text-slate-200 transition-colors ml-1"
             >
               Esc
             </button>
@@ -126,7 +126,7 @@ export function SearchOverlay() {
 
           {/* Quick Suggestions & Categories when query is empty */}
           {!query && (
-            <div className="mt-5 pt-4 border-t border-slate-100 space-y-4">
+            <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 space-y-4">
               <div>
                 <div className="flex items-center gap-2 text-xs font-bold text-[#0066FF] uppercase tracking-wider mb-2.5">
                   <TrendingUp className="w-3.5 h-3.5" />
@@ -137,7 +137,7 @@ export function SearchOverlay() {
                     <button
                       key={term}
                       onClick={() => setQuery(term)}
-                      className="text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-100 hover:bg-blue-50 hover:text-[#0066FF] text-slate-700 transition-colors"
+                      className="text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-[#0066FF] dark:hover:text-[#38BDF8] text-slate-700 dark:text-slate-200 transition-colors"
                     >
                       {term}
                     </button>
@@ -146,7 +146,7 @@ export function SearchOverlay() {
               </div>
 
               <div>
-                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2.5">
+                <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2.5">
                   Browse by Department
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
@@ -155,7 +155,7 @@ export function SearchOverlay() {
                       key={cat.slug}
                       href={`/products?category=${cat.slug}`}
                       onClick={closeSearch}
-                      className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-200/80 hover:border-blue-300 text-xs font-bold text-slate-700 hover:text-[#0066FF] transition-all"
+                      className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/80 hover:bg-blue-50 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 hover:border-blue-300 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-[#0066FF] dark:hover:text-[#38BDF8] transition-all"
                     >
                       <span>{cat.icon}</span>
                       <span className="truncate">{cat.name}</span>
@@ -212,12 +212,12 @@ export function SearchOverlay() {
                   {results.map((product) => (
                     <div
                       key={product.id}
-                      className="group relative flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:border-[#0066FF] hover:bg-blue-50/40 bg-white transition-all shadow-xs"
+                      className="group relative flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-[#0066FF] dark:hover:border-blue-500 hover:bg-blue-50/40 dark:hover:bg-slate-800/60 bg-white dark:bg-[#0E1A30] transition-all shadow-xs"
                     >
                       <Link
                         href={`/products/${product.slug}`}
                         onClick={closeSearch}
-                        className="relative w-16 h-20 rounded-lg overflow-hidden bg-slate-100 shrink-0"
+                        className="relative w-16 h-20 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0"
                       >
                         <Image
                           src={product.images[0]}
@@ -230,11 +230,11 @@ export function SearchOverlay() {
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[10px] uppercase tracking-wider text-[#0066FF] font-bold truncate">
+                          <span className="text-[10px] uppercase tracking-wider text-[#0066FF] dark:text-[#38BDF8] font-bold truncate">
                             {product.category.replace('-', ' ')}
                           </span>
                           {product.drawTier && (
-                            <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 uppercase">
+                            <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 uppercase">
                               {product.drawTier}
                             </span>
                           )}
@@ -243,14 +243,14 @@ export function SearchOverlay() {
                         <Link
                           href={`/products/${product.slug}`}
                           onClick={closeSearch}
-                          className="block text-sm font-bold text-[#0A192F] truncate group-hover:text-[#0066FF] transition-colors"
+                          className="block text-sm font-bold text-[#0A192F] dark:text-white truncate group-hover:text-[#0066FF] dark:group-hover:text-[#38BDF8] transition-colors"
                         >
                           {product.name}
                         </Link>
 
                         <div className="flex items-center justify-between mt-1.5">
                           <div className="flex items-center gap-1.5">
-                            <span className="text-xs font-bold text-[#0A192F]">
+                            <span className="text-xs font-bold text-[#0A192F] dark:text-white">
                               {formatAmount(product.price)}
                             </span>
                             {product.originalPrice && (
@@ -265,7 +265,7 @@ export function SearchOverlay() {
                             className={`p-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-1 ${
                               addedProductId === product.id
                                 ? 'bg-emerald-600 text-white'
-                                : 'bg-slate-100 hover:bg-[#0066FF] hover:text-white text-slate-700'
+                                : 'bg-slate-100 dark:bg-slate-800 hover:bg-[#0066FF] dark:hover:bg-[#0066FF] hover:text-white text-slate-700 dark:text-slate-200'
                             }`}
                             title="Quick Add to Cart"
                           >

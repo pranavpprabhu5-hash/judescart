@@ -13,7 +13,7 @@ export function FloatingLuckyDrawCTA() {
   if (isLuckyDrawOpen || isDismissed) return null;
 
   return (
-    <div className="fixed bottom-6 left-5 z-40 flex items-center group animate-in slide-in-from-bottom-6 duration-500">
+    <div className="fixed bottom-20 sm:bottom-6 left-4 sm:left-5 z-40 flex items-center group animate-in slide-in-from-bottom-6 duration-500">
       {/* Pulse Beacon Wave */}
       <span className="absolute -inset-1 rounded-full bg-gradient-to-r from-[#0066FF] via-cyan-400 to-amber-400 opacity-60 blur-xs group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 animate-pulse pointer-events-none" />
 
@@ -21,30 +21,31 @@ export function FloatingLuckyDrawCTA() {
       <button
         onClick={openLuckyDraw}
         className={cn(
-          'relative flex items-center gap-2.5 px-4 py-2.5 rounded-full shadow-2xl cursor-pointer',
+          'relative flex items-center gap-2.5 p-2 sm:px-4 sm:py-2.5 rounded-full shadow-2xl cursor-pointer',
           'bg-gradient-to-r from-[#0A192F] via-[#0F2850] to-[#0066FF] text-white',
           'border-2 border-white/80 hover:border-cyan-300 transition-all duration-300',
           'hover:scale-105 active:scale-95 focus:outline-hidden'
         )}
         aria-label="Open Lucky Draw Wheel"
+        title="Open Lucky Draws (Platinum, Gold, Silver & Bumper)"
       >
         {/* Animated Icon badge */}
         <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-400 to-amber-500 text-[#0A192F] flex items-center justify-center shadow-md shrink-0">
           <Gift className="w-4 h-4 text-[#0A192F] animate-bounce" />
         </div>
 
-        {/* Text Content */}
-        <div className="text-left pr-1">
+        {/* Text Content (Hidden on small mobile, visible on tablet/desktop) */}
+        <div className="text-left pr-1 hidden sm:block">
           <div className="flex items-center gap-1 leading-none">
             <span className="text-[10px] font-black uppercase tracking-wider text-amber-300">Lucky Draws</span>
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
           </div>
-          <span className="font-extrabold text-xs tracking-tight text-white block">
+          <span className="font-extrabold text-xs tracking-tight text-white block mt-0.5">
             Platinum, Gold, Silver &amp; Bumper
           </span>
         </div>
 
-        <Sparkles className="w-4 h-4 text-cyan-300 shrink-0" />
+        <Sparkles className="w-4 h-4 text-cyan-300 shrink-0 hidden sm:block" />
       </button>
 
       {/* Dismiss micro-button */}

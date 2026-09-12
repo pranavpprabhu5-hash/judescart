@@ -178,7 +178,7 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
 
   return (
     <div
-      className="group relative flex flex-col rounded-2xl bg-white border border-slate-200/80 overflow-hidden hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-300 transition-all duration-300"
+      className="group relative flex flex-col rounded-2xl bg-white dark:bg-[#0E1A30] border border-slate-200/80 dark:border-slate-800 overflow-hidden hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-300 transition-all duration-300"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
         setIsHovered(false);
@@ -186,7 +186,7 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
       }}
     >
       {/* Product Image Frame */}
-      <div className="relative aspect-[3/4] w-full overflow-hidden bg-slate-100">
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
         <Link href={`/products/${product.slug}`} className="block w-full h-full">
           <Image
             src={currentImage}
@@ -329,7 +329,7 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
           </div>
 
           <Link href={`/products/${product.slug}`} className="block">
-            <h3 className="text-sm font-sans font-bold text-slate-900 group-hover:text-[#0066FF] transition-colors line-clamp-1">
+            <h3 className="text-sm font-sans font-bold text-slate-900 dark:text-slate-100 group-hover:text-[#0066FF] dark:group-hover:text-[#38BDF8] transition-colors line-clamp-1">
               {product.name}
             </h3>
           </Link>
@@ -362,7 +362,7 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
         </div>
 
         {/* Colors & Price */}
-        <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+        <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
           {/* Swatches */}
           <div className="flex items-center gap-1.5">
             {product.colors.map((c) => (
@@ -375,7 +375,7 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
                   'w-3.5 h-3.5 rounded-full border transition-all',
                   selectedColor === c.name
                     ? 'ring-2 ring-[#0066FF] ring-offset-1 scale-110'
-                    : 'border-slate-300 hover:scale-105'
+                    : 'border-slate-300 dark:border-slate-600 hover:scale-105'
                 )}
                 style={{ backgroundColor: c.hex }}
               />
@@ -384,7 +384,7 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
 
           {/* Pricing */}
           <div className="flex items-baseline gap-1.5 text-right">
-            <span className="text-sm font-extrabold text-[#0A192F]">
+            <span className="text-sm font-extrabold text-[#0A192F] dark:text-white">
               {formatAmount(product.price)}
             </span>
             {product.originalPrice && (
@@ -393,6 +393,30 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
               </span>
             )}
           </div>
+        </div>
+
+        {/* Touch-Friendly Mobile Action Bar (<sm only) */}
+        <div className="sm:hidden pt-2 flex items-center gap-1.5 border-t border-slate-100 dark:border-slate-800/60">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              openQuickView(product);
+            }}
+            className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 text-xs flex items-center justify-center cursor-pointer"
+            aria-label="Quick View"
+          >
+            <Eye className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            onClick={handleQuickAdd}
+            className="flex-1 py-2 px-3 rounded-xl bg-[#0066FF] active:bg-[#0052CC] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
+          >
+            {isAdded ? <Check className="w-3.5 h-3.5" /> : <ShoppingBag className="w-3.5 h-3.5" />}
+            <span>{isAdded ? 'Added!' : 'Add to Bag'}</span>
+          </button>
         </div>
       </div>
     </div>

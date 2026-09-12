@@ -125,13 +125,13 @@ export function HeroCardsHub() {
         </p>
       </div>
 
-      {/* 4 CARDS DISPLAYED ALL AT ONCE (RESPONSIVE 4-COLUMN / 2-COLUMN / 1-COLUMN) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 sm:gap-6 items-stretch">
+      {/* 4 CARDS DISPLAYED ALL AT ONCE (RESPONSIVE SNAP-RAIL ON MOBILE / GRID ON DESKTOP) */}
+      <div className="flex md:grid md:grid-cols-2 xl:grid-cols-4 overflow-x-auto snap-x snap-mandatory gap-4 sm:gap-6 items-stretch pb-2 px-1 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
         
         {/* =========================================================================
             CARD 1: ITEMS WITH OFFERS (Deals Showcase)
             ========================================================================= */}
-        <div className="group relative rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col justify-between p-5 sm:p-6 bg-gradient-to-b from-[#1c0d02] via-[#2a1304] to-[#120701] border border-amber-500/30 shadow-xl shadow-amber-950/20 hover:border-amber-400/60 transition-all duration-300 text-white">
+        <div className="w-[86vw] sm:w-[380px] md:w-auto shrink-0 snap-center group relative rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col justify-between p-5 sm:p-6 bg-gradient-to-b from-[#1c0d02] via-[#2a1304] to-[#120701] border border-amber-500/30 shadow-xl shadow-amber-950/20 hover:border-amber-400/60 transition-all duration-300 text-white">
           {/* Subtle Ambient Background Image with Dark Glow */}
           <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
             <Image
@@ -266,7 +266,7 @@ export function HeroCardsHub() {
         {/* =========================================================================
             CARD 2: UPCOMING SALE DAYS (Flash & Festival Calendar)
             ========================================================================= */}
-        <div className="group relative rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col justify-between p-5 sm:p-6 bg-gradient-to-b from-[#0a1128] via-[#11193d] to-[#070b1c] border border-indigo-500/30 shadow-xl shadow-indigo-950/20 hover:border-indigo-400/60 transition-all duration-300 text-white">
+        <div className="w-[86vw] sm:w-[380px] md:w-auto shrink-0 snap-center group relative rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col justify-between p-5 sm:p-6 bg-gradient-to-b from-[#0a1128] via-[#11193d] to-[#070b1c] border border-indigo-500/30 shadow-xl shadow-indigo-950/20 hover:border-indigo-400/60 transition-all duration-300 text-white">
           <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
             <Image
               src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=800&q=80"
@@ -381,7 +381,7 @@ export function HeroCardsHub() {
         {/* =========================================================================
             CARD 3: LUCKY DRAWS (Platinum, Gold & Silver)
             ========================================================================= */}
-        <div className="group relative rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col justify-between p-5 sm:p-6 bg-gradient-to-b from-[#02231c] via-[#04382c] to-[#011c16] border border-emerald-500/30 shadow-xl shadow-emerald-950/20 hover:border-emerald-400/60 transition-all duration-300 text-white">
+        <div className="w-[86vw] sm:w-[380px] md:w-auto shrink-0 snap-center group relative rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col justify-between p-5 sm:p-6 bg-gradient-to-b from-[#02231c] via-[#04382c] to-[#011c16] border border-emerald-500/30 shadow-xl shadow-emerald-950/20 hover:border-emerald-400/60 transition-all duration-300 text-white">
           <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
             <Image
               src="https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=800&q=80"
@@ -485,7 +485,7 @@ export function HeroCardsHub() {
         {/* =========================================================================
             CARD 4: BUMPER DRAWS (Brand JUDES Exclusive)
             ========================================================================= */}
-        <div className="group relative rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col justify-between p-5 sm:p-6 bg-gradient-to-b from-[#1b0633] via-[#2f0d57] to-[#120324] border border-amber-400/40 shadow-xl shadow-purple-950/30 hover:border-amber-300 transition-all duration-300 text-white">
+        <div className="w-[86vw] sm:w-[380px] md:w-auto shrink-0 snap-center group relative rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col justify-between p-5 sm:p-6 bg-gradient-to-b from-[#1b0633] via-[#2f0d57] to-[#120324] border border-amber-400/40 shadow-xl shadow-purple-950/30 hover:border-amber-300 transition-all duration-300 text-white">
           <div className="absolute inset-0 z-0 opacity-25 pointer-events-none">
             <Image
               src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80"
@@ -571,6 +571,20 @@ export function HeroCardsHub() {
           </div>
         </div>
 
+      </div>
+
+      {/* Mobile Horizontal Swipe Indicator */}
+      <div className="md:hidden flex items-center justify-between pt-3 text-[11px] text-stone-500 dark:text-stone-400 px-1">
+        <span className="flex items-center gap-1.5 font-medium">
+          <Sparkles className="w-3 h-3 text-[#0066FF]" />
+          <span>Swipe cards to explore all campaigns</span>
+        </span>
+        <div className="flex items-center gap-1">
+          <span className="w-4 h-1.5 rounded-full bg-[#0066FF]" />
+          <span className="w-1.5 h-1.5 rounded-full bg-stone-300 dark:bg-stone-700" />
+          <span className="w-1.5 h-1.5 rounded-full bg-stone-300 dark:bg-stone-700" />
+          <span className="w-1.5 h-1.5 rounded-full bg-stone-300 dark:bg-stone-700" />
+        </div>
       </div>
     </section>
   );

@@ -220,7 +220,7 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 -ml-2 text-stone-700 hover:text-[#0066FF] hover:bg-stone-100 rounded-xl transition-colors"
+              className="p-2 -ml-2 text-stone-700 dark:text-stone-300 hover:text-[#0066FF] dark:hover:text-[#38BDF8] hover:bg-stone-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -228,7 +228,7 @@ export function Navbar() {
 
             <button
               onClick={openSearch}
-              className="p-2 ml-1 text-stone-700 hover:text-[#0066FF] hover:bg-stone-100 rounded-xl transition-colors"
+              className="p-2 ml-1 text-stone-700 dark:text-stone-300 hover:text-[#0066FF] dark:hover:text-[#38BDF8] hover:bg-stone-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
               aria-label="Search"
             >
               <Search className="w-4 h-4" />
@@ -521,26 +521,26 @@ export function Navbar() {
 
       {/* Beautified Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-x-0 top-18 bottom-0 bg-stone-950/40 backdrop-blur-sm z-50">
-          <div className="bg-white border-b border-stone-200 p-6 space-y-5 animate-in slide-in-from-top-4 duration-200 max-h-[85vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-stone-100">
-              <span className="text-xs uppercase tracking-wider font-bold text-stone-400">Settings</span>
+        <div className="lg:hidden fixed inset-x-0 top-18 bottom-0 bg-stone-950/60 backdrop-blur-sm z-50">
+          <div className="bg-white dark:bg-[#070F1E] border-b border-stone-200 dark:border-slate-800 p-5 sm:p-6 space-y-4 animate-in slide-in-from-top-4 duration-200 max-h-[85vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-stone-100 dark:border-slate-800">
+              <span className="text-xs uppercase tracking-wider font-bold text-stone-400 dark:text-slate-400">Settings</span>
               <div className="flex items-center gap-2">
                 <CurrencySwitcher />
                 <ThemeToggle />
               </div>
             </div>
 
-            <div className="flex flex-col space-y-2">
+            <div className="flex flex-col space-y-1">
               {DEPARTMENTS.map((dept) => (
                 <Link
                   key={dept.label}
                   href={dept.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-blue-50 text-stone-800 hover:text-[#0066FF] transition-colors"
+                  className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-800/80 text-stone-800 dark:text-slate-200 hover:text-[#0066FF] dark:hover:text-[#38BDF8] transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-[#0066FF]">{dept.icon}</span>
+                    <span className="text-[#0066FF] dark:text-[#38BDF8]">{dept.icon}</span>
                     <span className="text-sm font-semibold">{dept.label}</span>
                   </div>
                   {dept.badge && (
@@ -552,16 +552,17 @@ export function Navbar() {
               ))}
             </div>
 
-            <div className="pt-4 border-t border-stone-100 flex items-center justify-between text-xs text-stone-600">
+            {/* Quick 2x2 Action Tiles on Mobile Drawer */}
+            <div className="pt-3 border-t border-stone-100 dark:border-slate-800 grid grid-cols-2 gap-2 text-xs">
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   openProfile();
                 }}
-                className="flex items-center gap-2 font-bold text-stone-900"
+                className="flex items-center justify-center gap-2 p-2.5 rounded-xl border border-stone-200 dark:border-slate-800 bg-stone-50 dark:bg-slate-900/60 font-bold text-stone-900 dark:text-slate-100 hover:border-blue-300 transition-colors"
               >
-                <User className="w-4 h-4" />
-                <span>{isLoggedIn ? user.name.split(' ')[0] : 'Sign In'}</span>
+                <User className="w-4 h-4 text-[#0066FF]" />
+                <span className="truncate">{isLoggedIn ? user.name.split(' ')[0] : 'Sign In'}</span>
               </button>
 
               <button
@@ -569,12 +570,12 @@ export function Navbar() {
                   setMobileMenuOpen(false);
                   openDailyMystery();
                 }}
-                className="flex items-center gap-1.5 font-bold text-purple-900 bg-purple-50 px-2.5 py-1 rounded-full border border-purple-200 text-xs cursor-pointer"
+                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl border border-purple-200 dark:border-purple-800/60 bg-purple-50 dark:bg-purple-950/40 font-bold text-purple-900 dark:text-purple-300 hover:border-purple-400 transition-colors relative"
               >
-                <Gift className="w-3.5 h-3.5 text-purple-600" />
-                <span>Daily Gift (Max 10)</span>
+                <Gift className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+                <span className="truncate">Daily Gift</span>
                 {!dailyMysteryClaimed && (
-                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
+                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping absolute top-2 right-2" />
                 )}
               </button>
 
@@ -583,19 +584,19 @@ export function Navbar() {
                   setMobileMenuOpen(false);
                   openProfile();
                 }}
-                className="flex items-center gap-1.5 font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200"
+                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl border border-amber-200 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/40 font-bold text-amber-900 dark:text-amber-300 hover:border-amber-400 transition-colors"
               >
                 <Coins className="w-3.5 h-3.5 text-amber-500" />
-                <span>{judesCoins.toLocaleString()} Coins</span>
+                <span className="truncate">{judesCoins.toLocaleString()} Coins</span>
               </button>
 
               <Link
                 href="/wishlist"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-1.5 font-semibold text-stone-800"
+                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl border border-stone-200 dark:border-slate-800 bg-stone-50 dark:bg-slate-900/60 font-bold text-stone-900 dark:text-slate-100 hover:border-rose-300 transition-colors"
               >
                 <Heart className="w-4 h-4 text-rose-500" />
-                <span>Wishlist ({wishlist.length})</span>
+                <span className="truncate">Wishlist ({wishlist.length})</span>
               </Link>
             </div>
           </div>

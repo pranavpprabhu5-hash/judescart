@@ -32,7 +32,7 @@ export function CurrencyLocationBanner() {
     <aside
       role="region"
       aria-label="Location currency notification"
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-lg w-[calc(100%-2rem)] animate-in fade-in slide-in-from-bottom-4 duration-300 pointer-events-auto"
+      className="fixed top-20 sm:top-auto sm:bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-lg w-[calc(100%-2rem)] animate-in fade-in slide-in-from-top-4 sm:slide-in-from-bottom-4 duration-300 pointer-events-auto"
     >
       <div className="bg-[#0A192F]/95 backdrop-blur-md text-white px-4 py-3 rounded-2xl shadow-2xl border border-white/10 flex items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2.5 min-w-0">

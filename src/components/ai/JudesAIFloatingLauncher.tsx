@@ -28,7 +28,7 @@ export function JudesAIFloatingLauncher({
   if (isOpen) return null;
 
   return (
-    <div className="fixed bottom-6 right-5 sm:right-6 z-40 flex items-center justify-end animate-in slide-in-from-bottom-5 duration-300">
+    <div className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 flex items-center justify-end animate-in slide-in-from-bottom-5 duration-300">
       {/* Interactive Floating Teaser Bubble */}
       {showTeaser && (
         <div className="hidden sm:flex items-center gap-2.5 mr-3 px-3.5 py-2 rounded-2xl bg-white dark:bg-[#0E1B2E] border border-blue-500/30 text-slate-800 dark:text-slate-100 shadow-xl text-xs font-medium backdrop-blur-md animate-in fade-in slide-in-from-right-4 duration-300">
@@ -58,12 +58,13 @@ export function JudesAIFloatingLauncher({
         <button
           onClick={onToggle}
           className={cn(
-            'relative flex items-center gap-2.5 px-4 py-3 rounded-full shadow-2xl cursor-pointer',
+            'relative flex items-center gap-2.5 p-2 sm:px-4 sm:py-3 rounded-full shadow-2xl cursor-pointer',
             'bg-gradient-to-r from-[#07132B] via-[#0D244D] to-[#1E40AF] text-white',
             'border border-blue-400/40 hover:border-cyan-300 transition-all duration-300',
             'hover:scale-105 active:scale-95 focus:outline-hidden'
           )}
           aria-label="Open JudesAI Concierge"
+          title="Ask JudesAI Shopping Concierge"
         >
           {/* Animated Avatar Orb */}
           <div className="relative w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 via-indigo-500 to-purple-500 flex items-center justify-center shadow-inner shrink-0 overflow-hidden">
