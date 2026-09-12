@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ShieldCheck, Lock, KeyRound, ArrowRight, ArrowLeft, AlertCircle, Sparkles, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -102,27 +103,30 @@ export function AdminLockScreen({ onUnlock, currentSlug = 'portal' }: AdminLockS
           isSuccess && 'border-emerald-500/50 shadow-emerald-500/20'
         )}
       >
-        {/* Header Icon */}
+        {/* Official JudesCart Brand Header */}
         <div className="flex flex-col items-center text-center mb-6">
-          <div className="relative mb-3">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-amber-400/10 to-transparent border border-amber-500/30 flex items-center justify-center shadow-lg shadow-amber-500/10">
-              {isSuccess ? (
-                <CheckCircle2 className="w-8 h-8 text-emerald-400 animate-in zoom-in-50" />
-              ) : (
-                <Lock className="w-8 h-8 text-amber-400" />
-              )}
+          <div className="flex items-center gap-2.5 mb-3">
+            <div className="relative w-10 h-10 shrink-0">
+              <Image
+                src="/logo-icon.png"
+                alt="JudesCart Logo"
+                fill
+                sizes="40px"
+                priority
+                className="object-contain"
+              />
             </div>
-            <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-zinc-950 flex items-center justify-center">
-              <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-            </div>
+            <span className="font-sans text-2xl font-black tracking-tight text-white flex items-center select-none">
+              Judes<span className="text-[#0066FF]">Cart</span>
+            </span>
           </div>
 
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold tracking-wider uppercase mb-2">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>JUDES Executive Console</span>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[#38BDF8] text-xs font-semibold tracking-wider uppercase mb-2">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Command Center Gatekeeper</span>
           </div>
 
-          <h1 className="text-2xl font-bold tracking-tight text-white">Administrative Gatekeeper</h1>
+          <h1 className="text-xl font-bold tracking-tight text-white">Administrative Security Vault</h1>
           <p className="text-xs text-zinc-400 mt-1 max-w-xs">
             Enter your Master Passcode to access store telemetry, order fulfillment, and draw operations.
           </p>

@@ -543,16 +543,23 @@ export default function AdminCommandCenter() {
           <div className="flex items-center justify-between h-16 sm:h-18">
             <div className="flex items-center gap-3 sm:gap-4">
               <Link href="/" className="flex items-center gap-2.5 group">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 via-amber-400 to-amber-600 flex items-center justify-center text-zinc-950 font-black text-sm shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform">
-                  JC
+                <div className="relative w-8 h-8 sm:w-9 sm:h-9 shrink-0">
+                  <Image
+                    src="/logo-icon.png"
+                    alt="JudesCart Logo"
+                    fill
+                    sizes="40px"
+                    priority
+                    className="object-contain group-hover:scale-105 transition-transform"
+                  />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white tracking-tight flex items-center gap-1">
-                      JUDES<span className="text-amber-500 dark:text-amber-400 font-light">CART</span>
+                    <span className="font-sans text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center select-none">
+                      Judes<span className="text-[#0066FF]">Cart</span>
                     </span>
-                    <span className="text-[10px] uppercase tracking-wider font-extrabold bg-amber-50 dark:bg-amber-500/15 text-amber-600 dark:text-amber-300 border border-amber-200 dark:border-amber-500/30 px-2 py-0.5 rounded-full shadow-2xs">
-                      Executive Console
+                    <span className="text-[10px] uppercase tracking-wider font-extrabold bg-blue-50 dark:bg-blue-500/20 text-[#0066FF] dark:text-[#38BDF8] border border-blue-200 dark:border-blue-400/30 px-2 py-0.5 rounded-full shadow-2xs">
+                      Command Center
                     </span>
                   </div>
                 </div>
