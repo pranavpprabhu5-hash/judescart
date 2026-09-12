@@ -815,33 +815,26 @@ export function HeroCardsHub() {
             <ChevronLeft className="w-4 h-4" />
           </button>
 
-          {/* Swipe Hint and Active Dots */}
-          <div className="flex flex-col items-center gap-1.5">
-            <div className="flex items-center gap-1.5">
-              {[0, 1, 2, 3].map((dotIdx) => {
-                const isCurrent = activeCardIndex === dotIdx;
-                return (
-                  <button
-                    key={dotIdx}
-                    onClick={() => {
-                      setActiveCardIndex(dotIdx);
-                      setDragOffset(0);
-                    }}
-                    aria-label={`Go to card ${dotIdx + 1}`}
-                    className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                      isCurrent
-                        ? 'w-6 bg-[#0066FF]'
-                        : 'w-1.5 bg-stone-300 dark:bg-slate-700 hover:bg-stone-400'
-                    }`}
-                  />
-                );
-              })}
-            </div>
-            <span className="text-[10px] text-stone-500 dark:text-stone-400 flex items-center gap-1 font-medium">
-              <span>Card {activeCardIndex + 1} of 4</span>
-              <span>•</span>
-              <span>Swipe left or right</span>
-            </span>
+          {/* Active Dots */}
+          <div className="flex items-center gap-1.5">
+            {[0, 1, 2, 3].map((dotIdx) => {
+              const isCurrent = activeCardIndex === dotIdx;
+              return (
+                <button
+                  key={dotIdx}
+                  onClick={() => {
+                    setActiveCardIndex(dotIdx);
+                    setDragOffset(0);
+                  }}
+                  aria-label={`Go to card ${dotIdx + 1}`}
+                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    isCurrent
+                      ? 'w-6 bg-[#0066FF]'
+                      : 'w-1.5 bg-stone-300 dark:bg-slate-700 hover:bg-stone-400'
+                  }`}
+                />
+              );
+            })}
           </div>
 
           {/* Next Card Button */}
