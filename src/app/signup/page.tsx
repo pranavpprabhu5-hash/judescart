@@ -214,7 +214,7 @@ export default function SignupPage() {
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="e.g. Eleanor Sterling"
+                      placeholder="e.g. Alexander Hayes"
                       className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF] transition-all"
                     />
                   </div>

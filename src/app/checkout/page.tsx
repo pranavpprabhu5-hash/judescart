@@ -49,15 +49,15 @@ export default function CheckoutPage() {
 
   // Step 1: Shipping Form State
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress>({
-    firstName: user.savedAddresses[0]?.firstName || 'Eleanor',
-    lastName: user.savedAddresses[0]?.lastName || 'Sterling',
-    email: user.savedAddresses[0]?.email || 'eleanor.sterling@atelier.com',
-    phone: user.savedAddresses[0]?.phone || '+1 (555) 234-8910',
-    street: user.savedAddresses[0]?.street || '742 Evergreen Terrace',
-    apartment: user.savedAddresses[0]?.apartment || 'Apt 4B',
-    city: user.savedAddresses[0]?.city || 'San Francisco',
-    state: user.savedAddresses[0]?.state || 'CA',
-    postalCode: user.savedAddresses[0]?.postalCode || '94107',
+    firstName: user.savedAddresses[0]?.firstName || (isLoggedIn && user.name ? user.name.split(' ')[0] : ''),
+    lastName: user.savedAddresses[0]?.lastName || (isLoggedIn && user.name ? user.name.split(' ').slice(1).join(' ') : ''),
+    email: user.email || '',
+    phone: user.phone || user.savedAddresses[0]?.phone || '',
+    street: user.savedAddresses[0]?.street || '',
+    apartment: user.savedAddresses[0]?.apartment || '',
+    city: user.savedAddresses[0]?.city || '',
+    state: user.savedAddresses[0]?.state || '',
+    postalCode: user.savedAddresses[0]?.postalCode || '',
     country: user.savedAddresses[0]?.country || detectedLocation?.countryName || 'United States',
   });
 
@@ -67,7 +67,7 @@ export default function CheckoutPage() {
   // Step 3: Payment Form State
   const [paymentType, setPaymentType] = useState<'card' | 'apple_pay' | 'paypal'>('card');
   const [cardNumber, setCardNumber] = useState('4242 •••• •••• 4242');
-  const [cardHolder, setCardHolder] = useState('ELEANOR STERLING');
+  const [cardHolder, setCardHolder] = useState(isLoggedIn && user.name ? user.name.toUpperCase() : '');
   const [cardExpiry, setCardExpiry] = useState('11/28');
   const [cardCvv, setCardCvv] = useState('888');
 
@@ -117,9 +117,9 @@ export default function CheckoutPage() {
 
   const handleAutofillDemo = () => {
     setShippingAddress({
-      firstName: 'Eleanor',
+      firstName: 'Marcus',
       lastName: 'Sterling',
-      email: 'eleanor.sterling@atelier.com',
+      email: 'customer@judes-cart.com',
       phone: '+1 (555) 234-8910',
       street: '742 Evergreen Terrace',
       apartment: 'Apt 4B',
@@ -128,6 +128,7 @@ export default function CheckoutPage() {
       postalCode: '94107',
       country: 'United States',
     });
+    setCardHolder('MARCUS STERLING');
   };
 
   const coinDiscount = redeemedCoins / 20;
@@ -702,7 +703,7 @@ export default function CheckoutPage() {
                       label="Cardholder Name"
                       value={cardHolder}
                       onChange={(e) => setCardHolder(e.target.value)}
-                      placeholder="Eleanor Sterling"
+                      placeholder="FULL NAME ON CARD"
                       required
                     />
                     <div className="grid grid-cols-2 gap-4">

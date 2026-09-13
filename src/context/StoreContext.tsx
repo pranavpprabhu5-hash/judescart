@@ -15,7 +15,6 @@ import {
   saveAccount,
   generateInitialsAvatar,
   GUEST_USER,
-  DEFAULT_DEMO_USER,
 } from '@/lib/auth-storage';
 
 export interface AdminWinnerRecord {
@@ -239,16 +238,16 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [adminCloakMode, setAdminCloakMode] = useState<'lockscreen' | 'redirect_slug' | 'redirect_home'>('lockscreen');
   const [isConsoleLocked, setIsConsoleLocked] = useState<boolean>(true);
 
-  // User State
-  const [user, setUser] = useState<UserProfile>(DEFAULT_DEMO_USER);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  // User State - Default to clean guest session
+  const [user, setUser] = useState<UserProfile>(GUEST_USER);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState<'login' | 'signup' | 'forgot_password'>('login');
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isLuckyDrawOpen, setIsLuckyDrawOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
-  const [judesCoins, setJudesCoins] = useState<number>(DEFAULT_DEMO_USER.judesCoins || 650);
+  const [judesCoins, setJudesCoins] = useState<number>(0);
 
   // Daily Mystery Gamification State
   const [isDailyMysteryOpen, setIsDailyMysteryOpen] = useState(false);
@@ -414,10 +413,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       setIsLoggedIn(activeSession.isLoggedIn);
 
       const savedCoins = localStorage.getItem('judescart_coins');
-      if (savedCoins) {
+      if (savedCoins && activeSession.isLoggedIn) {
         setJudesCoins(parseInt(savedCoins, 10));
       } else {
-        setJudesCoins(activeSession.user.judesCoins ?? (activeSession.isLoggedIn ? 650 : 0));
+        setJudesCoins(activeSession.user.judesCoins ?? 0);
       }
 
       const savedProducts = localStorage.getItem('judescart_products_v3');
@@ -800,7 +799,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     if (isLoggedIn) {
       logoutCustomer();
     } else {
-      loginCustomer(DEFAULT_DEMO_USER.email, DEFAULT_DEMO_USER.password || 'judes123');
+      openAuthModal('login');
     }
   };
 

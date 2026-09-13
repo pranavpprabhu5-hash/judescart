@@ -1,5 +1,4 @@
 import { UserProfile } from '@/types/user';
-import { INITIAL_USER } from '@/lib/mock-data';
 
 export const AUTH_STORAGE_KEYS = {
   ACCOUNTS: 'judescart_customer_accounts',
@@ -17,35 +16,24 @@ export const GUEST_USER: UserProfile = {
   role: 'customer',
 };
 
-export const DEFAULT_DEMO_USER: UserProfile = {
-  ...INITIAL_USER,
-  phone: '+1 (555) 234-8910',
-  password: 'judes123',
-  joinedDate: 'Jan 2025',
-  role: 'vip',
-};
-
 export function getStoredAccounts(): UserProfile[] {
   if (typeof window === 'undefined') {
-    return [DEFAULT_DEMO_USER];
+    return [];
   }
 
   try {
     const raw = localStorage.getItem(AUTH_STORAGE_KEYS.ACCOUNTS);
     if (!raw) {
-      const defaultAccounts = [DEFAULT_DEMO_USER];
-      localStorage.setItem(AUTH_STORAGE_KEYS.ACCOUNTS, JSON.stringify(defaultAccounts));
-      return defaultAccounts;
+      return [];
     }
     const accounts = JSON.parse(raw);
-    if (!Array.isArray(accounts) || accounts.length === 0) {
-      localStorage.setItem(AUTH_STORAGE_KEYS.ACCOUNTS, JSON.stringify([DEFAULT_DEMO_USER]));
-      return [DEFAULT_DEMO_USER];
+    if (!Array.isArray(accounts)) {
+      return [];
     }
     return accounts;
   } catch (err) {
     console.error('Failed to read accounts from localStorage', err);
-    return [DEFAULT_DEMO_USER];
+    return [];
   }
 }
 
@@ -77,34 +65,23 @@ export function findAccountByEmail(email: string): UserProfile | undefined {
 
 export function getActiveCustomer(): { user: UserProfile; isLoggedIn: boolean } {
   if (typeof window === 'undefined') {
-    return { user: DEFAULT_DEMO_USER, isLoggedIn: true };
+    return { user: GUEST_USER, isLoggedIn: false };
   }
 
   try {
     const isLoggedInStr = localStorage.getItem(AUTH_STORAGE_KEYS.IS_LOGGED_IN);
     const activeEmail = localStorage.getItem(AUTH_STORAGE_KEYS.ACTIVE_EMAIL);
 
-    if (isLoggedInStr === 'false') {
-      return { user: GUEST_USER, isLoggedIn: false };
-    }
-
-    if (activeEmail) {
+    if (isLoggedInStr === 'true' && activeEmail) {
       const matched = findAccountByEmail(activeEmail);
       if (matched) {
         return { user: matched, isLoggedIn: true };
       }
     }
 
-    // Default to Eleanor if no explicit preference set yet
-    if (isLoggedInStr === null) {
-      localStorage.setItem(AUTH_STORAGE_KEYS.IS_LOGGED_IN, 'true');
-      localStorage.setItem(AUTH_STORAGE_KEYS.ACTIVE_EMAIL, DEFAULT_DEMO_USER.email);
-      return { user: DEFAULT_DEMO_USER, isLoggedIn: true };
-    }
-
     return { user: GUEST_USER, isLoggedIn: false };
   } catch {
-    return { user: DEFAULT_DEMO_USER, isLoggedIn: true };
+    return { user: GUEST_USER, isLoggedIn: false };
   }
 }
 
@@ -112,7 +89,7 @@ export function setActiveCustomerSession(user: UserProfile | null): void {
   if (typeof window === 'undefined') return;
 
   try {
-    if (user) {
+    if (user && user.email) {
       localStorage.setItem(AUTH_STORAGE_KEYS.IS_LOGGED_IN, 'true');
       localStorage.setItem(AUTH_STORAGE_KEYS.ACTIVE_EMAIL, user.email);
     } else {

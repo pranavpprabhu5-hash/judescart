@@ -19,7 +19,6 @@ import {
   CheckCircle2,
   AlertCircle,
 } from 'lucide-react';
-import { DEFAULT_DEMO_USER } from '@/lib/auth-storage';
 
 export default function LoginPage() {
   const { user, isLoggedIn, loginCustomer, logoutCustomer } = useStore();
@@ -53,27 +52,6 @@ export default function LoginPage() {
       }
     } catch {
       setFeedback({ type: 'error', message: 'An error occurred during sign in.' });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleQuickDemo = async () => {
-    setEmail(DEFAULT_DEMO_USER.email);
-    setPassword(DEFAULT_DEMO_USER.password || 'judes123');
-    setLoading(true);
-    setFeedback(null);
-    try {
-      const res = await loginCustomer(
-        DEFAULT_DEMO_USER.email,
-        DEFAULT_DEMO_USER.password || 'judes123'
-      );
-      if (res.success) {
-        setFeedback({ type: 'success', message: res.message });
-        setTimeout(() => {
-          router.push('/');
-        }, 800);
-      }
     } finally {
       setLoading(false);
     }
@@ -178,29 +156,8 @@ export default function LoginPage() {
                   Customer Sign In
                 </h1>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Enter your credentials below or use the 1-click test account.
+                  Enter your registered email and password to access your account.
                 </p>
-              </div>
-
-              {/* Demo Account Quick-Fill */}
-              <div className="mb-5 p-3.5 rounded-2xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 flex items-center justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-bold text-slate-900 dark:text-white">Eleanor Sterling</span>
-                    <span className="text-[9px] font-black uppercase px-1.5 py-0.2 rounded bg-amber-200/70 text-amber-900 dark:bg-amber-900 dark:text-amber-200">
-                      VIP Demo
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">Preloaded account (650 coins)</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleQuickDemo}
-                  disabled={loading}
-                  className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-xs transition-transform active:scale-95 cursor-pointer shrink-0"
-                >
-                  1-Click Demo
-                </button>
               </div>
 
               {feedback && (

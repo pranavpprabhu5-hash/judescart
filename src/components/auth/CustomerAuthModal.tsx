@@ -20,7 +20,6 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { DEFAULT_DEMO_USER } from '@/lib/auth-storage';
 
 export function CustomerAuthModal() {
   const {
@@ -160,24 +159,6 @@ export function CustomerAuthModal() {
     }
   };
 
-  const handleQuickDemoLogin = async () => {
-    setLoginEmail(DEFAULT_DEMO_USER.email);
-    setLoginPassword(DEFAULT_DEMO_USER.password || 'judes123');
-    setLoading(true);
-    setFeedback(null);
-    try {
-      const res = await loginCustomer(
-        DEFAULT_DEMO_USER.email,
-        DEFAULT_DEMO_USER.password || 'judes123'
-      );
-      if (res.success) {
-        setFeedback({ type: 'success', message: res.message });
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleSocialMockLogin = async (provider: 'Google' | 'Apple') => {
     setLoading(true);
     setFeedback(null);
@@ -306,33 +287,6 @@ export function CustomerAuthModal() {
           {/* ===================== SIGN IN FORM ===================== */}
           {mode === 'login' && (
             <form onSubmit={handleLoginSubmit} className="space-y-4">
-              {/* Demo Account Quick-Fill Card */}
-              <div className="p-3.5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-xs">
-                    👑
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-bold text-slate-900 dark:text-white">Eleanor Sterling</span>
-                      <span className="text-[9px] font-black uppercase px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700">
-                        VIP Black
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400">Preloaded test account with 650 coins</p>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleQuickDemoLogin}
-                  disabled={loading}
-                  className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-xs transition-transform active:scale-95 cursor-pointer shrink-0"
-                >
-                  1-Click Demo
-                </button>
-              </div>
-
               <div>
                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                   Email Address
