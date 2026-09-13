@@ -183,6 +183,7 @@ export function Navbar() {
     wishlist,
     openProfile,
     openSearch,
+    openAuthModal,
     user,
     isLoggedIn,
     judesCoins,
@@ -320,26 +321,40 @@ export function Navbar() {
               <span className="text-[10px] text-amber-700/80 dark:text-amber-400 font-bold uppercase tracking-wider">Coins</span>
             </button>
 
-            {/* User Profile */}
-            <button
-              onClick={openProfile}
-              className="flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-full text-stone-700 dark:text-stone-300 hover:text-[#0066FF] dark:hover:text-[#38BDF8] hover:bg-stone-100 dark:hover:bg-slate-800 transition-all relative shrink-0"
-              aria-label="Account Profile"
-            >
-              <User className="w-4 h-4" />
-              <span className="hidden xl:inline text-xs font-semibold text-stone-800 dark:text-stone-200">
-                {isLoggedIn ? user.name.split(' ')[0] : 'Sign In'}
-              </span>
-              {isLoggedIn && vipTier === 'black' ? (
-                <span className="hidden sm:inline-block text-[9px] font-black px-1.5 py-0.2 bg-slate-900 text-amber-300 rounded border border-amber-400/40">
-                  BLACK
+            {/* Customer Profile / Sign In */}
+            {isLoggedIn ? (
+              <button
+                onClick={openProfile}
+                className="flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-full text-stone-700 dark:text-stone-300 hover:text-[#0066FF] dark:hover:text-[#38BDF8] hover:bg-stone-100 dark:hover:bg-slate-800 transition-all relative shrink-0"
+                aria-label="Account Profile"
+              >
+                <User className="w-4 h-4" />
+                <span className="hidden xl:inline text-xs font-semibold text-stone-800 dark:text-stone-200">
+                  {user.name.split(' ')[0]}
                 </span>
-              ) : isLoggedIn && vipTier === 'gold' ? (
-                <span className="hidden sm:inline-block text-[9px] font-black px-1.5 py-0.2 bg-amber-100 text-amber-800 rounded border border-amber-200">
-                  VIP
+                {vipTier === 'black' ? (
+                  <span className="hidden sm:inline-block text-[9px] font-black px-1.5 py-0.2 bg-slate-900 text-amber-300 rounded border border-amber-400/40">
+                    BLACK
+                  </span>
+                ) : vipTier === 'gold' ? (
+                  <span className="hidden sm:inline-block text-[9px] font-black px-1.5 py-0.2 bg-amber-100 text-amber-800 rounded border border-amber-200">
+                    VIP
+                  </span>
+                ) : null}
+              </button>
+            ) : (
+              <button
+                onClick={() => openAuthModal('login')}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200 dark:border-blue-800/80 text-[#0066FF] dark:text-[#38BDF8] transition-all text-xs font-bold cursor-pointer shrink-0 shadow-2xs group"
+                aria-label="Customer Sign In"
+              >
+                <User className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+                <span>Sign In</span>
+                <span className="hidden xl:inline text-[10px] text-amber-600 dark:text-amber-400 font-extrabold bg-amber-100 dark:bg-amber-900/60 px-1.5 py-0.2 rounded-full">
+                  +200
                 </span>
-              ) : null}
-            </button>
+              </button>
+            )}
 
             {/* Cart Button */}
             <button
@@ -558,12 +573,16 @@ export function Navbar() {
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  openProfile();
+                  if (isLoggedIn) {
+                    openProfile();
+                  } else {
+                    openAuthModal('login');
+                  }
                 }}
                 className="flex items-center justify-center gap-2 p-2.5 rounded-xl border border-stone-200 dark:border-slate-800 bg-stone-50 dark:bg-slate-900/60 font-bold text-stone-900 dark:text-slate-100 hover:border-blue-300 transition-colors"
               >
                 <User className="w-4 h-4 text-[#0066FF]" />
-                <span className="truncate">{isLoggedIn ? user.name.split(' ')[0] : 'Sign In'}</span>
+                <span className="truncate">{isLoggedIn ? user.name.split(' ')[0] : 'Sign In / Join'}</span>
               </button>
 
               <button

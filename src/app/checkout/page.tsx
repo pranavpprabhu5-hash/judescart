@@ -21,6 +21,7 @@ import {
   Sparkles,
   ShoppingBag,
   Gift,
+  User,
 } from 'lucide-react';
 import { cn, calculatePurchaseCoins } from '@/lib/utils';
 
@@ -35,6 +36,8 @@ export default function CheckoutPage() {
     detectedLocation,
     addOrder,
     user,
+    isLoggedIn,
+    openAuthModal,
     appliedPromo,
     judesCoins,
     redeemCoinsDirect,
@@ -67,6 +70,27 @@ export default function CheckoutPage() {
   const [cardHolder, setCardHolder] = useState('ELEANOR STERLING');
   const [cardExpiry, setCardExpiry] = useState('11/28');
   const [cardCvv, setCardCvv] = useState('888');
+
+  // Synchronize shipping fields when user logs in
+  useEffect(() => {
+    if (isLoggedIn && user && user.email) {
+      const defaultAddr = user.savedAddresses[0];
+      const names = user.name ? user.name.split(' ') : ['Customer', 'Shopper'];
+      setShippingAddress((prev) => ({
+        firstName: defaultAddr?.firstName || names[0] || prev.firstName,
+        lastName: defaultAddr?.lastName || names.slice(1).join(' ') || prev.lastName,
+        email: user.email || defaultAddr?.email || prev.email,
+        phone: user.phone || defaultAddr?.phone || prev.phone,
+        street: defaultAddr?.street || prev.street,
+        apartment: defaultAddr?.apartment || prev.apartment,
+        city: defaultAddr?.city || prev.city,
+        state: defaultAddr?.state || prev.state,
+        postalCode: defaultAddr?.postalCode || prev.postalCode,
+        country: defaultAddr?.country || prev.country,
+      }));
+      setCardHolder((user.name || 'CUSTOMER').toUpperCase());
+    }
+  }, [user, isLoggedIn]);
 
   // Luxury Gift Packaging State
   const [isGiftWrap, setIsGiftWrap] = useState(false);
@@ -258,6 +282,38 @@ export default function CheckoutPage() {
           {/* STEP 1: SHIPPING ADDRESS */}
           {step === 1 && (
             <div className="space-y-6">
+              {/* Customer Sign-In Prompt or Logged-In Badge */}
+              {!isLoggedIn ? (
+                <div className="p-3.5 rounded-2xl bg-blue-50/80 border border-blue-200/80 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-[#0066FF] text-white flex items-center justify-center shrink-0 shadow-xs">
+                      <User className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-slate-900">Already have a JudesCart account?</p>
+                      <p className="text-[11px] text-slate-500">Sign in to load saved addresses &amp; earn points on this order.</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => openAuthModal('login')}
+                    className="px-3.5 py-1.5 rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-xs font-bold shadow-xs transition-colors shrink-0 cursor-pointer"
+                  >
+                    Sign In
+                  </button>
+                </div>
+              ) : (
+                <div className="p-3 rounded-2xl bg-emerald-50/80 border border-emerald-200/80 flex items-center justify-between text-xs text-emerald-800">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>Checking out as <strong>{user.name}</strong> ({user.email})</span>
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-900 px-2 py-0.5 rounded-full">
+                    VIP Linked
+                  </span>
+                </div>
+              )}
+
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                 <div>
                   <h2 className="font-sans text-lg font-bold text-[#0A192F]">Delivery Destination</h2>

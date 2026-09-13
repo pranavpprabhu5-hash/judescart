@@ -36,6 +36,8 @@ export function ProfileDrawer() {
     user,
     isLoggedIn,
     toggleLogin,
+    openAuthModal,
+    logoutCustomer,
     formatAmount,
     judesCoins,
     redeemCoinsForSpin,
@@ -131,6 +133,35 @@ export function ProfileDrawer() {
             <X className="w-5 h-5" />
           </button>
         </div>
+
+        {/* Guest Welcoming Banner if Logged Out */}
+        {!isLoggedIn && (
+          <div className="m-4 p-4 rounded-2xl bg-gradient-to-br from-blue-50 via-indigo-50/50 to-white border border-blue-200/80 shadow-xs space-y-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-[#0066FF] text-white flex items-center justify-center shrink-0 shadow-xs">
+                <Sparkles className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-slate-900">Sign in to JudesCart</h4>
+                <p className="text-[11px] text-slate-500">View your order history, delivery radar, &amp; coins</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <button
+                onClick={() => openAuthModal('login')}
+                className="py-2 px-3 rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white font-bold text-xs text-center shadow-xs transition-colors cursor-pointer"
+              >
+                Sign In
+              </button>
+              <button
+                onClick={() => openAuthModal('signup')}
+                className="py-2 px-3 rounded-xl border border-blue-200 bg-white hover:bg-blue-50/80 text-[#0066FF] font-bold text-xs text-center transition-colors cursor-pointer"
+              >
+                Create Account
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* JudesCoins & Daily Gift Bar */}
         <div className="px-5 py-2.5 bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-purple-500/10 border-b border-amber-100 flex items-center justify-between">
@@ -637,17 +668,41 @@ export function ProfileDrawer() {
               </div>
 
               <div className="p-4 rounded-xl border border-stone-200 bg-stone-50/50 space-y-2">
-                <h4 className="font-medium text-stone-900">Simulated Account Session</h4>
+                <h4 className="font-medium text-stone-900">Customer Account Session</h4>
                 <p className="text-stone-500">
-                  You are currently logged in as a verified VIP client. You can toggle between guest and registered mode
-                  to test checkout flows.
+                  {isLoggedIn
+                    ? `Logged in as ${user.name} (${user.email}).`
+                    : 'Currently browsing as guest visitor.'}
                 </p>
-                <button
-                  onClick={toggleLogin}
-                  className="mt-2 px-3 py-1.5 rounded-lg border border-stone-300 text-stone-700 hover:bg-stone-200 transition-colors font-medium"
-                >
-                  {isLoggedIn ? 'Switch to Guest Mode' : 'Log in as Eleanor Sterling'}
-                </button>
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  {isLoggedIn ? (
+                    <button
+                      onClick={() => {
+                        logoutCustomer();
+                        setFeedback({ type: 'success', message: 'You have been signed out successfully.' });
+                      }}
+                      className="px-3 py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 transition-colors font-medium flex items-center gap-1.5 cursor-pointer text-xs"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>Sign Out of Account</span>
+                    </button>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => openAuthModal('login')}
+                        className="px-3 py-1.5 rounded-lg bg-[#0066FF] text-white hover:bg-blue-600 transition-colors font-medium cursor-pointer text-xs"
+                      >
+                        Sign In
+                      </button>
+                      <button
+                        onClick={() => openAuthModal('signup')}
+                        className="px-3 py-1.5 rounded-lg border border-stone-300 text-stone-700 hover:bg-stone-200 transition-colors font-medium cursor-pointer text-xs"
+                      >
+                        Create Account
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
 
               <div className="p-4 rounded-xl border border-stone-200 bg-stone-50/50 space-y-2">
@@ -678,13 +733,25 @@ export function ProfileDrawer() {
             <Heart className="w-3.5 h-3.5" />
             <span>Saved Wishlist</span>
           </Link>
-          <button
-            onClick={toggleLogin}
-            className="flex items-center gap-1 text-xs text-stone-500 hover:text-stone-900 transition-colors"
-          >
-            <LogOut className="w-3 h-3" />
-            <span>{isLoggedIn ? 'Sign Out' : 'Sign In'}</span>
-          </button>
+          {isLoggedIn ? (
+            <button
+              onClick={() => {
+                logoutCustomer();
+                setFeedback({ type: 'success', message: 'Signed out successfully.' });
+              }}
+              className="flex items-center gap-1 text-xs text-rose-600 hover:text-rose-700 font-semibold transition-colors cursor-pointer"
+            >
+              <LogOut className="w-3 h-3" />
+              <span>Sign Out</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => openAuthModal('login')}
+              className="flex items-center gap-1 text-xs text-[#0066FF] hover:underline font-bold transition-colors cursor-pointer"
+            >
+              <span>Sign In / Register</span>
+            </button>
+          )}
         </div>
       </div>
 

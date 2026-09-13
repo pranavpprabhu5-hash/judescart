@@ -75,6 +75,10 @@ export interface UserProfile {
   name: string;
   email: string;
   avatar: string;
+  phone?: string;
+  password?: string;
+  joinedDate?: string;
+  role?: 'customer' | 'vip';
   savedAddresses: ShippingAddress[];
   orders: Order[];
   judesCoins?: number;

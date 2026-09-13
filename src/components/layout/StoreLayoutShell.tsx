@@ -15,6 +15,7 @@ import { ProductComparisonDrawer } from '@/components/product/ProductComparisonD
 import { CurrencyLocationBanner } from '@/components/layout/CurrencyLocationBanner';
 import { JudesAIWidget } from '@/components/ai/JudesAIWidget';
 import { InstallPwaPrompt } from '@/components/ui/InstallPwaPrompt';
+import { CustomerAuthModal } from '@/components/auth/CustomerAuthModal';
 
 export function StoreLayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -31,6 +32,7 @@ export function StoreLayoutShell({ children }: { children: React.ReactNode }) {
       <Footer />
       <SlideOverCart />
       <ProfileDrawer />
+      <CustomerAuthModal />
       <SearchOverlay />
       <LuckyDrawModal />
       <FloatingLuckyDrawCTA />

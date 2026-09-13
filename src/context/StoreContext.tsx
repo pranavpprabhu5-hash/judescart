@@ -8,6 +8,15 @@ import { UserProfile, Order, ShippingAddress } from '@/types/user';
 import { CURRENCIES, PROMO_CODES, INITIAL_USER, PRODUCTS } from '@/lib/mock-data';
 import { calculateCartSummary, formatPrice, calculatePurchaseCoins } from '@/lib/utils';
 import { detectUserLocation } from '@/lib/geo-currency';
+import {
+  getActiveCustomer,
+  setActiveCustomerSession,
+  findAccountByEmail,
+  saveAccount,
+  generateInitialsAvatar,
+  GUEST_USER,
+  DEFAULT_DEMO_USER,
+} from '@/lib/auth-storage';
 
 export interface AdminWinnerRecord {
   id: string;
@@ -78,6 +87,16 @@ interface StoreContextType {
   closeProfile: () => void;
   addOrder: (order: Order) => void;
   saveAddress: (address: ShippingAddress) => void;
+
+  // Customer Authentication & Auth Modal
+  isAuthModalOpen: boolean;
+  authModalMode: 'login' | 'signup' | 'forgot_password';
+  openAuthModal: (mode?: 'login' | 'signup' | 'forgot_password') => void;
+  closeAuthModal: () => void;
+  loginCustomer: (email: string, password: string) => Promise<{ success: boolean; message: string }>;
+  signupCustomer: (data: { name: string; email: string; password: string; phone?: string }) => Promise<{ success: boolean; message: string }>;
+  logoutCustomer: () => void;
+  requestPasswordReset: (email: string) => Promise<{ success: boolean; message: string }>;
 
   // JudesCoins Rewards
   judesCoins: number;
@@ -221,13 +240,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [isConsoleLocked, setIsConsoleLocked] = useState<boolean>(true);
 
   // User State
-  const [user, setUser] = useState<UserProfile>(INITIAL_USER);
+  const [user, setUser] = useState<UserProfile>(DEFAULT_DEMO_USER);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<'login' | 'signup' | 'forgot_password'>('login');
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isLuckyDrawOpen, setIsLuckyDrawOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
-  const [judesCoins, setJudesCoins] = useState<number>(INITIAL_USER.judesCoins || 650);
+  const [judesCoins, setJudesCoins] = useState<number>(DEFAULT_DEMO_USER.judesCoins || 650);
 
   // Daily Mystery Gamification State
   const [isDailyMysteryOpen, setIsDailyMysteryOpen] = useState(false);
@@ -387,8 +408,17 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         });
       }
 
+      // Customer session restoration
+      const activeSession = getActiveCustomer();
+      setUser(activeSession.user);
+      setIsLoggedIn(activeSession.isLoggedIn);
+
       const savedCoins = localStorage.getItem('judescart_coins');
-      if (savedCoins) setJudesCoins(parseInt(savedCoins, 10));
+      if (savedCoins) {
+        setJudesCoins(parseInt(savedCoins, 10));
+      } else {
+        setJudesCoins(activeSession.user.judesCoins ?? (activeSession.isLoggedIn ? 650 : 0));
+      }
 
       const savedProducts = localStorage.getItem('judescart_products_v3');
       if (savedProducts) {
@@ -644,8 +674,152 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const formatAmount = (amount: number) => formatPrice(amount, currency);
 
-  // User Actions
-  const toggleLogin = () => setIsLoggedIn((prev) => !prev);
+  // User & Customer Auth Actions
+  const openAuthModal = (mode: 'login' | 'signup' | 'forgot_password' = 'login') => {
+    setAuthModalMode(mode);
+    setIsAuthModalOpen(true);
+  };
+
+  const closeAuthModal = () => setIsAuthModalOpen(false);
+
+  const loginCustomer = async (
+    email: string,
+    password: string
+  ): Promise<{ success: boolean; message: string }> => {
+    const trimmedEmail = email.trim().toLowerCase();
+    const account = findAccountByEmail(trimmedEmail);
+
+    if (!account) {
+      return {
+        success: false,
+        message: 'No account found with this email. Please click "Create Account" to join.',
+      };
+    }
+
+    if (account.password && account.password !== password) {
+      return {
+        success: false,
+        message: 'Incorrect password. Please verify your credentials or click "Forgot password?".',
+      };
+    }
+
+    setUser(account);
+    setIsLoggedIn(true);
+    const coins = account.judesCoins ?? 650;
+    setJudesCoins(coins);
+    setActiveCustomerSession(account);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('judescart_coins', coins.toString());
+    }
+    setIsAuthModalOpen(false);
+    return { success: true, message: `Welcome back, ${account.name}!` };
+  };
+
+  const signupCustomer = async (data: {
+    name: string;
+    email: string;
+    password: string;
+    phone?: string;
+  }): Promise<{ success: boolean; message: string }> => {
+    const trimmedEmail = data.email.trim().toLowerCase();
+    const existing = findAccountByEmail(trimmedEmail);
+
+    if (existing) {
+      return {
+        success: false,
+        message: 'An account with this email already exists. Please sign in instead.',
+      };
+    }
+
+    if (data.password.length < 6) {
+      return {
+        success: false,
+        message: 'Password must be at least 6 characters long.',
+      };
+    }
+
+    const welcomeCoins = 200;
+    const newCustomer: UserProfile = {
+      name: data.name.trim(),
+      email: trimmedEmail,
+      phone: data.phone?.trim() || '',
+      password: data.password,
+      avatar: generateInitialsAvatar(data.name),
+      joinedDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+      role: 'customer',
+      savedAddresses: [],
+      orders: [],
+      judesCoins: welcomeCoins,
+    };
+
+    saveAccount(newCustomer);
+    setUser(newCustomer);
+    setIsLoggedIn(true);
+    setJudesCoins(welcomeCoins);
+    setActiveCustomerSession(newCustomer);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('judescart_coins', welcomeCoins.toString());
+    }
+    setIsAuthModalOpen(false);
+    return {
+      success: true,
+      message: `Welcome to JudesCart, ${newCustomer.name}! +${welcomeCoins} welcome JudesCoins credited.`,
+    };
+  };
+
+  const logoutCustomer = () => {
+    setUser(GUEST_USER);
+    setIsLoggedIn(false);
+    setJudesCoins(0);
+    setActiveCustomerSession(null);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('judescart_coins', '0');
+    }
+  };
+
+  const requestPasswordReset = async (
+    email: string
+  ): Promise<{ success: boolean; message: string }> => {
+    const trimmedEmail = email.trim().toLowerCase();
+    const account = findAccountByEmail(trimmedEmail);
+
+    if (!account) {
+      return {
+        success: true,
+        message: `If an account exists for ${trimmedEmail}, recovery instructions have been sent.`,
+      };
+    }
+
+    return {
+      success: true,
+      message: `Password reset instructions sent to ${trimmedEmail}! (Demo account hint: password is '${account.password || 'judes123'}')`,
+    };
+  };
+
+  const toggleLogin = () => {
+    if (isLoggedIn) {
+      logoutCustomer();
+    } else {
+      loginCustomer(DEFAULT_DEMO_USER.email, DEFAULT_DEMO_USER.password || 'judes123');
+    }
+  };
+
+  const saveAddress = (address: ShippingAddress) => {
+    setUser((prev) => {
+      const filtered = prev.savedAddresses.filter(
+        (a) => a.street.toLowerCase() !== address.street.toLowerCase()
+      );
+      const updatedUser: UserProfile = {
+        ...prev,
+        savedAddresses: [address, ...filtered],
+      };
+      if (isLoggedIn) {
+        saveAccount(updatedUser);
+      }
+      return updatedUser;
+    });
+  };
+
   const addOrder = (order: Order) => {
     // Reward against purchase: 1 coin each for every 100 rs purchase
     const earnedCoins = order.coinsEarned ?? calculatePurchaseCoins(order.total);
@@ -653,12 +827,24 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       ...order,
       coinsEarned: earnedCoins,
     };
-    setJudesCoins((prev) => prev + earnedCoins);
-    setUser((prev) => ({
-      ...prev,
-      orders: [orderWithCoins, ...prev.orders],
-      judesCoins: (prev.judesCoins || 0) + earnedCoins,
-    }));
+    setJudesCoins((prev) => {
+      const nextCoins = prev + earnedCoins;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('judescart_coins', nextCoins.toString());
+      }
+      return nextCoins;
+    });
+    setUser((prev) => {
+      const updatedUser: UserProfile = {
+        ...prev,
+        orders: [orderWithCoins, ...prev.orders],
+        judesCoins: (prev.judesCoins || 0) + earnedCoins,
+      };
+      if (isLoggedIn) {
+        saveAccount(updatedUser);
+      }
+      return updatedUser;
+    });
   };
 
   const addJudesCoins = (amount: number) => {
@@ -766,13 +952,6 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const openQuickView = (product: Product) => setQuickViewProduct(product);
   const closeQuickView = () => setQuickViewProduct(null);
-
-  const saveAddress = (address: ShippingAddress) => {
-    setUser((prev) => ({
-      ...prev,
-      savedAddresses: [address, ...prev.savedAddresses.filter((a) => a.street !== address.street)],
-    }));
-  };
 
   // ================= ADMIN ACTIONS =================
   const updateProductStock = (id: string, newStock: number) => {
@@ -1162,6 +1341,16 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         closeProfile: () => setIsProfileOpen(false),
         addOrder,
         saveAddress,
+
+        // Customer Auth
+        isAuthModalOpen,
+        authModalMode,
+        openAuthModal,
+        closeAuthModal,
+        loginCustomer,
+        signupCustomer,
+        logoutCustomer,
+        requestPasswordReset,
 
         judesCoins,
         addJudesCoins,
