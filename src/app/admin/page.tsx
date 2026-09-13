@@ -52,6 +52,7 @@ import {
   ShieldCheck,
   Lock,
   Copy,
+  FileText,
 } from 'lucide-react';
 import { cn, formatPrice } from '@/lib/utils';
 import { CURRENCIES, INITIAL_USER } from '@/lib/mock-data';
@@ -324,6 +325,7 @@ export default function AdminCommandCenter() {
 
   const [isLuckyDrawConfigOpen, setIsLuckyDrawConfigOpen] = useState(false);
   const [isProvablyFairModalOpen, setIsProvablyFairModalOpen] = useState(false);
+  const [isQaReportsModalOpen, setIsQaReportsModalOpen] = useState(false);
 
   // Category Management Modal State
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
@@ -676,6 +678,17 @@ export default function AdminCommandCenter() {
                 <span className="hidden md:inline">View Storefront</span>
                 <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
               </Link>
+
+              {/* QA Test Reports Button */}
+              <button
+                type="button"
+                onClick={() => setIsQaReportsModalOpen(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700/60 transition-all text-xs font-bold shadow-2xs cursor-pointer active:scale-95"
+                title="Download Storefront & Admin QA PDF Test Reports"
+              >
+                <FileText className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                <span className="hidden sm:inline">QA Reports</span>
+              </button>
 
               <div className="w-8 h-8 rounded-full border border-amber-500/30 overflow-hidden bg-slate-100 dark:bg-zinc-800 relative shadow-xs">
                 <Image src={user.avatar} alt="Admin" fill className="object-cover" />
@@ -2612,6 +2625,107 @@ export default function AdminCommandCenter() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* QA Test Reports Download Modal */}
+      {isQaReportsModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0A192F]/70 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="fixed inset-0" onClick={() => setIsQaReportsModalOpen(false)} />
+          <div className="relative w-full max-w-lg bg-white dark:bg-[#0C1527] rounded-3xl shadow-2xl z-10 border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
+            {/* Ambient Line */}
+            <div className="h-1.5 w-full bg-gradient-to-r from-emerald-400 via-teal-500 to-[#0066FF]" />
+
+            <div className="p-6 pb-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                  <FileText className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-slate-900 dark:text-white">
+                    Download QA Test Reports
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Official Quality Assurance audits for Storefront and Admin Panel
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsQaReportsModalOpen(false)}
+                className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              {/* Storefront Report Card */}
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-950 text-[#0066FF] dark:text-[#38BDF8]">
+                      Storefront
+                    </span>
+                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                      52 Tests • 100% Pass
+                    </span>
+                  </div>
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                    Storefront &amp; CX Verification Audit
+                  </h4>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Multi-currency rates, cart formulas, checkout, customer auth, AI concierge &amp; responsive UI.
+                  </p>
+                </div>
+                <a
+                  href="/reports/JudesCart_Storefront_QA_Test_Report.pdf"
+                  download="JudesCart_Storefront_QA_Test_Report.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2.5 rounded-xl bg-[#0066FF] hover:bg-blue-600 text-white font-bold text-xs shadow-md shadow-blue-500/20 shrink-0 flex items-center gap-1.5 transition-all cursor-pointer"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Download PDF</span>
+                </a>
+              </div>
+
+              {/* Admin Panel Report Card */}
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
+                      Admin Panel
+                    </span>
+                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                      46 Tests • 100% Pass
+                    </span>
+                  </div>
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                    Admin Center &amp; Operations Audit
+                  </h4>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                    RBAC permissions, PIN lock, analytics pipelines, catalog CRUD, orders &amp; lucky draw engine.
+                  </p>
+                </div>
+                <a
+                  href="/reports/JudesCart_Admin_Panel_QA_Test_Report.pdf"
+                  download="JudesCart_Admin_Panel_QA_Test_Report.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-zinc-100 text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-white font-bold text-xs shadow-md shrink-0 flex items-center gap-1.5 transition-all cursor-pointer"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Download PDF</span>
+                </a>
+              </div>
+            </div>
+
+            <div className="px-6 py-3 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+              <span>Generated on: September 13, 2026</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                <ShieldCheck className="w-3.5 h-3.5" /> Certified Production Ready
+              </span>
+            </div>
           </div>
         </div>
       )}
