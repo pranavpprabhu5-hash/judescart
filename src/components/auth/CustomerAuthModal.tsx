@@ -299,7 +299,7 @@ export function CustomerAuthModal() {
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
                     placeholder="name@example.com"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF] transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF] transition-all"
                   />
                 </div>
               </div>
@@ -328,7 +328,7 @@ export function CustomerAuthModal() {
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
                     placeholder="Enter your password"
-                    className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF] transition-all"
+                    className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF] transition-all"
                   />
                   <button
                     type="button"
@@ -454,7 +454,7 @@ export function CustomerAuthModal() {
                     value={signupName}
                     onChange={(e) => setSignupName(e.target.value)}
                     placeholder="e.g. Alexander Hayes"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF] transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF] transition-all"
                   />
                 </div>
               </div>
@@ -472,7 +472,7 @@ export function CustomerAuthModal() {
                       value={signupEmail}
                       onChange={(e) => setSignupEmail(e.target.value)}
                       placeholder="alex@example.com"
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF] transition-all"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF] transition-all"
                     />
                   </div>
                 </div>
@@ -488,7 +488,7 @@ export function CustomerAuthModal() {
                       value={signupPhone}
                       onChange={(e) => setSignupPhone(e.target.value)}
                       placeholder="+1 (555) 000-0000"
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF] transition-all"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF] transition-all"
                     />
                   </div>
                 </div>
@@ -507,7 +507,7 @@ export function CustomerAuthModal() {
                       value={signupPassword}
                       onChange={(e) => setSignupPassword(e.target.value)}
                       placeholder="Min 6 chars"
-                      className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF] transition-all"
+                      className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF] transition-all"
                     />
                     <button
                       type="button"
@@ -532,7 +532,7 @@ export function CustomerAuthModal() {
                       value={signupConfirmPassword}
                       onChange={(e) => setSignupConfirmPassword(e.target.value)}
                       placeholder="Repeat password"
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF] transition-all"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF] transition-all"
                     />
                   </div>
                 </div>
@@ -610,7 +610,7 @@ export function CustomerAuthModal() {
                     value={resetEmail}
                     onChange={(e) => setResetEmail(e.target.value)}
                     placeholder="name@example.com"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF] transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF] transition-all"
                   />
                 </div>
               </div>
