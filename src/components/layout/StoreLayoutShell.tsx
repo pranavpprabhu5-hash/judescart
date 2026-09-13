@@ -8,7 +8,6 @@ import { SlideOverCart } from '@/components/cart/SlideOverCart';
 import { ProfileDrawer } from '@/components/layout/ProfileDrawer';
 import { SearchOverlay } from '@/components/layout/SearchOverlay';
 import { LuckyDrawModal } from '@/components/luckydraw/LuckyDrawModal';
-import { FloatingLuckyDrawCTA } from '@/components/luckydraw/FloatingLuckyDrawCTA';
 import { ProductQuickViewModal } from '@/components/product/ProductQuickViewModal';
 import { DailyMysteryBoxModal } from '@/components/luckydraw/DailyMysteryBoxModal';
 import { ProductComparisonDrawer } from '@/components/product/ProductComparisonDrawer';
@@ -35,7 +34,6 @@ export function StoreLayoutShell({ children }: { children: React.ReactNode }) {
       <CustomerAuthModal />
       <SearchOverlay />
       <LuckyDrawModal />
-      <FloatingLuckyDrawCTA />
       <JudesAIWidget />
       <ProductQuickViewModal />
       <DailyMysteryBoxModal />
