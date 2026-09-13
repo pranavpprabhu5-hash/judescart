@@ -179,7 +179,7 @@ export function JudesAIChatWindow({ isOpen, onClose }: JudesAIChatWindowProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 top-12 sm:top-auto sm:inset-x-auto sm:right-6 sm:bottom-6 z-50 sm:w-[440px] sm:h-[640px] rounded-t-[28px] sm:rounded-3xl overflow-hidden flex flex-col bg-[#071328]/98 text-white border-t sm:border border-blue-500/40 shadow-2xl backdrop-blur-xl animate-in slide-in-from-bottom duration-200">
+    <div className="fixed inset-x-0 bottom-0 top-12 sm:top-auto sm:inset-x-auto sm:right-6 sm:bottom-6 z-50 sm:w-[440px] sm:h-[640px] rounded-t-[28px] sm:rounded-3xl overflow-hidden flex flex-col bg-[#071328] text-white border-t sm:border border-slate-800 shadow-2xl backdrop-blur-xl animate-in slide-in-from-bottom duration-200">
       
       {/* Mobile Grab Handle */}
       <div className="sm:hidden flex justify-center py-2 bg-[#0B1E3D] border-b border-white/5 shrink-0">
@@ -187,9 +187,9 @@ export function JudesAIChatWindow({ isOpen, onClose }: JudesAIChatWindowProps) {
       </div>
 
       {/* 1. TOP CONCIERGE HEADER */}
-      <div className="flex items-center justify-between px-4 py-3.5 bg-gradient-to-r from-[#0B1E3D] via-[#0E2A56] to-[#12366E] border-b border-blue-500/20 shrink-0">
+      <div className="flex items-center justify-between px-4 py-3.5 bg-[#0B1E3D] border-b border-slate-800 shrink-0">
         <div className="flex items-center gap-2.5">
-          <div className="relative w-9 h-9 rounded-full bg-gradient-to-tr from-blue-500 via-indigo-500 to-purple-500 flex items-center justify-center shadow-md shrink-0 border border-white/30">
+          <div className="relative w-9 h-9 rounded-full bg-[#0066FF] flex items-center justify-center shadow-md shrink-0 border border-blue-400/40">
             <Bot className="w-5 h-5 text-white" />
             <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#0B1E3D]" />
           </div>
@@ -200,7 +200,7 @@ export function JudesAIChatWindow({ isOpen, onClose }: JudesAIChatWindowProps) {
                 Concierge
               </span>
             </div>
-            <span className="text-[10px] text-cyan-200/80 font-medium block">
+            <span className="text-[10px] text-slate-400 font-medium block">
               Online • Real-Time Store Knowledge
             </span>
           </div>
@@ -250,8 +250,8 @@ export function JudesAIChatWindow({ isOpen, onClose }: JudesAIChatWindowProps) {
             <div
               className={`max-w-[88%] rounded-2xl p-3.5 sm:p-4 text-xs leading-relaxed shadow-sm ${
                 msg.sender === 'user'
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-br-xs'
-                  : 'bg-white/10 backdrop-blur-md text-stone-100 border border-white/15 rounded-bl-xs'
+                  ? 'bg-[#0066FF] text-white rounded-br-xs'
+                  : 'bg-slate-800 text-stone-100 border border-slate-700 rounded-bl-xs'
               }`}
             >
               {/* Render Markdown-like content cleanly */}
@@ -260,7 +260,7 @@ export function JudesAIChatWindow({ isOpen, onClose }: JudesAIChatWindowProps) {
                   // If heading
                   if (paragraph.startsWith('### ')) {
                     return (
-                      <h4 key={pIdx} className="font-extrabold text-sm text-cyan-300 tracking-tight">
+                      <h4 key={pIdx} className="font-extrabold text-sm text-blue-400 tracking-tight">
                         {paragraph.replace('### ', '')}
                       </h4>
                     );
@@ -275,7 +275,7 @@ export function JudesAIChatWindow({ isOpen, onClose }: JudesAIChatWindowProps) {
 
               {/* Highlighted Promo Code Box */}
               {msg.highlightPromo && (
-                <div className="mt-3 p-2.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-purple-500/20 border border-amber-400/40 flex items-center justify-between gap-2">
+                <div className="mt-3 p-2.5 rounded-xl bg-amber-500/10 border border-amber-400/30 flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <Tag className="w-4 h-4 text-amber-300 shrink-0" />
                     <div>
@@ -300,8 +300,8 @@ export function JudesAIChatWindow({ isOpen, onClose }: JudesAIChatWindowProps) {
             {/* Embedded Product Recommendation Cards */}
             {msg.suggestedProducts && msg.suggestedProducts.length > 0 && (
               <div className="w-full space-y-2 pt-1">
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-cyan-300 flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-cyan-400" />
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-300 flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-blue-400" />
                   <span>Curated Recommendations ({msg.suggestedProducts.length})</span>
                 </span>
                 
@@ -328,7 +328,7 @@ export function JudesAIChatWindow({ isOpen, onClose }: JudesAIChatWindowProps) {
                       <div className="flex-1 min-w-0">
                         <Link
                           href={`/products/${product.slug}`}
-                          className="font-bold text-white hover:text-cyan-300 transition-colors line-clamp-1 block text-xs"
+                          className="font-bold text-white hover:text-blue-400 transition-colors line-clamp-1 block text-xs"
                           title={product.name}
                         >
                           {product.name}
@@ -379,7 +379,7 @@ export function JudesAIChatWindow({ isOpen, onClose }: JudesAIChatWindowProps) {
                   <button
                     key={idx}
                     onClick={() => handleSend(pill.query)}
-                    className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/10 hover:bg-white/20 text-cyan-200 border border-white/15 transition-colors cursor-pointer"
+                    className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors cursor-pointer"
                   >
                     {pill.label}
                   </button>
@@ -395,10 +395,10 @@ export function JudesAIChatWindow({ isOpen, onClose }: JudesAIChatWindowProps) {
 
         {/* Typing Bubble Animation */}
         {isTyping && (
-          <div className="flex items-center gap-2 p-3 rounded-2xl bg-white/10 text-stone-300 border border-white/10 w-24">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-bounce" />
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-bounce [animation-delay:0.2s]" />
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-bounce [animation-delay:0.4s]" />
+          <div className="flex items-center gap-2 p-3 rounded-2xl bg-slate-800 text-stone-300 border border-slate-700 w-24">
+            <span className="w-2 h-2 rounded-full bg-blue-400 animate-bounce" />
+            <span className="w-2 h-2 rounded-full bg-blue-400 animate-bounce [animation-delay:0.2s]" />
+            <span className="w-2 h-2 rounded-full bg-blue-400 animate-bounce [animation-delay:0.4s]" />
           </div>
         )}
 
@@ -419,13 +419,13 @@ export function JudesAIChatWindow({ isOpen, onClose }: JudesAIChatWindowProps) {
       </div>
 
       {/* 5. INTERACTIVE QUERY INPUT BAR */}
-      <div className="p-3 bg-[#08162E] border-t border-blue-500/20 shrink-0">
+      <div className="p-3 bg-[#0B1E3D] border-t border-slate-800 shrink-0">
         <form
           onSubmit={(e) => {
             e.preventDefault();
             handleSend();
           }}
-          className="flex items-center gap-2 bg-black/50 rounded-2xl px-3 py-1.5 border border-white/15 focus-within:border-blue-400 transition-colors"
+          className="flex items-center gap-2 bg-black/50 rounded-2xl px-3 py-1.5 border border-slate-700 focus-within:border-blue-500 transition-colors"
         >
           <input
             ref={inputRef}

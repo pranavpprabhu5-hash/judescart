@@ -293,7 +293,7 @@ export default function ProductDetailPage({
                   </div>
                 )}
                 {product.brand === 'JUDES' && (
-                  <div className="flex items-start gap-2 p-2 rounded-xl bg-gradient-to-r from-amber-500/15 via-blue-500/15 to-purple-500/15 border border-amber-400/80 text-[#0A192F]">
+                  <div className="flex items-start gap-2 p-2.5 rounded-xl bg-amber-50/80 border border-amber-300 text-[#0A192F]">
                     <Crown className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
                     <div>
                       <strong className="block font-extrabold text-[#0A192F]">

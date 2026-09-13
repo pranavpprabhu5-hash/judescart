@@ -52,22 +52,19 @@ export function JudesAIFloatingLauncher({
 
       {/* Main Floating Button */}
       <div className="relative group">
-        {/* Shimmering Halo Aura */}
-        <span className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 opacity-70 blur-xs group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 animate-pulse pointer-events-none" />
-
         <button
           onClick={onToggle}
           className={cn(
             'relative flex items-center gap-2.5 p-2 sm:px-4 sm:py-3 rounded-full shadow-2xl cursor-pointer',
-            'bg-gradient-to-r from-[#07132B] via-[#0D244D] to-[#1E40AF] text-white',
-            'border border-blue-400/40 hover:border-cyan-300 transition-all duration-300',
+            'bg-[#0A192F] hover:bg-[#0F2850] text-white',
+            'border border-slate-700 hover:border-blue-500 transition-all duration-300',
             'hover:scale-105 active:scale-95 focus:outline-hidden'
           )}
           aria-label="Open JudesAI Concierge"
           title="Ask JudesAI Shopping Concierge"
         >
-          {/* Animated Avatar Orb */}
-          <div className="relative w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 via-indigo-500 to-purple-500 flex items-center justify-center shadow-inner shrink-0 overflow-hidden">
+          {/* Avatar Orb */}
+          <div className="relative w-8 h-8 rounded-full bg-[#0066FF] flex items-center justify-center shadow-inner shrink-0 overflow-hidden">
             <Bot className="w-4 h-4 text-white" />
             <span className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
@@ -75,7 +72,7 @@ export function JudesAIFloatingLauncher({
           {/* Button Text */}
           <div className="text-left pr-1 hidden sm:block">
             <div className="flex items-center gap-1.5 leading-none">
-              <span className="text-[10px] font-black uppercase tracking-wider text-cyan-300">JudesAI</span>
+              <span className="text-[10px] font-black uppercase tracking-wider text-blue-400">JudesAI</span>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
             </div>
             <span className="font-extrabold text-xs tracking-tight text-white block mt-0.5">

@@ -425,7 +425,7 @@ export function CustomerAuthModal() {
           {mode === 'signup' && (
             <form onSubmit={handleSignupSubmit} className="space-y-3.5">
               {/* Welcome Bonus Callout */}
-              <div className="p-3 rounded-2xl bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-amber-500/10 border border-blue-200 dark:border-blue-800/60 flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[#0066FF] text-white flex items-center justify-center shrink-0 shadow-xs">
                   <Gift className="w-5 h-5" />
                 </div>

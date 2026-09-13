@@ -107,7 +107,7 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
               </span>
             )}
             {product.brand === 'JUDES' && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-gradient-to-r from-amber-500/15 via-blue-500/15 to-purple-500/15 text-[#0A192F] border border-amber-400/60">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-amber-50 text-amber-900 border border-amber-300">
                 👑 Brand JUDES: Bumper Draw
               </span>
             )}
@@ -354,7 +354,7 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
               </span>
             )}
             {product.brand === 'JUDES' && (
-              <span className="inline-flex items-center gap-0.5 sm:gap-1 px-1 sm:px-1.5 py-0.2 sm:py-0.5 rounded text-[8px] sm:text-[9px] font-extrabold bg-gradient-to-r from-amber-500/15 to-blue-500/15 text-[#0A192F] border border-amber-400/60">
+              <span className="inline-flex items-center gap-0.5 sm:gap-1 px-1 sm:px-1.5 py-0.2 sm:py-0.5 rounded text-[8px] sm:text-[9px] font-extrabold bg-amber-50 text-amber-900 border border-amber-300">
                 👑 JUDES
               </span>
             )}

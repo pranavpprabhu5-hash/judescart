@@ -164,7 +164,7 @@ export function ProfileDrawer() {
         )}
 
         {/* JudesCoins & Daily Gift Bar */}
-        <div className="px-5 py-2.5 bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-purple-500/10 border-b border-amber-100 flex items-center justify-between">
+        <div className="px-5 py-2.5 bg-amber-50/80 border-b border-amber-200/60 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-600">
               <Coins className="w-3.5 h-3.5" />
