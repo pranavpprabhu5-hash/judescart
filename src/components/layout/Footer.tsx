@@ -142,30 +142,6 @@ export function Footer() {
               <li><a href="#warranty" className="hover:text-white transition-colors">Returns & Refunds Center</a></li>
               <li><a href="#help" className="hover:text-white transition-colors">Help Center & FAQ</a></li>
               <li><a href="#support" className="hover:text-white transition-colors">24/7 Live Customer Support</a></li>
-              <li className="pt-1.5 border-t border-blue-900/40">
-                <a
-                  href="/reports/JudesCart_Storefront_QA_Test_Report.pdf"
-                  download="JudesCart_Storefront_QA_Test_Report.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1 transition-colors"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Storefront QA Report (PDF)</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/reports/JudesCart_Admin_Panel_QA_Test_Report.pdf"
-                  download="JudesCart_Admin_Panel_QA_Test_Report.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1 transition-colors"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Admin Panel QA Report (PDF)</span>
-                </a>
-              </li>
             </ul>
           </div>
 
@@ -199,19 +175,6 @@ export function Footer() {
             <Download className="w-3.5 h-3.5" />
             <span>Install App</span>
           </button>
-          <a
-            href="/reports/JudesCart_Storefront_QA_Test_Report.pdf"
-            download="JudesCart_Storefront_QA_Test_Report.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1 transition-colors"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>QA Reports (PDF)</span>
-          </a>
-          <Link href="/admin" className="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1">
-            <span>Admin Portal</span>
-          </Link>
           <span className="hover:text-stone-400 cursor-pointer">Privacy Notice</span>
           <span className="hover:text-stone-400 cursor-pointer">Terms of Use</span>
           <span className="hover:text-stone-400 cursor-pointer">Accessibility</span>

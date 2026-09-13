@@ -19,7 +19,7 @@ import { CustomerAuthModal } from '@/components/auth/CustomerAuthModal';
 
 export function StoreLayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isAdmin = pathname?.startsWith('/admin');
+  const isAdmin = pathname?.startsWith('/admin') || pathname?.startsWith('/portal');
 
   if (isAdmin) {
     return <main className="min-h-screen flex flex-col">{children}</main>;
