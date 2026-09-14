@@ -13,7 +13,6 @@ import {
   Check, 
   Bell, 
   BellRing, 
-  Sparkles, 
   Clock, 
   ChevronRight, 
   ChevronLeft,
@@ -681,13 +680,9 @@ export function HeroCardsHub() {
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
-      {/* SECTION HEADER BADGE & TITLE */}
+      {/* SECTION HEADER TITLE */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-4 sm:mb-6">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 mb-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-blue-500" />
-            <span>Curated Homepage Spotlight</span>
-          </div>
           <h1 className="font-sans text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Discover JudesCart Campaigns
           </h1>
