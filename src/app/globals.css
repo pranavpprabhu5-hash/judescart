@@ -131,3 +131,30 @@
   }
 }
 
+/* Luxury Gold Glow & Shimmer Keyframes for Bumper Jackpot */
+@keyframes goldGlowPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.3), 0 0 45px rgba(251, 191, 36, 0.2), inset 0 0 15px rgba(245, 158, 11, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(245, 158, 11, 0.5), 0 0 70px rgba(251, 191, 36, 0.35), inset 0 0 25px rgba(245, 158, 11, 0.2);
+  }
+}
+
+.gold-glow-card {
+  animation: goldGlowPulse 3s ease-in-out infinite;
+}
+
+@keyframes goldBorderShimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.gold-border-shimmer {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24, #fef08a, #fbbf24, #f59e0b);
+  background-size: 200% 200%;
+  animation: goldBorderShimmer 4s ease infinite;
+}
+
+
