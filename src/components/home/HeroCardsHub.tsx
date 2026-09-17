@@ -259,7 +259,7 @@ export function HeroCardsHub() {
         onMouseLeave={() => setIsHovered(false)}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-        className={`relative w-full rounded-2xl sm:rounded-3xl overflow-hidden text-white transition-all duration-500 select-none border ${currentOffer.borderClass} ${currentOffer.glowClass}`}
+        className={`group/slider relative w-full rounded-2xl sm:rounded-3xl overflow-hidden text-white transition-all duration-500 select-none border ${currentOffer.borderClass} ${currentOffer.glowClass}`}
       >
         {/* Dynamic Background Gradient */}
         <div
@@ -270,8 +270,35 @@ export function HeroCardsHub() {
         <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/5 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-black/40 rounded-full blur-3xl pointer-events-none" />
 
+        {/* FLOATING SIDE NAVIGATION ARROWS (Zoom-in on Hover) */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            prevSlide();
+          }}
+          className="absolute left-1.5 sm:left-4 top-1/2 -translate-y-1/2 z-30 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-black/45 hover:bg-black/80 sm:bg-slate-950/60 sm:hover:bg-slate-900/90 backdrop-blur-md border border-white/25 hover:border-white/60 text-white flex items-center justify-center shadow-xl shadow-black/40 transition-all duration-300 ease-out hover:scale-125 active:scale-95 cursor-pointer opacity-80 sm:opacity-0 sm:group-hover/slider:opacity-100 hover:!opacity-100 group/btn"
+          aria-label="Previous offer slide"
+          title="Previous offer"
+        >
+          <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6 transition-transform duration-300 group-hover/btn:-translate-x-0.5" />
+        </button>
+
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            nextSlide();
+          }}
+          className="absolute right-1.5 sm:right-4 top-1/2 -translate-y-1/2 z-30 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-black/45 hover:bg-black/80 sm:bg-slate-950/60 sm:hover:bg-slate-900/90 backdrop-blur-md border border-white/25 hover:border-white/60 text-white flex items-center justify-center shadow-xl shadow-black/40 transition-all duration-300 ease-out hover:scale-125 active:scale-95 cursor-pointer opacity-80 sm:opacity-0 sm:group-hover/slider:opacity-100 hover:!opacity-100 group/btn"
+          aria-label="Next offer slide"
+          title="Next offer"
+        >
+          <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6 transition-transform duration-300 group-hover/btn:translate-x-0.5" />
+        </button>
+
         {/* Hero Slide Contents */}
-        <div className="relative z-10 p-2.5 sm:p-6 lg:p-8 min-h-0 sm:min-h-[410px] flex flex-col justify-between">
+        <div className="relative z-10 px-4 sm:px-12 lg:px-12 py-2.5 sm:py-6 min-h-0 sm:min-h-[410px] flex flex-col justify-between">
           {/* Top Info Bar inside Hero */}
           <div className="flex items-center justify-between gap-2 mb-1.5 sm:mb-4">
             <div className="flex items-center gap-2">
@@ -285,37 +312,15 @@ export function HeroCardsHub() {
               </div>
             </div>
 
-            {/* Slide Index Counter & Controls */}
-            <div className="flex items-center gap-2 text-xs font-mono text-white/70">
-              <span className="hidden sm:inline">Offer</span>
-              <span className="px-2 py-0.5 rounded-md bg-white/10 border border-white/15 text-white font-bold">
-                0{activeSlide + 1} / 04
-              </span>
-              <div className="flex items-center gap-1 sm:ml-2">
-                <button
-                  onClick={() => setIsPlaying(!isPlaying)}
-                  className="w-7 h-7 rounded-lg flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-all active:scale-90 cursor-pointer"
-                  title={isPlaying ? 'Pause auto-rotation' : 'Resume auto-rotation'}
-                  aria-label={isPlaying ? 'Pause auto-rotation' : 'Resume auto-rotation'}
-                >
-                  {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-                </button>
-                <button
-                  onClick={prevSlide}
-                  className="w-7 h-7 rounded-lg flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-all active:scale-90 cursor-pointer"
-                  aria-label="Previous offer slide"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={nextSlide}
-                  className="w-7 h-7 rounded-lg flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-all active:scale-90 cursor-pointer"
-                  aria-label="Next offer slide"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
+            {/* Auto-rotation pause/play toggle */}
+            <button
+              onClick={() => setIsPlaying(!isPlaying)}
+              className="w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-all active:scale-90 cursor-pointer"
+              title={isPlaying ? 'Pause auto-rotation' : 'Resume auto-rotation'}
+              aria-label={isPlaying ? 'Pause auto-rotation' : 'Resume auto-rotation'}
+            >
+              {isPlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+            </button>
           </div>
 
           {/* MAIN SLIDE BODY: TWO COLUMNS (Content & Interactive Widget vs Visual Media) */}
