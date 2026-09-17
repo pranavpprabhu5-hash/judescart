@@ -197,10 +197,6 @@ export function HeroCardsHub() {
     setActiveSlide((prev) => (prev - 1 + RUNNING_OFFERS.length) % RUNNING_OFFERS.length);
   }, []);
 
-  const goToSlide = (index: number) => {
-    setActiveSlide(index);
-  };
-
   useEffect(() => {
     if (!isPlaying || isHovered) return;
 
@@ -298,7 +294,7 @@ export function HeroCardsHub() {
         </button>
 
         {/* Hero Slide Contents */}
-        <div className="relative z-10 px-4 sm:px-12 lg:px-12 py-2.5 sm:py-6 min-h-[350px] sm:min-h-[620px] lg:min-h-[460px] flex flex-col justify-between">
+        <div className="relative z-10 px-4 sm:px-12 lg:px-12 py-3 sm:py-6 min-h-[295px] sm:min-h-[560px] lg:min-h-[400px] flex flex-col justify-between">
           {/* Top Info Bar inside Hero */}
           <div className="flex items-center justify-between gap-2 mb-1.5 sm:mb-4">
             <div className="flex items-center gap-2">
@@ -330,7 +326,7 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 0 && (
               <>
-                <div className="lg:col-span-7 space-y-2 sm:space-y-4 min-h-[225px] sm:min-h-[240px] lg:min-h-[300px] flex flex-col justify-center">
+                <div className="lg:col-span-7 space-y-2 sm:space-y-4 min-h-[200px] sm:min-h-[240px] lg:min-h-[280px] flex flex-col justify-center">
                   <div>
                     <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-400 mb-0.5 sm:mb-1">
                       <Flame className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400 animate-pulse" />
@@ -472,7 +468,7 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 1 && (
               <>
-                <div className="lg:col-span-7 space-y-2 sm:space-y-4 min-h-[225px] sm:min-h-[240px] lg:min-h-[300px] flex flex-col justify-center">
+                <div className="lg:col-span-7 space-y-2 sm:space-y-4 min-h-[200px] sm:min-h-[240px] lg:min-h-[280px] flex flex-col justify-center">
                   <div>
                     <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-cyan-300 mb-0.5 sm:mb-1">
                       <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-cyan-400" />
@@ -599,7 +595,7 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 2 && (
               <>
-                <div className="lg:col-span-7 space-y-2 sm:space-y-4 min-h-[225px] sm:min-h-[240px] lg:min-h-[300px] flex flex-col justify-center">
+                <div className="lg:col-span-7 space-y-2 sm:space-y-4 min-h-[200px] sm:min-h-[240px] lg:min-h-[280px] flex flex-col justify-center">
                   <div>
                     <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-blue-400 mb-0.5 sm:mb-1">
                       <Headphones className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-400" />
@@ -695,7 +691,7 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 3 && (
               <>
-                <div className="lg:col-span-7 space-y-2 sm:space-y-4 min-h-[225px] sm:min-h-[240px] lg:min-h-[300px] flex flex-col justify-center">
+                <div className="lg:col-span-7 space-y-2 sm:space-y-4 min-h-[200px] sm:min-h-[240px] lg:min-h-[280px] flex flex-col justify-center">
                   <div>
                     <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-300 mb-0.5 sm:mb-1">
                       <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400" />
@@ -782,45 +778,6 @@ export function HeroCardsHub() {
                 </div>
               </>
             )}
-          </div>
-
-          {/* BOTTOM QUICK-SWITCH MINI DOCK */}
-          <div className="pt-2 sm:pt-4 mt-2 sm:mt-4 border-t border-white/10">
-            <div className="grid grid-cols-4 gap-1 sm:gap-2">
-              {RUNNING_OFFERS.map((camp, idx) => {
-                const Icon = camp.icon;
-                const isSelected = activeSlide === idx;
-
-                return (
-                  <button
-                    key={camp.id}
-                    onClick={() => goToSlide(idx)}
-                    className={`p-1 sm:p-2.5 rounded-lg sm:rounded-xl text-center sm:text-left transition-all duration-300 flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-0.5 sm:gap-2 cursor-pointer ${
-                      isSelected
-                        ? 'bg-white/25 border border-white/40 shadow-sm'
-                        : 'bg-white/5 border border-white/10 hover:bg-white/10'
-                    }`}
-                  >
-                    <div
-                      className={`w-4 h-4 sm:w-6 sm:h-6 rounded-md sm:rounded-lg flex items-center justify-center shrink-0 ${
-                        isSelected ? 'bg-white text-slate-900' : 'bg-white/10 text-white'
-                      }`}
-                    >
-                      <Icon className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5" />
-                    </div>
-                    <div className="min-w-0 w-full">
-                      <span className="text-[9px] sm:text-xs font-bold truncate block text-white text-center sm:text-left">
-                        <span className="sm:hidden">{camp.shortLabel}</span>
-                        <span className="hidden sm:inline">{camp.label}</span>
-                      </span>
-                      <span className="hidden sm:block text-[9px] sm:text-[10px] truncate text-white/70">
-                        {camp.tagline}
-                      </span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
           </div>
         </div>
       </div>
