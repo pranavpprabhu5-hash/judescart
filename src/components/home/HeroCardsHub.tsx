@@ -21,7 +21,6 @@ import {
   Copy,
   Pause,
   Play,
-  Percent,
 } from 'lucide-react';
 import { useStore } from '@/context/StoreContext';
 import { Product } from '@/types/product';
@@ -249,10 +248,6 @@ export function HeroCardsHub() {
       {/* SECTION HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 mb-3 sm:mb-5">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-[#0066FF] dark:text-[#38BDF8] text-[11px] font-extrabold uppercase tracking-wider mb-1">
-            <Percent className="w-3 h-3" />
-            <span>Active Storewide Promotions</span>
-          </div>
           <h1 className="font-sans text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Running Offers &amp; Price Drops
           </h1>
