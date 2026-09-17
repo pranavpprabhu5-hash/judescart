@@ -217,10 +217,10 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16 gap-2 sm:gap-4">
           
-          {/* Left Side: Logo (Logo Only, No Name) + Options Icon + Search */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 flex-1 min-w-0">
-            {/* 1. Logo Only (No Name Text) at far left end */}
-            <Link href="/" className="group flex items-center shrink-0 pr-0.5" aria-label="JudesCart Home">
+          {/* Left Side: Brand Logo & Desktop Search */}
+          <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+            {/* 1. Logo & Brand Title */}
+            <Link href="/" className="group flex items-center gap-2 shrink-0 pr-1" aria-label="JudesCart Home">
               <div className="relative w-8 h-8 sm:w-9 sm:h-9 shrink-0">
                 <Image
                   src="/logo-icon.png"
@@ -231,35 +231,16 @@ export function Navbar() {
                   className="object-contain group-hover:scale-105 transition-transform"
                 />
               </div>
+              <span className="font-sans text-base font-black tracking-tight text-slate-900 dark:text-white sm:hidden">
+                Judes<span className="text-[#0066FF]">Cart</span>
+              </span>
             </Link>
-
-            {/* 2. Options Icon (Menu Toggle) right next to Logo */}
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-stone-700 dark:text-stone-300 hover:text-[#0066FF] dark:hover:text-[#38BDF8] hover:bg-stone-100 dark:hover:bg-slate-800 rounded-xl transition-colors shrink-0"
-              aria-label="Toggle navigation menu"
-              title="Menu & Options"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-
-            {/* 3. Search right next to Options */}
-            {/* Mobile Search Button (<md) */}
-            <button
-              onClick={openSearch}
-              className="md:hidden p-2 text-stone-700 dark:text-stone-300 hover:text-[#0066FF] dark:hover:text-[#38BDF8] hover:bg-stone-100 dark:hover:bg-slate-800 rounded-xl transition-colors shrink-0"
-              aria-label="Search catalog"
-              title="Search"
-            >
-              <Search className="w-4 h-4" />
-            </button>
 
             {/* Desktop Search Input Trigger (>=md) */}
             <div className="hidden md:flex flex-1 max-w-md ml-1 lg:ml-2">
               <button
                 onClick={openSearch}
-                className="w-full flex items-center justify-between px-3.5 py-2 rounded-full text-xs text-stone-500 dark:text-stone-400 bg-stone-100/90 dark:bg-slate-800/80 hover:bg-stone-200/80 dark:hover:bg-slate-700 hover:text-stone-900 dark:hover:text-white border border-stone-200 dark:border-slate-700 transition-all duration-150 shadow-2xs group"
+                className="w-full flex items-center justify-between px-3.5 py-2 rounded-full text-xs text-stone-500 dark:text-stone-400 bg-stone-100/90 dark:bg-slate-800/80 hover:bg-stone-200/80 dark:hover:bg-slate-700 hover:text-stone-900 dark:hover:text-white border border-stone-200 dark:border-slate-700 transition-all duration-150 shadow-2xs group cursor-pointer"
                 aria-label="Open search dialog"
               >
                 <div className="flex items-center gap-2">
@@ -273,9 +254,19 @@ export function Navbar() {
             </div>
           </div>
 
-          {/* Right Side: Rest of Menu Bar Icons */}
-          <div className="flex items-center gap-1 sm:gap-2.5 shrink-0">
-            {/* Currency Switcher */}
+          {/* Right Side: Header Icons */}
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            {/* Mobile Search Button (<md) */}
+            <button
+              onClick={openSearch}
+              className="md:hidden p-2 text-stone-700 dark:text-stone-300 hover:text-[#0066FF] dark:hover:text-[#38BDF8] hover:bg-stone-100 dark:hover:bg-slate-800 rounded-full transition-colors cursor-pointer"
+              aria-label="Search catalog"
+              title="Search"
+            >
+              <Search className="w-4 h-4" />
+            </button>
+
+            {/* Currency Switcher (Desktop / Tablet only) */}
             <div className="hidden sm:block">
               <CurrencySwitcher />
             </div>
@@ -283,10 +274,10 @@ export function Navbar() {
             {/* Dark Mode Toggle */}
             <ThemeToggle />
 
-            {/* Wishlist Link */}
+            {/* Wishlist Link (Desktop >=md only - on mobile it is in BottomNav) */}
             <Link
               href="/wishlist"
-              className="relative p-2 rounded-full text-stone-700 dark:text-stone-300 hover:text-[#0066FF] dark:hover:text-[#38BDF8] hover:bg-stone-100 dark:hover:bg-slate-800 transition-all shrink-0"
+              className="hidden md:flex relative p-2 rounded-full text-stone-700 dark:text-stone-300 hover:text-[#0066FF] dark:hover:text-[#38BDF8] hover:bg-stone-100 dark:hover:bg-slate-800 transition-all shrink-0"
               aria-label="Wishlist"
             >
               <Heart className="w-4 h-4" />
@@ -297,10 +288,10 @@ export function Navbar() {
               )}
             </Link>
 
-            {/* Daily Mystery Gift Button */}
+            {/* Daily Mystery Gift Button (Desktop >=md only - on mobile it is in BottomNav) */}
             <button
               onClick={openDailyMystery}
-              className="relative flex items-center gap-1 p-2 sm:px-3 sm:py-1.5 rounded-full bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/40 dark:to-indigo-950/40 hover:from-purple-100 hover:to-indigo-100 dark:hover:from-purple-900/60 dark:hover:to-indigo-900/60 border border-purple-200 dark:border-purple-800/60 text-purple-900 dark:text-purple-300 transition-all text-xs font-bold cursor-pointer shadow-2xs group shrink-0"
+              className="hidden md:flex relative items-center gap-1 p-2 sm:px-3 sm:py-1.5 rounded-full bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/40 dark:to-indigo-950/40 hover:from-purple-100 hover:to-indigo-100 dark:hover:from-purple-900/60 dark:hover:to-indigo-900/60 border border-purple-200 dark:border-purple-800/60 text-purple-900 dark:text-purple-300 transition-all text-xs font-bold cursor-pointer shadow-2xs group shrink-0"
               title="Daily JudesCart Mystery Vault - Open Everyday to Claim"
             >
               <Gift className="w-4 h-4 text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform" />
@@ -325,7 +316,7 @@ export function Navbar() {
             {isLoggedIn ? (
               <button
                 onClick={openProfile}
-                className="flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-full text-stone-700 dark:text-stone-300 hover:text-[#0066FF] dark:hover:text-[#38BDF8] hover:bg-stone-100 dark:hover:bg-slate-800 transition-all relative shrink-0"
+                className="flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-full text-stone-700 dark:text-stone-300 hover:text-[#0066FF] dark:hover:text-[#38BDF8] hover:bg-stone-100 dark:hover:bg-slate-800 transition-all relative shrink-0 cursor-pointer"
                 aria-label="Account Profile"
               >
                 <User className="w-4 h-4" />
@@ -345,21 +336,21 @@ export function Navbar() {
             ) : (
               <button
                 onClick={() => openAuthModal('login')}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200 dark:border-blue-800/80 text-[#0066FF] dark:text-[#38BDF8] transition-all text-xs font-bold cursor-pointer shrink-0 shadow-2xs group"
+                className="flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200 dark:border-blue-800/80 text-[#0066FF] dark:text-[#38BDF8] transition-all text-xs font-bold cursor-pointer shrink-0 shadow-2xs group"
                 aria-label="Customer Sign In"
               >
                 <User className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
-                <span>Sign In</span>
+                <span className="hidden sm:inline">Sign In</span>
                 <span className="hidden xl:inline text-[10px] text-amber-600 dark:text-amber-400 font-extrabold bg-amber-100 dark:bg-amber-900/60 px-1.5 py-0.2 rounded-full">
                   +200
                 </span>
               </button>
             )}
 
-            {/* Cart Button */}
+            {/* Cart Button (Desktop >=md only - on mobile it is in BottomNav) */}
             <button
               onClick={openCart}
-              className="relative flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full bg-[#0A192F] text-white hover:bg-[#0066FF] transition-all duration-150 active:scale-95 shadow-xs font-sans shrink-0"
+              className="hidden md:flex relative items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full bg-[#0A192F] text-white hover:bg-[#0066FF] transition-all duration-150 active:scale-95 shadow-xs font-sans shrink-0 cursor-pointer"
               aria-label="Shopping Cart"
             >
               <ShoppingBag className="w-4 h-4 text-white" />
@@ -373,6 +364,17 @@ export function Navbar() {
               >
                 {cartCount}
               </span>
+            </button>
+
+            {/* Options Icon (Mobile Menu Toggle) */}
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 text-stone-700 dark:text-stone-300 hover:text-[#0066FF] dark:hover:text-[#38BDF8] hover:bg-stone-100 dark:hover:bg-slate-800 rounded-full transition-colors shrink-0 cursor-pointer lg:hidden"
+              aria-label="Toggle navigation menu"
+              title="Menu & Options"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>

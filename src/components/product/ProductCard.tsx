@@ -244,7 +244,7 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
           <Heart className={cn('w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors', isFavorited && 'fill-rose-500 text-rose-500')} />
         </button>
 
-        {/* Compare Button */}
+        {/* Compare Button (Desktop & Tablet only) */}
         <button
           type="button"
           onClick={(e) => {
@@ -254,7 +254,7 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
             else addToCompare(product);
           }}
           className={cn(
-            'absolute top-11 right-2.5 sm:top-12.5 sm:right-3 z-10 p-2 rounded-full backdrop-blur-md shadow-sm border transition-all active:scale-90',
+            'hidden sm:flex absolute top-12.5 right-3 z-10 p-2 rounded-full backdrop-blur-md shadow-sm border transition-all active:scale-90 items-center justify-center',
             inCompare
               ? 'bg-[#0066FF] border-[#0066FF] text-white shadow-md'
               : 'bg-white/90 dark:bg-slate-900/90 border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-[#0066FF] hover:bg-white dark:hover:bg-slate-800'
@@ -262,7 +262,7 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
           title={inCompare ? 'Remove from comparison' : 'Compare product'}
           aria-label="Compare product"
         >
-          <Scale className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          <Scale className="w-4 h-4" />
         </button>
 
         {/* Quick Add / Quick View Desktop Overlay on Hover */}
@@ -433,7 +433,7 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
               e.stopPropagation();
               openQuickView(product);
             }}
-            className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs flex items-center justify-center cursor-pointer shrink-0"
+            className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs flex items-center justify-center cursor-pointer shrink-0 active:scale-90 transition-all"
             aria-label="Quick View"
           >
             <Eye className="w-3.5 h-3.5" />
@@ -441,9 +441,12 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
           <button
             type="button"
             onClick={handleQuickAdd}
-            className="flex-1 py-2 px-2.5 rounded-xl bg-[#0066FF] active:bg-[#0052CC] text-white text-[11px] font-bold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+            className={cn(
+              'flex-1 py-2 px-2.5 rounded-xl text-white text-[11px] font-bold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer active:scale-95 transition-all',
+              isAdded ? 'bg-emerald-600' : 'bg-[#0066FF] active:bg-[#0052CC]'
+            )}
           >
-            {isAdded ? <Check className="w-3.5 h-3.5" /> : <ShoppingBag className="w-3.5 h-3.5" />}
+            {isAdded ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : <ShoppingBag className="w-3.5 h-3.5" />}
             <span className="truncate">{isAdded ? 'Added!' : 'Add to Bag'}</span>
           </button>
         </div>

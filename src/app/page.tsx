@@ -36,7 +36,7 @@ const CATEGORIES = [
     badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-400/30',
     image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1000&q=85',
     itemCount: '24 Devices',
-    gridClass: 'col-span-1 sm:col-span-2 lg:col-span-2 min-h-[280px] sm:min-h-[340px]',
+    gridClass: 'col-span-1 sm:col-span-2 lg:col-span-2 min-h-[220px] sm:min-h-[340px]',
   },
   {
     name: 'Apparel & Fashion',
@@ -46,7 +46,7 @@ const CATEGORIES = [
     badgeColor: 'bg-amber-500/20 text-amber-200 border-amber-400/30',
     image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=700&q=85',
     itemCount: '38 Styles',
-    gridClass: 'col-span-1 min-h-[280px] sm:min-h-[340px]',
+    gridClass: 'col-span-1 min-h-[200px] sm:min-h-[340px]',
   },
   {
     name: 'Footwear & Boots',
@@ -56,7 +56,7 @@ const CATEGORIES = [
     badgeColor: 'bg-emerald-500/20 text-emerald-200 border-emerald-400/30',
     image: 'https://images.unsplash.com/photo-1520639888713-7851133b1ed0?auto=format&fit=crop&w=700&q=85',
     itemCount: '19 Pairs',
-    gridClass: 'col-span-1 min-h-[260px] sm:min-h-[300px]',
+    gridClass: 'col-span-1 min-h-[190px] sm:min-h-[300px]',
   },
   {
     name: 'Leather Goods & Bags',
@@ -66,7 +66,7 @@ const CATEGORIES = [
     badgeColor: 'bg-amber-500/20 text-amber-200 border-amber-400/30',
     image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=700&q=85',
     itemCount: '15 Bags',
-    gridClass: 'col-span-1 min-h-[260px] sm:min-h-[300px]',
+    gridClass: 'col-span-1 min-h-[190px] sm:min-h-[300px]',
   },
   {
     name: 'Home, Living & Decor',
@@ -76,7 +76,7 @@ const CATEGORIES = [
     badgeColor: 'bg-indigo-500/20 text-indigo-200 border-indigo-400/30',
     image: 'https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=700&q=85',
     itemCount: '42 Objects',
-    gridClass: 'col-span-1 min-h-[260px] sm:min-h-[300px]',
+    gridClass: 'col-span-1 min-h-[190px] sm:min-h-[300px]',
   },
   {
     name: 'Beauty & Wellness',
@@ -86,7 +86,7 @@ const CATEGORIES = [
     badgeColor: 'bg-rose-500/20 text-rose-200 border-rose-400/30',
     image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1200&q=85',
     itemCount: '27 Formulas',
-    gridClass: 'col-span-1 sm:col-span-2 lg:col-span-3 min-h-[240px] sm:min-h-[280px]',
+    gridClass: 'col-span-1 sm:col-span-2 lg:col-span-3 min-h-[190px] sm:min-h-[280px]',
   },
 ];
 
@@ -177,7 +177,7 @@ export default function HomePage() {
             <Link
               key={cat.slug}
               href={`/products?category=${cat.slug}`}
-              className={`group relative rounded-3xl overflow-hidden bg-stone-900 border border-stone-200/80 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 hover:border-blue-400/50 dark:hover:border-blue-500/50 transition-all duration-500 flex flex-col justify-end p-5 sm:p-8 ${cat.gridClass}`}
+              className={`group relative rounded-2xl sm:rounded-3xl overflow-hidden bg-stone-900 border border-stone-200/80 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 hover:border-blue-400/50 dark:hover:border-blue-500/50 transition-all duration-500 flex flex-col justify-end p-4 sm:p-8 ${cat.gridClass}`}
             >
               {/* Image Background */}
               <Image
@@ -192,8 +192,8 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-gradient-to-t from-[#070F1E] via-[#070F1E]/50 to-transparent group-hover:via-[#070F1E]/40 transition-colors duration-500" />
 
               {/* Top Floating Badge */}
-              <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10 flex items-center gap-2">
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold backdrop-blur-md border ${cat.badgeColor}`}>
+              <div className="absolute top-3 left-3 sm:top-6 sm:left-6 z-10 flex items-center gap-2">
+                <span className={`inline-flex items-center px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[9px] sm:text-xs font-bold backdrop-blur-md border ${cat.badgeColor}`}>
                   {cat.badge}
                 </span>
                 <span className="hidden sm:inline-flex px-2.5 py-1 rounded-full text-[10px] font-semibold bg-black/40 backdrop-blur-md text-stone-300 border border-white/10">
@@ -202,19 +202,19 @@ export default function HomePage() {
               </div>
 
               {/* Bottom Card Content */}
-              <div className="relative z-10 text-white space-y-1.5 sm:space-y-2">
-                <span className="text-[10px] sm:text-xs uppercase tracking-widest text-blue-400 font-bold block sm:hidden">
+              <div className="relative z-10 text-white space-y-1 sm:space-y-2">
+                <span className="text-[9px] sm:text-xs uppercase tracking-widest text-blue-400 font-bold block sm:hidden">
                   {cat.itemCount}
                 </span>
                 <div className="flex items-center justify-between gap-2">
-                  <h3 className="font-sans text-lg sm:text-2xl font-black text-white group-hover:text-blue-300 transition-colors">
+                  <h3 className="font-sans text-base sm:text-2xl font-black text-white group-hover:text-blue-300 transition-colors">
                     {cat.name}
                   </h3>
-                  <div className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-[#0066FF] group-hover:border-[#0066FF] group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300 shrink-0">
-                    <ArrowUpRight className="w-4 h-4" />
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-[#0066FF] group-hover:border-[#0066FF] group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300 shrink-0">
+                    <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </div>
                 </div>
-                <p className="text-xs sm:text-sm text-stone-300 line-clamp-1 max-w-lg font-normal">
+                <p className="text-[11px] sm:text-sm text-stone-300 line-clamp-1 max-w-lg font-normal">
                   {cat.tagline}
                 </p>
               </div>
@@ -239,8 +239,8 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Luxury Filter Pills */}
-          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2 scrollbar-none">
+          {/* Luxury Filter Pills (Touch Momentum Edge-to-Edge Scroll on Mobile) */}
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
             {FILTER_TABS.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;

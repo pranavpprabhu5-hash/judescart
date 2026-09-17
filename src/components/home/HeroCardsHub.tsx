@@ -266,7 +266,7 @@ export function HeroCardsHub() {
         <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-black/40 rounded-full blur-3xl pointer-events-none" />
 
         {/* Hero Slide Contents */}
-        <div className="relative z-10 p-4 sm:p-6 lg:p-8 min-h-[380px] sm:min-h-[410px] flex flex-col justify-between">
+        <div className="relative z-10 p-3.5 sm:p-6 lg:p-8 min-h-[340px] sm:min-h-[410px] flex flex-col justify-between">
           {/* Top Info Bar inside Hero */}
           <div className="flex items-center justify-between gap-2 mb-4">
             <div className="flex items-center gap-2">
@@ -436,8 +436,8 @@ export function HeroCardsHub() {
                   </div>
                 </div>
 
-                {/* Right Side Visual */}
-                <div className="lg:col-span-5 relative w-full aspect-[16/10] sm:aspect-[16/9] lg:aspect-auto lg:h-[300px] rounded-2xl overflow-hidden border border-amber-500/30 shadow-xl group">
+                {/* Right Side Visual (Tablet & Desktop) */}
+                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[300px] rounded-2xl overflow-hidden border border-amber-500/30 shadow-xl group">
                   <Image
                     src={activeDeal?.images[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=85'}
                     alt="Flash Deals Spotlight"
@@ -566,8 +566,8 @@ export function HeroCardsHub() {
                   </div>
                 </div>
 
-                {/* Right Side Visual */}
-                <div className="lg:col-span-5 relative w-full aspect-[16/10] sm:aspect-[16/9] lg:aspect-auto lg:h-[300px] rounded-2xl overflow-hidden border border-indigo-500/30 shadow-xl group">
+                {/* Right Side Visual (Tablet & Desktop) */}
+                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[300px] rounded-2xl overflow-hidden border border-indigo-500/30 shadow-xl group">
                   <Image
                     src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=1200&q=85"
                     alt="Upcoming Mega Autumn Bash Sale"
@@ -662,8 +662,8 @@ export function HeroCardsHub() {
                   </div>
                 </div>
 
-                {/* Right Side Visual */}
-                <div className="lg:col-span-5 relative w-full aspect-[16/10] sm:aspect-[16/9] lg:aspect-auto lg:h-[300px] rounded-2xl overflow-hidden border border-blue-500/30 shadow-xl group">
+                {/* Right Side Visual (Tablet & Desktop) */}
+                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[300px] rounded-2xl overflow-hidden border border-blue-500/30 shadow-xl group">
                   <Image
                     src={electronicsDeal?.images[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=85'}
                     alt="Electronics & Tech Deals"
@@ -755,8 +755,8 @@ export function HeroCardsHub() {
                   </div>
                 </div>
 
-                {/* Right Side Visual */}
-                <div className="lg:col-span-5 relative w-full aspect-[16/10] sm:aspect-[16/9] lg:aspect-auto lg:h-[300px] rounded-2xl overflow-hidden border border-amber-400/30 shadow-xl group">
+                {/* Right Side Visual (Tablet & Desktop) */}
+                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[300px] rounded-2xl overflow-hidden border border-amber-400/30 shadow-xl group">
                   <Image
                     src={fashionDeal?.images[0] || 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1200&q=85'}
                     alt="Luxury Fashion & Leather Collection"
@@ -776,11 +776,9 @@ export function HeroCardsHub() {
             )}
           </div>
 
-          {/* =========================================================================
-              BOTTOM QUICK-SWITCH MINI DOCK
-              ========================================================================= */}
-          <div className="pt-4 mt-4 border-t border-white/10">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          {/* BOTTOM QUICK-SWITCH MINI DOCK */}
+          <div className="pt-3 sm:pt-4 mt-3 sm:mt-4 border-t border-white/10">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 sm:gap-2">
               {RUNNING_OFFERS.map((camp, idx) => {
                 const Icon = camp.icon;
                 const isSelected = activeSlide === idx;
@@ -789,24 +787,24 @@ export function HeroCardsHub() {
                   <button
                     key={camp.id}
                     onClick={() => goToSlide(idx)}
-                    className={`p-2 sm:p-2.5 rounded-xl text-left transition-all duration-300 flex items-center gap-2 cursor-pointer ${
+                    className={`p-1.5 sm:p-2.5 rounded-xl text-left transition-all duration-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer ${
                       isSelected
                         ? 'bg-white/25 border border-white/40 shadow-sm'
                         : 'bg-white/5 border border-white/10 hover:bg-white/10'
                     }`}
                   >
                     <div
-                      className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${
+                      className={`w-5 h-5 sm:w-6 sm:h-6 rounded-lg flex items-center justify-center shrink-0 ${
                         isSelected ? 'bg-white text-slate-900' : 'bg-white/10 text-white'
                       }`}
                     >
-                      <Icon className="w-3.5 h-3.5" />
+                      <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     </div>
                     <div className="min-w-0">
-                      <span className="text-[11px] sm:text-xs font-bold truncate block text-white">
+                      <span className="text-[10px] sm:text-xs font-bold truncate block text-white">
                         {camp.label}
                       </span>
-                      <span className="text-[9px] sm:text-[10px] truncate block text-white/70">
+                      <span className="text-[8px] sm:text-[10px] truncate block text-white/70">
                         {camp.tagline}
                       </span>
                     </div>

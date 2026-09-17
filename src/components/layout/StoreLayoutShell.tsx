@@ -15,6 +15,7 @@ import { CurrencyLocationBanner } from '@/components/layout/CurrencyLocationBann
 import { JudesAIWidget } from '@/components/ai/JudesAIWidget';
 import { InstallPwaPrompt } from '@/components/ui/InstallPwaPrompt';
 import { CustomerAuthModal } from '@/components/auth/CustomerAuthModal';
+import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
 
 export function StoreLayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -27,8 +28,9 @@ export function StoreLayoutShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Navbar />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 pb-16 md:pb-0">{children}</main>
       <Footer />
+      <MobileBottomNav />
       <SlideOverCart />
       <ProfileDrawer />
       <CustomerAuthModal />
