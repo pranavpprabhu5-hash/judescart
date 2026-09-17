@@ -141,20 +141,118 @@
   }
 }
 
-.gold-glow-card {
-  animation: goldGlowPulse 3s ease-in-out infinite;
+/* Luxury Card & Button Utilities */
+.luxury-card {
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes goldBorderShimmer {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.dark .luxury-card {
+  background: rgba(15, 23, 42, 0.94);
+  border: 1px solid rgba(30, 41, 59, 0.85);
+  box-shadow: 0 4px 25px -4px rgba(0, 0, 0, 0.4);
 }
 
-.gold-border-shimmer {
-  background: linear-gradient(90deg, #f59e0b, #fbbf24, #fef08a, #fbbf24, #f59e0b);
-  background-size: 200% 200%;
-  animation: goldBorderShimmer 4s ease infinite;
+.hover-lift {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+.hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px -8px rgba(0, 102, 255, 0.15);
+}
+
+.dark .hover-lift:hover {
+  box-shadow: 0 12px 30px -8px rgba(14, 165, 233, 0.2);
+}
+
+/* Subtle button shine */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transform: rotate(30deg) translateX(-100%);
+  transition: transform 0.75s ease;
+}
+
+.btn-shine:hover::after {
+  transform: rotate(30deg) translateX(100%);
+}
+
+/* Luxury Bento Card */
+.bento-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .bento-card {
+  background: rgba(14, 26, 48, 0.85);
+  border: 1px solid rgba(30, 41, 59, 0.85);
+  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.35);
+}
+
+.bento-card:hover {
+  border-color: rgba(0, 102, 255, 0.4);
+  box-shadow: 0 16px 36px -8px rgba(0, 102, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+.dark .bento-card:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+  box-shadow: 0 16px 40px -8px rgba(14, 165, 233, 0.18);
+}
+
+/* Ambient Glow Utilities */
+.ambient-glow-blue {
+  box-shadow: 0 0 50px -10px rgba(0, 102, 255, 0.25);
+}
+
+.ambient-glow-gold {
+  box-shadow: 0 0 50px -10px rgba(245, 158, 11, 0.25);
+}
+
+/* Glass Pill Filter */
+.glass-pill {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Badge Sheen */
+@keyframes badgeSheen {
+  0% { transform: translateX(-100%) rotate(25deg); }
+  100% { transform: translateX(200%) rotate(25deg); }
+}
+
+.badge-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.badge-sheen::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: badgeSheen 3.5s infinite ease-in-out;
+}
+
 
 
