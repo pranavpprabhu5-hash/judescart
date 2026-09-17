@@ -112,24 +112,8 @@ export function HeroCardsHub() {
     return list.length > 0 ? list : products.slice(0, 4);
   }, [products]);
 
-  const [activeDealIndex, setActiveDealIndex] = useState(0);
-  const [addedItemEffect, setAddedItemEffect] = useState<string | null>(null);
-
-  const activeDeal = discountedProducts[activeDealIndex] || discountedProducts[0];
-  const discountPercent =
-    activeDeal?.originalPrice && activeDeal.originalPrice > activeDeal.price
-      ? Math.round(((activeDeal.originalPrice - activeDeal.price) / activeDeal.originalPrice) * 100)
-      : 20;
-
-  const handleQuickAdd = (product: Product, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const color = product.colors?.[0]?.name || 'Standard';
-    const size = product.sizes?.[0]?.name || 'Standard';
-    addToCart(product, color, size, 1);
-    setAddedItemEffect(product.id);
-    setTimeout(() => setAddedItemEffect(null), 2200);
-  };
+  const firstDeal = discountedProducts[0];
+  const secondDeal = discountedProducts[1] || discountedProducts[0];
 
   // --------------------------------------------------------------------------
   // OFFER 2: Autumn Mega Sale Countdown
@@ -294,7 +278,7 @@ export function HeroCardsHub() {
         </button>
 
         {/* Hero Slide Contents */}
-        <div className="relative z-10 px-4 sm:px-12 lg:px-12 py-3 sm:py-6 min-h-[295px] sm:min-h-[560px] lg:min-h-[400px] flex flex-col justify-between">
+        <div className="relative z-10 px-4 sm:px-12 lg:px-12 py-3 sm:py-6 min-h-[305px] sm:min-h-[580px] lg:min-h-[410px] flex flex-col justify-between">
           {/* Top Info Bar inside Hero */}
           <div className="flex items-center justify-between gap-2 mb-1.5 sm:mb-4">
             <div className="flex items-center gap-2">
@@ -326,118 +310,84 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 0 && (
               <>
-                <div className="lg:col-span-7 space-y-2 sm:space-y-4 min-h-[200px] sm:min-h-[240px] lg:min-h-[280px] flex flex-col justify-center">
+                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:min-h-[290px] flex flex-col justify-between">
                   <div>
-                    <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-400 mb-0.5 sm:mb-1">
-                      <Flame className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400 animate-pulse" />
-                      <span>Immediate Price Drops • Live Today</span>
+                    <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-400 mb-0.5 sm:mb-1 h-4 sm:h-5">
+                      <Flame className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400 animate-pulse shrink-0" />
+                      <span className="truncate">Flash Price Drops • Live Today</span>
                     </div>
-                    <h2 className="text-base sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-snug">
-                      Flash Deals &amp; Daily Price Reductions
-                    </h2>
-                    <p className="hidden sm:block text-xs sm:text-sm text-stone-300 mt-2 leading-relaxed max-w-xl">
+                    <div className="min-h-[2.5rem] sm:min-h-[3.75rem] lg:min-h-[4.25rem] flex items-center">
+                      <h2 className="text-base sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-snug line-clamp-2">
+                        Flash Deals &amp; Daily Price Reductions
+                      </h2>
+                    </div>
+                    <p className="hidden sm:block text-xs sm:text-sm text-stone-300 mt-1.5 sm:mt-2 leading-relaxed max-w-xl line-clamp-2 h-[2.5rem] sm:h-[2.75rem]">
                       Grab immediate manufacturer discounts on high-demand electronics, apparel, and lifestyle items.
                       Stock is strictly limited with real-time stock reservations.
                     </p>
                   </div>
 
-                  {/* Interactive Active Deal Card */}
-                  {activeDeal && (
-                    <div className="p-2 sm:p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 max-w-lg space-y-2 sm:space-y-3">
-                      <div className="flex items-center gap-2.5 sm:gap-3">
-                        <div className="relative w-11 h-11 sm:w-16 sm:h-16 rounded-lg sm:rounded-xl overflow-hidden bg-black/40 shrink-0 border border-white/20">
-                          <Image
-                            src={activeDeal.images[0]}
-                            alt={activeDeal.name}
-                            fill
-                            className="object-cover"
-                          />
-                          <div className="absolute top-1 left-1 px-1 sm:px-1.5 py-0.5 rounded text-[7px] sm:text-[8px] font-black bg-rose-600 text-white leading-none">
-                            -{discountPercent}%
-                          </div>
-                        </div>
+                  {/* Flash Deals Highlights (Standardized 2-card grid) */}
+                  <div className="grid grid-cols-2 gap-2 max-w-lg">
+                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-0.5 h-[66px] sm:h-[76px] flex flex-col justify-center">
+                      <span className="text-[11px] sm:text-xs font-bold text-white block truncate">
+                        {firstDeal?.name || 'SonicPro Studio ANC'}
+                      </span>
+                      <span className="text-[9px] sm:text-[11px] text-amber-200 block truncate">
+                        ⚡ Instant Flash Drop
+                      </span>
+                      <span className="text-[11px] sm:text-xs font-black text-amber-300 block pt-0.5 truncate">
+                        {firstDeal ? formatAmount(firstDeal.price) : '$299.00'} (Save {firstDeal?.originalPrice ? formatAmount(firstDeal.originalPrice - firstDeal.price) : '$50'})
+                      </span>
+                    </div>
 
-                        <div className="min-w-0 flex-1">
-                          <Link
-                            href={`/products/${activeDeal.slug}`}
-                            className="text-xs sm:text-sm font-bold text-white hover:text-amber-300 transition-colors line-clamp-1 block"
-                          >
-                            {activeDeal.name}
-                          </Link>
-                          <div className="flex items-baseline gap-1.5 sm:gap-2 mt-0.5 sm:mt-1">
-                            <span className="text-xs sm:text-base font-black text-amber-300">
-                              {formatAmount(activeDeal.price)}
-                            </span>
-                            {activeDeal.originalPrice && (
-                              <span className="text-[10px] sm:text-xs text-stone-400 line-through">
-                                {formatAmount(activeDeal.originalPrice)}
-                              </span>
-                            )}
-                          </div>
-                          <span className="text-[9px] sm:text-[10px] text-emerald-300 font-semibold block truncate">
-                            ✓ Ready to Dispatch • Free Shipping
-                          </span>
-                        </div>
-                      </div>
+                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-0.5 h-[66px] sm:h-[76px] flex flex-col justify-center">
+                      <span className="text-[11px] sm:text-xs font-bold text-white block truncate">
+                        {secondDeal?.name || 'HydroSmart Vacuum Flask'}
+                      </span>
+                      <span className="text-[9px] sm:text-[11px] text-amber-200 block truncate">
+                        ⚡ Limited Reserve
+                      </span>
+                      <span className="text-[11px] sm:text-xs font-black text-amber-300 block pt-0.5 truncate">
+                        {secondDeal ? formatAmount(secondDeal.price) : '$39.00'} (Save {secondDeal?.originalPrice ? formatAmount(secondDeal.originalPrice - secondDeal.price) : '$20'})
+                      </span>
+                    </div>
+                  </div>
 
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={(e) => handleQuickAdd(activeDeal, e)}
-                          className={`flex-1 py-1.5 sm:py-2 px-2.5 sm:px-3 rounded-lg text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer ${
-                            addedItemEffect === activeDeal.id
-                              ? 'bg-emerald-500 text-white'
-                              : 'bg-amber-500 hover:bg-amber-400 text-slate-950 active:scale-98 shadow-xs'
-                          }`}
-                        >
-                          {addedItemEffect === activeDeal.id ? (
-                            <>
-                              <Check className="w-3.5 h-3.5 stroke-[3]" />
-                              <span>Added!</span>
-                            </>
-                          ) : (
-                            <>
-                              <ShoppingBag className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                              <span>Quick Add Deal</span>
-                            </>
-                          )}
-                        </button>
-
-                        <Link
-                          href={`/products/${activeDeal.slug}`}
-                          className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[11px] sm:text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/15 transition-all"
-                        >
-                          Details
-                        </Link>
-                      </div>
-
-                      {/* Deal Selector Dots */}
-                      <div className="flex items-center justify-between pt-1 border-t border-white/10">
-                        <span className="text-[10px] text-stone-400">
-                          Deal {activeDealIndex + 1} of {discountedProducts.length}
-                        </span>
-                        <div className="flex items-center gap-1">
-                          {discountedProducts.slice(0, 4).map((_, dIdx) => (
-                            <button
-                              key={dIdx}
-                              onClick={() => setActiveDealIndex(dIdx)}
-                              className={`h-1.5 rounded-full transition-all duration-200 cursor-pointer ${
-                                activeDealIndex === dIdx ? 'w-5 bg-amber-400' : 'w-1.5 bg-white/30 hover:bg-white/60'
-                              }`}
-                              aria-label={`Show deal ${dIdx + 1}`}
-                            />
-                          ))}
-                        </div>
+                  {/* Coupon Pill */}
+                  <div className="p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl bg-amber-950/60 border border-amber-400/30 flex items-center justify-between max-w-lg h-[44px] sm:h-[50px]">
+                    <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 pr-2">
+                      <Tag className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-300 shrink-0" />
+                      <div className="min-w-0">
+                        <span className="text-[10px] sm:text-[11px] font-mono font-bold text-white block truncate">CODE: FLASH35</span>
+                        <span className="text-[8px] sm:text-[9px] text-amber-200 block truncate">Up to 35% off flash catalog items</span>
                       </div>
                     </div>
-                  )}
+                    <button
+                      onClick={() => handleCopyCode('FLASH35')}
+                      className="h-7 sm:h-8 px-2.5 sm:px-3 rounded-md text-[9px] sm:text-[10px] font-bold bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 transition-all flex items-center gap-1 shrink-0 cursor-pointer shadow-xs"
+                    >
+                      {copiedCode === 'FLASH35' ? <Check className="w-3 h-3 stroke-[3]" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedCode === 'FLASH35' ? 'Applied!' : 'Apply'}</span>
+                    </button>
+                  </div>
 
-                  <div className="pt-1">
+                  {/* Actions */}
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-0.5 sm:pt-1">
                     <Link
                       href="/products"
-                      className="inline-flex items-center gap-2 text-xs font-bold text-amber-300 hover:text-amber-200 transition-colors"
+                      className="h-8 sm:h-10 px-3.5 sm:px-5 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-black flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:brightness-110 text-slate-950 shadow-md shadow-amber-500/30 active:scale-95 transition-all cursor-pointer"
                     >
-                      <span>Explore All Discounted Catalog Products</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
+                      <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-950" />
+                      <span>Shop Flash Deals</span>
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-0.5" />
+                    </Link>
+
+                    <Link
+                      href="/products"
+                      className="h-8 sm:h-10 px-3 sm:px-4 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-bold flex items-center gap-1.5 sm:gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all active:scale-95"
+                    >
+                      <span>Explore Catalog</span>
                     </Link>
                   </div>
                 </div>
@@ -445,7 +395,7 @@ export function HeroCardsHub() {
                 {/* Right Side Visual (Tablet & Desktop) */}
                 <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[300px] rounded-2xl overflow-hidden border border-amber-500/30 shadow-xl group">
                   <Image
-                    src={activeDeal?.images[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=85'}
+                    src={firstDeal?.images[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=85'}
                     alt="Flash Deals Spotlight"
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -453,7 +403,7 @@ export function HeroCardsHub() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#110501] via-[#110501]/40 to-transparent" />
                   <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-rose-600 text-white text-xs font-extrabold shadow-md">
-                    Up to {discountPercent}% OFF
+                    Up to 35% OFF
                   </div>
                   <div className="absolute bottom-3 left-3 right-3 p-2.5 rounded-xl bg-black/70 backdrop-blur-md border border-white/15 flex items-center justify-between text-xs">
                     <span className="font-semibold text-slate-200">24-Hour Flash Guarantee</span>
@@ -468,105 +418,89 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 1 && (
               <>
-                <div className="lg:col-span-7 space-y-2 sm:space-y-4 min-h-[200px] sm:min-h-[240px] lg:min-h-[280px] flex flex-col justify-center">
+                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:min-h-[290px] flex flex-col justify-between">
                   <div>
-                    <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-cyan-300 mb-0.5 sm:mb-1">
-                      <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-cyan-400" />
-                      <span>Autumn Season Kickoff • Starts in 3 Days</span>
+                    <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-cyan-300 mb-0.5 sm:mb-1 h-4 sm:h-5">
+                      <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-cyan-400 shrink-0" />
+                      <span className="truncate">Autumn Mega Event • Starts in 3 Days</span>
                     </div>
-                    <h2 className="text-base sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-snug">
-                      Autumn Mega Sale Event
-                    </h2>
-                    <p className="hidden sm:block text-xs sm:text-sm text-indigo-100/90 mt-2 leading-relaxed max-w-xl">
+                    <div className="min-h-[2.5rem] sm:min-h-[3.75rem] lg:min-h-[4.25rem] flex items-center">
+                      <h2 className="text-base sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-snug line-clamp-2">
+                        Autumn Mega Sale &amp; Seasonal Storewide Clearance
+                      </h2>
+                    </div>
+                    <p className="hidden sm:block text-xs sm:text-sm text-indigo-100/90 mt-1.5 sm:mt-2 leading-relaxed max-w-xl line-clamp-2 h-[2.5rem] sm:h-[2.75rem]">
                       Save up to 60% storewide across all 6 departments. Lock in VIP early access and claim an extra 20%
                       off coupon code right now.
                     </p>
                   </div>
 
-                  {/* Countdown Timer Widget */}
-                  <div className="p-2.5 sm:p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 max-w-lg space-y-2 sm:space-y-3">
-                    <div className="flex items-center justify-between text-[10px] sm:text-xs text-indigo-200">
-                      <span className="font-bold flex items-center gap-1">
-                        <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-cyan-400" />
-                        Sale Starts In:
+                  {/* Mega Sale Highlights (Standardized 2-card grid with live timer) */}
+                  <div className="grid grid-cols-2 gap-2 max-w-lg">
+                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-indigo-400/20 space-y-0.5 h-[66px] sm:h-[76px] flex flex-col justify-center">
+                      <span className="text-[11px] sm:text-xs font-bold text-white block truncate">Storewide Catalog</span>
+                      <span className="text-[9px] sm:text-[11px] text-indigo-200 block truncate">All 6 Departments</span>
+                      <span className="text-[11px] sm:text-xs font-black text-cyan-300 block pt-0.5 truncate">Up to 60% OFF</span>
+                    </div>
+
+                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-indigo-400/20 space-y-0.5 h-[66px] sm:h-[76px] flex flex-col justify-center">
+                      <span className="text-[11px] sm:text-xs font-bold text-white block truncate">Event Starts In</span>
+                      <span className="text-[9px] sm:text-[11px] text-indigo-200 block truncate">September 21 Launch</span>
+                      <span className="text-[11px] sm:text-xs font-black text-cyan-300 font-mono block pt-0.5 truncate">
+                        {saleTimeLeft.days}d {saleTimeLeft.hours}h {saleTimeLeft.minutes}m {saleTimeLeft.seconds}s
                       </span>
-                      <span className="font-semibold text-cyan-300">September 21, 10:00 AM EST</span>
                     </div>
+                  </div>
 
-                    <div className="grid grid-cols-4 gap-1.5 sm:gap-3 text-center">
-                      <div className="bg-black/50 rounded-lg sm:rounded-xl p-1 sm:p-2 border border-indigo-400/30">
-                        <span className="block text-base sm:text-2xl font-black text-white leading-none">
-                          {String(saleTimeLeft.days).padStart(2, '0')}
-                        </span>
-                        <span className="text-[8px] sm:text-[9px] text-indigo-200 uppercase font-bold mt-0.5 sm:mt-1 block">Days</span>
-                      </div>
-                      <div className="bg-black/50 rounded-lg sm:rounded-xl p-1 sm:p-2 border border-indigo-400/30">
-                        <span className="block text-base sm:text-2xl font-black text-white leading-none">
-                          {String(saleTimeLeft.hours).padStart(2, '0')}
-                        </span>
-                        <span className="text-[8px] sm:text-[9px] text-indigo-200 uppercase font-bold mt-0.5 sm:mt-1 block">Hours</span>
-                      </div>
-                      <div className="bg-black/50 rounded-lg sm:rounded-xl p-1 sm:p-2 border border-indigo-400/30">
-                        <span className="block text-base sm:text-2xl font-black text-white leading-none">
-                          {String(saleTimeLeft.minutes).padStart(2, '0')}
-                        </span>
-                        <span className="text-[8px] sm:text-[9px] text-indigo-200 uppercase font-bold mt-0.5 sm:mt-1 block">Mins</span>
-                      </div>
-                      <div className="bg-black/50 rounded-lg sm:rounded-xl p-1 sm:p-2 border border-indigo-400/30">
-                        <span className="block text-base sm:text-2xl font-black text-cyan-300 leading-none">
-                          {String(saleTimeLeft.seconds).padStart(2, '0')}
-                        </span>
-                        <span className="text-[8px] sm:text-[9px] text-indigo-200 uppercase font-bold mt-0.5 sm:mt-1 block">Secs</span>
+                  {/* Coupon Pill */}
+                  <div className="p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl bg-indigo-950/60 border border-indigo-400/30 flex items-center justify-between max-w-lg h-[44px] sm:h-[50px]">
+                    <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 pr-2">
+                      <Tag className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-400 shrink-0" />
+                      <div className="min-w-0">
+                        <span className="text-[10px] sm:text-[11px] font-mono font-bold text-white block truncate">CODE: JUDES20</span>
+                        <span className="text-[8px] sm:text-[9px] text-indigo-200 block truncate">20% off all department selections</span>
                       </div>
                     </div>
+                    <button
+                      onClick={() => handleCopyCode('JUDES20')}
+                      className="h-7 sm:h-8 px-2.5 sm:px-3 rounded-md text-[9px] sm:text-[10px] font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 transition-all flex items-center gap-1 shrink-0 cursor-pointer shadow-xs"
+                    >
+                      {copiedCode === 'JUDES20' ? <Check className="w-3 h-3 stroke-[3]" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedCode === 'JUDES20' ? 'Applied!' : 'Apply'}</span>
+                    </button>
+                  </div>
 
-                    {/* Coupon Pill with One-Click Copy */}
-                    <div className="p-1.5 sm:p-2 rounded-lg bg-indigo-950/60 border border-indigo-400/30 flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 sm:gap-2">
-                        <Tag className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-cyan-400" />
-                        <div>
-                          <span className="text-[10px] sm:text-[11px] font-mono font-bold text-white block">CODE: JUDES20</span>
-                          <span className="text-[8px] sm:text-[9px] text-indigo-200">20% off all department selections</span>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => handleCopyCode('JUDES20')}
-                        className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md text-[9px] sm:text-[10px] font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 transition-all flex items-center gap-1 cursor-pointer"
-                      >
-                        {copiedCode === 'JUDES20' ? <Check className="w-3 h-3 stroke-[3]" /> : <Copy className="w-3 h-3" />}
-                        <span>{copiedCode === 'JUDES20' ? 'Applied!' : 'Apply'}</span>
-                      </button>
-                    </div>
+                  {/* Actions */}
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-0.5 sm:pt-1">
+                    <Link
+                      href="/products"
+                      className="h-8 sm:h-10 px-3.5 sm:px-5 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-black flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-indigo-500 via-cyan-500 to-indigo-600 hover:brightness-110 text-white shadow-md shadow-indigo-500/30 active:scale-95 transition-all cursor-pointer"
+                    >
+                      <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
+                      <span>Shop Mega Sale</span>
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-0.5" />
+                    </Link>
 
-                    <div className="flex items-center gap-2 pt-0.5 sm:pt-1">
-                      <button
-                        onClick={() => setReminderActive(!reminderActive)}
-                        className={`flex-1 py-1.5 sm:py-2 px-2.5 sm:px-3 rounded-lg text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer ${
-                          reminderActive
-                            ? 'bg-indigo-600 text-white border border-indigo-400'
-                            : 'bg-white/20 hover:bg-white/30 text-white border border-white/20 active:scale-98'
-                        }`}
-                      >
-                        {reminderActive ? (
-                          <>
-                            <BellRing className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-300" />
-                            <span>Alert Set!</span>
-                          </>
-                        ) : (
-                          <>
-                            <Bell className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-indigo-200" />
-                            <span>Set Reminder</span>
-                          </>
-                        )}
-                      </button>
-
-                      <Link
-                        href="/products"
-                        className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-[11px] sm:text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/15 transition-all"
-                      >
-                        Preview
-                      </Link>
-                    </div>
+                    <button
+                      onClick={() => setReminderActive(!reminderActive)}
+                      className={`h-8 sm:h-10 px-3 sm:px-4 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-bold flex items-center gap-1.5 sm:gap-2 transition-all active:scale-95 cursor-pointer ${
+                        reminderActive
+                          ? 'bg-indigo-600 text-white border border-indigo-400'
+                          : 'bg-white/10 hover:bg-white/20 border border-white/20 text-white'
+                      }`}
+                    >
+                      {reminderActive ? (
+                        <>
+                          <BellRing className="w-3.5 h-3.5 text-amber-300" />
+                          <span>Alert Set!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Bell className="w-3.5 h-3.5 text-indigo-200" />
+                          <span>Set Reminder</span>
+                        </>
+                      )}
+                    </button>
                   </div>
                 </div>
 
@@ -579,12 +513,12 @@ export function HeroCardsHub() {
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#04081c] via-[#04081c]/50 to-transparent" />
-                  <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-extrabold shadow-md">
+                  <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-extrabold shadow-md">
                     Upcoming Super Event
                   </div>
                   <div className="absolute bottom-3 left-3 right-3 p-2.5 rounded-xl bg-black/70 backdrop-blur-md border border-white/15 flex items-center justify-between text-xs">
                     <span className="font-semibold text-slate-200">5-Day Massive Event</span>
-                    <span className="font-bold text-cyan-300">September 18 Launch</span>
+                    <span className="font-bold text-cyan-300">September 21 Launch</span>
                   </div>
                 </div>
               </>
@@ -595,51 +529,50 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 2 && (
               <>
-                <div className="lg:col-span-7 space-y-2 sm:space-y-4 min-h-[200px] sm:min-h-[240px] lg:min-h-[280px] flex flex-col justify-center">
+                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:min-h-[290px] flex flex-col justify-between">
                   <div>
-                    <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-blue-400 mb-0.5 sm:mb-1">
-                      <Headphones className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-400" />
-                      <span>Audio &amp; Smart Tech Clearance • Extra 15% OFF</span>
+                    <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-blue-400 mb-0.5 sm:mb-1 h-4 sm:h-5">
+                      <Headphones className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-400 shrink-0" />
+                      <span className="truncate">Tech Gear Blowout • Extra 15% OFF</span>
                     </div>
-                    <h2 className="text-base sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-snug">
-                      Electronics &amp; Audio Super Sale{' '}
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-cyan-200 to-indigo-300">
-                        Top Gear Slashed
-                      </span>
-                    </h2>
-                    <p className="hidden sm:block text-xs sm:text-sm text-blue-100/85 mt-2 leading-relaxed max-w-xl">
+                    <div className="min-h-[2.5rem] sm:min-h-[3.75rem] lg:min-h-[4.25rem] flex items-center">
+                      <h2 className="text-base sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-snug line-clamp-2">
+                        Electronics &amp; Audio Super Sale Top Gear Slashed
+                      </h2>
+                    </div>
+                    <p className="hidden sm:block text-xs sm:text-sm text-blue-100/85 mt-1.5 sm:mt-2 leading-relaxed max-w-xl line-clamp-2 h-[2.5rem] sm:h-[2.75rem]">
                       Upgrade your daily soundstage and productivity setup. Save big on active noise cancelling studio
                       headphones, smart watches, portable speakers, and ambient lighting.
                     </p>
                   </div>
 
-                  {/* Tech Offer Highlights */}
+                  {/* Tech Offer Highlights (Standardized 2-card grid) */}
                   <div className="grid grid-cols-2 gap-2 max-w-lg">
-                    <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-blue-400/20 space-y-0.5 sm:space-y-1">
+                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-blue-400/20 space-y-0.5 h-[66px] sm:h-[76px] flex flex-col justify-center">
                       <span className="text-[11px] sm:text-xs font-bold text-white block truncate">SonicPro Studio ANC</span>
                       <span className="text-[9px] sm:text-[11px] text-blue-200 block truncate">40h Battery • Spatial</span>
-                      <span className="text-[11px] sm:text-xs font-black text-amber-300 block pt-0.5">$299.00 (Save $50)</span>
+                      <span className="text-[11px] sm:text-xs font-black text-amber-300 block pt-0.5 truncate">$299.00 (Save $50)</span>
                     </div>
 
-                    <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-blue-400/20 space-y-0.5 sm:space-y-1">
+                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-blue-400/20 space-y-0.5 h-[66px] sm:h-[76px] flex flex-col justify-center">
                       <span className="text-[11px] sm:text-xs font-bold text-white block truncate">ProTrack Ultra GPS</span>
                       <span className="text-[9px] sm:text-[11px] text-blue-200 block truncate">AMOLED • Titanium</span>
-                      <span className="text-[11px] sm:text-xs font-black text-amber-300 block pt-0.5">$399.00 (Save $50)</span>
+                      <span className="text-[11px] sm:text-xs font-black text-amber-300 block pt-0.5 truncate">$399.00 (Save $50)</span>
                     </div>
                   </div>
 
                   {/* Coupon Pill */}
-                  <div className="p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl bg-blue-950/60 border border-blue-400/30 flex items-center justify-between max-w-lg">
-                    <div className="flex items-center gap-1.5 sm:gap-2">
-                      <Tag className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-300" />
-                      <div>
-                        <span className="text-[10px] sm:text-[11px] font-mono font-bold text-white block">CODE: TECHBONUS</span>
-                        <span className="text-[8px] sm:text-[9px] text-blue-200">Extra 15% off electronics</span>
+                  <div className="p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl bg-blue-950/60 border border-blue-400/30 flex items-center justify-between max-w-lg h-[44px] sm:h-[50px]">
+                    <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 pr-2">
+                      <Tag className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-300 shrink-0" />
+                      <div className="min-w-0">
+                        <span className="text-[10px] sm:text-[11px] font-mono font-bold text-white block truncate">CODE: TECHBONUS</span>
+                        <span className="text-[8px] sm:text-[9px] text-blue-200 block truncate">Extra 15% off electronics</span>
                       </div>
                     </div>
                     <button
                       onClick={() => handleCopyCode('TECHBONUS')}
-                      className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md text-[9px] sm:text-[10px] font-bold bg-blue-500 hover:bg-blue-400 text-white transition-all flex items-center gap-1 cursor-pointer"
+                      className="h-7 sm:h-8 px-2.5 sm:px-3 rounded-md text-[9px] sm:text-[10px] font-bold bg-blue-500 hover:bg-blue-400 text-white transition-all flex items-center gap-1 shrink-0 cursor-pointer shadow-xs"
                     >
                       {copiedCode === 'TECHBONUS' ? <Check className="w-3 h-3 stroke-[3]" /> : <Copy className="w-3 h-3" />}
                       <span>{copiedCode === 'TECHBONUS' ? 'Applied!' : 'Apply'}</span>
@@ -647,10 +580,10 @@ export function HeroCardsHub() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-1 sm:pt-2">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-0.5 sm:pt-1">
                     <Link
                       href="/products?category=electronics"
-                      className="px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-black flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 hover:brightness-110 text-white shadow-md shadow-blue-500/30 active:scale-95 transition-all cursor-pointer"
+                      className="h-8 sm:h-10 px-3.5 sm:px-5 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-black flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 hover:brightness-110 text-white shadow-md shadow-blue-500/30 active:scale-95 transition-all cursor-pointer"
                     >
                       <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                       <span>Shop Electronics</span>
@@ -659,7 +592,7 @@ export function HeroCardsHub() {
 
                     <Link
                       href="/products"
-                      className="px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-bold flex items-center gap-1.5 sm:gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all active:scale-95"
+                      className="h-8 sm:h-10 px-3 sm:px-4 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-bold flex items-center gap-1.5 sm:gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all active:scale-95"
                     >
                       <span>All Categories</span>
                     </Link>
@@ -675,7 +608,7 @@ export function HeroCardsHub() {
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#040b1a] via-[#040b1a]/50 to-transparent" />
-                  <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-extrabold shadow-md">
+                  <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-extrabold shadow-md">
                     Tech Category Special
                   </div>
                   <div className="absolute bottom-3 left-3 right-3 p-2.5 rounded-xl bg-black/70 backdrop-blur-md border border-white/15 flex items-center justify-between text-xs">
@@ -691,48 +624,50 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 3 && (
               <>
-                <div className="lg:col-span-7 space-y-2 sm:space-y-4 min-h-[200px] sm:min-h-[240px] lg:min-h-[280px] flex flex-col justify-center">
+                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:min-h-[290px] flex flex-col justify-between">
                   <div>
-                    <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-300 mb-0.5 sm:mb-1">
-                      <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400" />
-                      <span>Apparel, Leather &amp; Footwear • Up to 50% Off</span>
+                    <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-300 mb-0.5 sm:mb-1 h-4 sm:h-5">
+                      <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400 shrink-0" />
+                      <span className="truncate">Luxury Italian Goods • Up to 50% OFF</span>
                     </div>
-                    <h2 className="text-base sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-snug">
-                      Designer Apparel &amp; Italian Leather Clearance
-                    </h2>
-                    <p className="hidden sm:block text-xs sm:text-sm text-amber-100/85 mt-2 leading-relaxed max-w-xl">
+                    <div className="min-h-[2.5rem] sm:min-h-[3.75rem] lg:min-h-[4.25rem] flex items-center">
+                      <h2 className="text-base sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-snug line-clamp-2">
+                        Designer Apparel &amp; Italian Leather Clearance
+                      </h2>
+                    </div>
+                    <p className="hidden sm:block text-xs sm:text-sm text-amber-100/85 mt-1.5 sm:mt-2 leading-relaxed max-w-xl line-clamp-2 h-[2.5rem] sm:h-[2.75rem]">
                       Indulge in artisanal full-grain leather bags, pure cashmere outerwear, and tailored footwear.
                       Premium craftsmanship backed by complimentary worldwide delivery over $99.
                     </p>
                   </div>
 
-                  {/* Fashion Offer Highlights */}
+                  {/* Fashion Offer Highlights (Standardized 2-card grid) */}
                   <div className="grid grid-cols-2 gap-2 max-w-lg">
-                    <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-0.5 sm:space-y-1">
+                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-0.5 h-[66px] sm:h-[76px] flex flex-col justify-center">
                       <span className="text-[11px] sm:text-xs font-bold text-white block truncate">Heritage Weekender</span>
                       <span className="text-[9px] sm:text-[11px] text-amber-200/80 block truncate">Tuscan Cowhide</span>
-                      <span className="text-[11px] sm:text-xs font-black text-amber-300 block pt-0.5">$395.00 (Save $85)</span>
+                      <span className="text-[11px] sm:text-xs font-black text-amber-300 block pt-0.5 truncate">$395.00 (Save $85)</span>
                     </div>
 
-                    <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-0.5 sm:space-y-1">
+                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-0.5 h-[66px] sm:h-[76px] flex flex-col justify-center">
                       <span className="text-[11px] sm:text-xs font-bold text-white block truncate">Cashmere Overcoat</span>
                       <span className="text-[9px] sm:text-[11px] text-amber-200/80 block truncate">Italian Wool</span>
-                      <span className="text-[11px] sm:text-xs font-black text-amber-300 block pt-0.5">$595.00 (Save $105)</span>
+                      <span className="text-[11px] sm:text-xs font-black text-amber-300 block pt-0.5 truncate">$595.00 (Save $105)</span>
                     </div>
                   </div>
 
                   {/* Coupon Pill */}
-                  <div className="p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl bg-amber-950/60 border border-amber-400/30 flex items-center justify-between max-w-lg">
-                    <div className="flex items-center gap-1.5 sm:gap-2">
-                      <Tag className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-300" />
-                      <div>
-                        <span className="text-[10px] sm:text-[11px] font-mono font-bold text-white block">CODE: SAVE50</span>
-                        <span className="text-[8px] sm:text-[9px] text-amber-200">$50 off cart over $250</span>
+                  <div className="p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl bg-amber-950/60 border border-amber-400/30 flex items-center justify-between max-w-lg h-[44px] sm:h-[50px]">
+                    <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 pr-2">
+                      <Tag className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-300 shrink-0" />
+                      <div className="min-w-0">
+                        <span className="text-[10px] sm:text-[11px] font-mono font-bold text-white block truncate">CODE: SAVE50</span>
+                        <span className="text-[8px] sm:text-[9px] text-amber-200 block truncate">$50 off cart over $250</span>
                       </div>
                     </div>
                     <button
                       onClick={() => handleCopyCode('SAVE50')}
-                      className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md text-[9px] sm:text-[10px] font-bold bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 transition-all flex items-center gap-1 cursor-pointer"
+                      className="h-7 sm:h-8 px-2.5 sm:px-3 rounded-md text-[9px] sm:text-[10px] font-bold bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 transition-all flex items-center gap-1 shrink-0 cursor-pointer shadow-xs"
                     >
                       {copiedCode === 'SAVE50' ? <Check className="w-3 h-3 stroke-[3]" /> : <Copy className="w-3 h-3" />}
                       <span>{copiedCode === 'SAVE50' ? 'Applied!' : 'Apply'}</span>
@@ -740,10 +675,10 @@ export function HeroCardsHub() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-1 sm:pt-2">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-0.5 sm:pt-1">
                     <Link
                       href="/products?category=apparel"
-                      className="px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-black flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:brightness-110 text-slate-950 shadow-md shadow-amber-500/30 active:scale-95 transition-all cursor-pointer"
+                      className="h-8 sm:h-10 px-3.5 sm:px-5 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-black flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:brightness-110 text-slate-950 shadow-md shadow-amber-500/30 active:scale-95 transition-all cursor-pointer"
                     >
                       <Shirt className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-950" />
                       <span>Shop Fashion</span>
@@ -752,7 +687,7 @@ export function HeroCardsHub() {
 
                     <Link
                       href="/products?category=leather-goods"
-                      className="px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-bold flex items-center gap-1.5 sm:gap-2 bg-white/10 hover:bg-white/20 border border-amber-400/30 text-amber-200 hover:text-white transition-all active:scale-95"
+                      className="h-8 sm:h-10 px-3 sm:px-4 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-bold flex items-center gap-1.5 sm:gap-2 bg-white/10 hover:bg-white/20 border border-amber-400/30 text-amber-200 hover:text-white transition-all active:scale-95"
                     >
                       <span>Leather Goods</span>
                     </Link>
