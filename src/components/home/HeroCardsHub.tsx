@@ -28,6 +28,7 @@ import { Product } from '@/types/product';
 interface OfferCampaign {
   id: 'flash-deals' | 'autumn-sale' | 'tech-blowout' | 'luxury-fashion';
   label: string;
+  shortLabel: string;
   tagline: string;
   badge: string;
   badgeColor: string;
@@ -42,6 +43,7 @@ const RUNNING_OFFERS: OfferCampaign[] = [
   {
     id: 'flash-deals',
     label: 'Flash Deals',
+    shortLabel: 'Flash Deals',
     tagline: 'Up to 35% OFF Today',
     badge: '⚡ Limited Time Drops',
     badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-400/40',
@@ -54,6 +56,7 @@ const RUNNING_OFFERS: OfferCampaign[] = [
   {
     id: 'autumn-sale',
     label: 'Autumn Mega Sale',
+    shortLabel: 'Mega Sale',
     tagline: 'Up to 60% Storewide',
     badge: '🍂 Live Event Countdown',
     badgeColor: 'bg-indigo-500/20 text-cyan-300 border-indigo-400/40',
@@ -66,6 +69,7 @@ const RUNNING_OFFERS: OfferCampaign[] = [
   {
     id: 'tech-blowout',
     label: 'Tech Blowout',
+    shortLabel: 'Tech Sale',
     tagline: 'Extra 15% OFF Audio & Gear',
     badge: '🎧 Electronics Event',
     badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-400/40',
@@ -78,6 +82,7 @@ const RUNNING_OFFERS: OfferCampaign[] = [
   {
     id: 'luxury-fashion',
     label: 'Fashion & Leather',
+    shortLabel: 'Fashion',
     tagline: 'Save Up to 50% Off',
     badge: '✨ Handcrafted Luxury',
     badgeColor: 'bg-amber-500/20 text-amber-200 border-amber-400/40',
@@ -233,13 +238,13 @@ export function HeroCardsHub() {
   return (
     <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-3 sm:pt-6">
       {/* SECTION HEADER */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 mb-3 sm:mb-5">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-1 sm:gap-2.5 mb-2 sm:mb-5">
         <div>
-          <h1 className="font-sans text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          <h1 className="font-sans text-lg sm:text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Running Offers &amp; Price Drops
           </h1>
         </div>
-        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md">
+        <p className="hidden sm:block text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md">
           Take advantage of limited-time seasonal savings, instant catalog discounts, and exclusive department coupon codes.
         </p>
       </div>
@@ -266,15 +271,15 @@ export function HeroCardsHub() {
         <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-black/40 rounded-full blur-3xl pointer-events-none" />
 
         {/* Hero Slide Contents */}
-        <div className="relative z-10 p-3.5 sm:p-6 lg:p-8 min-h-[340px] sm:min-h-[410px] flex flex-col justify-between">
+        <div className="relative z-10 p-2.5 sm:p-6 lg:p-8 min-h-0 sm:min-h-[410px] flex flex-col justify-between">
           {/* Top Info Bar inside Hero */}
-          <div className="flex items-center justify-between gap-2 mb-4">
+          <div className="flex items-center justify-between gap-2 mb-1.5 sm:mb-4">
             <div className="flex items-center gap-2">
               <div
-                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider backdrop-blur-md border ${currentOffer.badgeColor}`}
+                className={`inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs font-extrabold uppercase tracking-wider backdrop-blur-md border ${currentOffer.badgeColor}`}
               >
                 {React.createElement(currentOffer.icon, {
-                  className: 'w-3.5 h-3.5 text-current animate-pulse',
+                  className: 'w-3 h-3 sm:w-3.5 sm:h-3.5 text-current animate-pulse',
                 })}
                 <span>{currentOffer.badge}</span>
               </div>
@@ -320,16 +325,16 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 0 && (
               <>
-                <div className="lg:col-span-7 space-y-4">
+                <div className="lg:col-span-7 space-y-2 sm:space-y-4">
                   <div>
-                    <div className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-amber-400 mb-1">
-                      <Flame className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                    <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-400 mb-0.5 sm:mb-1">
+                      <Flame className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400 animate-pulse" />
                       <span>Immediate Price Drops • Live Today</span>
                     </div>
-                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
+                    <h2 className="text-base sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-snug">
                       Flash Deals &amp; Daily Price Reductions
                     </h2>
-                    <p className="text-xs sm:text-sm text-stone-300 mt-2 leading-relaxed max-w-xl">
+                    <p className="hidden sm:block text-xs sm:text-sm text-stone-300 mt-2 leading-relaxed max-w-xl">
                       Grab immediate manufacturer discounts on high-demand electronics, apparel, and lifestyle items.
                       Stock is strictly limited with real-time stock reservations.
                     </p>
@@ -337,16 +342,16 @@ export function HeroCardsHub() {
 
                   {/* Interactive Active Deal Card */}
                   {activeDeal && (
-                    <div className="p-3 sm:p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 max-w-lg space-y-3">
-                      <div className="flex items-center gap-3">
-                        <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-black/40 shrink-0 border border-white/20">
+                    <div className="p-2 sm:p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 max-w-lg space-y-2 sm:space-y-3">
+                      <div className="flex items-center gap-2.5 sm:gap-3">
+                        <div className="relative w-11 h-11 sm:w-16 sm:h-16 rounded-lg sm:rounded-xl overflow-hidden bg-black/40 shrink-0 border border-white/20">
                           <Image
                             src={activeDeal.images[0]}
                             alt={activeDeal.name}
                             fill
                             className="object-cover"
                           />
-                          <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded text-[8px] font-black bg-rose-600 text-white leading-none">
+                          <div className="absolute top-1 left-1 px-1 sm:px-1.5 py-0.5 rounded text-[7px] sm:text-[8px] font-black bg-rose-600 text-white leading-none">
                             -{discountPercent}%
                           </div>
                         </div>
@@ -358,18 +363,18 @@ export function HeroCardsHub() {
                           >
                             {activeDeal.name}
                           </Link>
-                          <div className="flex items-baseline gap-2 mt-1">
-                            <span className="text-sm sm:text-base font-black text-amber-300">
+                          <div className="flex items-baseline gap-1.5 sm:gap-2 mt-0.5 sm:mt-1">
+                            <span className="text-xs sm:text-base font-black text-amber-300">
                               {formatAmount(activeDeal.price)}
                             </span>
                             {activeDeal.originalPrice && (
-                              <span className="text-xs text-stone-400 line-through">
+                              <span className="text-[10px] sm:text-xs text-stone-400 line-through">
                                 {formatAmount(activeDeal.originalPrice)}
                               </span>
                             )}
                           </div>
-                          <span className="text-[10px] text-emerald-300 font-semibold mt-0.5 block">
-                            ✓ Ready to Dispatch • Free Shipping Available
+                          <span className="text-[9px] sm:text-[10px] text-emerald-300 font-semibold block truncate">
+                            ✓ Ready to Dispatch • Free Shipping
                           </span>
                         </div>
                       </div>
@@ -377,7 +382,7 @@ export function HeroCardsHub() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={(e) => handleQuickAdd(activeDeal, e)}
-                          className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer ${
+                          className={`flex-1 py-1.5 sm:py-2 px-2.5 sm:px-3 rounded-lg text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer ${
                             addedItemEffect === activeDeal.id
                               ? 'bg-emerald-500 text-white'
                               : 'bg-amber-500 hover:bg-amber-400 text-slate-950 active:scale-98 shadow-xs'
@@ -386,19 +391,19 @@ export function HeroCardsHub() {
                           {addedItemEffect === activeDeal.id ? (
                             <>
                               <Check className="w-3.5 h-3.5 stroke-[3]" />
-                              <span>Added to Cart!</span>
+                              <span>Added!</span>
                             </>
                           ) : (
                             <>
-                              <ShoppingBag className="w-3.5 h-3.5" />
-                              <span>Quick Add Deal to Cart</span>
+                              <ShoppingBag className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                              <span>Quick Add Deal</span>
                             </>
                           )}
                         </button>
 
                         <Link
                           href={`/products/${activeDeal.slug}`}
-                          className="px-3 py-2 rounded-lg text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/15 transition-all"
+                          className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[11px] sm:text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/15 transition-all"
                         >
                           Details
                         </Link>
@@ -462,82 +467,80 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 1 && (
               <>
-                <div className="lg:col-span-7 space-y-4">
+                <div className="lg:col-span-7 space-y-2 sm:space-y-4">
                   <div>
-                    <div className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-cyan-400 mb-1">
-                      <Clock className="w-3.5 h-3.5 text-cyan-400 animate-spin" style={{ animationDuration: '6s' }} />
-                      <span>Live Seasonal Event Countdown</span>
+                    <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-cyan-300 mb-0.5 sm:mb-1">
+                      <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-cyan-400" />
+                      <span>Autumn Season Kickoff • Starts in 3 Days</span>
                     </div>
-                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
-                      JudesCart Mega Autumn Bash{' '}
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-indigo-300">
-                        Up to 60% Storewide
-                      </span>
+                    <h2 className="text-base sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-snug">
+                      Autumn Mega Sale Event
                     </h2>
-                    <p className="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed max-w-xl">
-                      Our biggest seasonal shopping festival of the quarter. Unlock tiered sitewide vouchers, extra
-                      JudesCoins cashback, and bundle discounts across every department.
+                    <p className="hidden sm:block text-xs sm:text-sm text-indigo-100/90 mt-2 leading-relaxed max-w-xl">
+                      Save up to 60% storewide across all 6 departments. Lock in VIP early access and claim an extra 20%
+                      off coupon code right now.
                     </p>
                   </div>
 
-                  {/* 4-Box Countdown Timer */}
-                  <div className="p-3 sm:p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 max-w-lg space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-cyan-300 uppercase tracking-wider">
-                        Sale Commences In:
+                  {/* Countdown Timer Widget */}
+                  <div className="p-2.5 sm:p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 max-w-lg space-y-2 sm:space-y-3">
+                    <div className="flex items-center justify-between text-[10px] sm:text-xs text-indigo-200">
+                      <span className="font-bold flex items-center gap-1">
+                        <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-cyan-400" />
+                        Sale Starts In:
                       </span>
-                      <span className="text-[10px] text-slate-300">Sept 18 – Sept 22</span>
+                      <span className="font-semibold text-cyan-300">September 21, 10:00 AM EST</span>
                     </div>
 
-                    <div className="grid grid-cols-4 gap-2 text-center">
-                      <div className="bg-black/50 rounded-xl p-2 border border-indigo-400/30">
-                        <span className="block text-xl sm:text-2xl font-black text-white leading-none">
+                    <div className="grid grid-cols-4 gap-1.5 sm:gap-3 text-center">
+                      <div className="bg-black/50 rounded-lg sm:rounded-xl p-1 sm:p-2 border border-indigo-400/30">
+                        <span className="block text-base sm:text-2xl font-black text-white leading-none">
                           {String(saleTimeLeft.days).padStart(2, '0')}
                         </span>
-                        <span className="text-[9px] text-indigo-200 uppercase font-bold mt-1 block">Days</span>
+                        <span className="text-[8px] sm:text-[9px] text-indigo-200 uppercase font-bold mt-0.5 sm:mt-1 block">Days</span>
                       </div>
-                      <div className="bg-black/50 rounded-xl p-2 border border-indigo-400/30">
-                        <span className="block text-xl sm:text-2xl font-black text-white leading-none">
+                      <div className="bg-black/50 rounded-lg sm:rounded-xl p-1 sm:p-2 border border-indigo-400/30">
+                        <span className="block text-base sm:text-2xl font-black text-white leading-none">
                           {String(saleTimeLeft.hours).padStart(2, '0')}
                         </span>
-                        <span className="text-[9px] text-indigo-200 uppercase font-bold mt-1 block">Hours</span>
+                        <span className="text-[8px] sm:text-[9px] text-indigo-200 uppercase font-bold mt-0.5 sm:mt-1 block">Hours</span>
                       </div>
-                      <div className="bg-black/50 rounded-xl p-2 border border-indigo-400/30">
-                        <span className="block text-xl sm:text-2xl font-black text-white leading-none">
+                      <div className="bg-black/50 rounded-lg sm:rounded-xl p-1 sm:p-2 border border-indigo-400/30">
+                        <span className="block text-base sm:text-2xl font-black text-white leading-none">
                           {String(saleTimeLeft.minutes).padStart(2, '0')}
                         </span>
-                        <span className="text-[9px] text-indigo-200 uppercase font-bold mt-1 block">Minutes</span>
+                        <span className="text-[8px] sm:text-[9px] text-indigo-200 uppercase font-bold mt-0.5 sm:mt-1 block">Mins</span>
                       </div>
-                      <div className="bg-black/50 rounded-xl p-2 border border-indigo-400/30">
-                        <span className="block text-xl sm:text-2xl font-black text-cyan-300 leading-none">
+                      <div className="bg-black/50 rounded-lg sm:rounded-xl p-1 sm:p-2 border border-indigo-400/30">
+                        <span className="block text-base sm:text-2xl font-black text-cyan-300 leading-none">
                           {String(saleTimeLeft.seconds).padStart(2, '0')}
                         </span>
-                        <span className="text-[9px] text-indigo-200 uppercase font-bold mt-1 block">Seconds</span>
+                        <span className="text-[8px] sm:text-[9px] text-indigo-200 uppercase font-bold mt-0.5 sm:mt-1 block">Secs</span>
                       </div>
                     </div>
 
                     {/* Coupon Pill with One-Click Copy */}
-                    <div className="p-2 rounded-lg bg-indigo-950/60 border border-indigo-400/30 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Tag className="w-3.5 h-3.5 text-cyan-400" />
+                    <div className="p-1.5 sm:p-2 rounded-lg bg-indigo-950/60 border border-indigo-400/30 flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <Tag className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-cyan-400" />
                         <div>
-                          <span className="text-[11px] font-mono font-bold text-white block">CODE: JUDES20</span>
-                          <span className="text-[9px] text-indigo-200">20% off all department selections</span>
+                          <span className="text-[10px] sm:text-[11px] font-mono font-bold text-white block">CODE: JUDES20</span>
+                          <span className="text-[8px] sm:text-[9px] text-indigo-200">20% off all department selections</span>
                         </div>
                       </div>
                       <button
                         onClick={() => handleCopyCode('JUDES20')}
-                        className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 transition-all flex items-center gap-1 cursor-pointer"
+                        className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md text-[9px] sm:text-[10px] font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 transition-all flex items-center gap-1 cursor-pointer"
                       >
                         {copiedCode === 'JUDES20' ? <Check className="w-3 h-3 stroke-[3]" /> : <Copy className="w-3 h-3" />}
                         <span>{copiedCode === 'JUDES20' ? 'Applied!' : 'Apply'}</span>
                       </button>
                     </div>
 
-                    <div className="flex items-center gap-2 pt-1">
+                    <div className="flex items-center gap-2 pt-0.5 sm:pt-1">
                       <button
                         onClick={() => setReminderActive(!reminderActive)}
-                        className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer ${
+                        className={`flex-1 py-1.5 sm:py-2 px-2.5 sm:px-3 rounded-lg text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer ${
                           reminderActive
                             ? 'bg-indigo-600 text-white border border-indigo-400'
                             : 'bg-white/20 hover:bg-white/30 text-white border border-white/20 active:scale-98'
@@ -545,20 +548,20 @@ export function HeroCardsHub() {
                       >
                         {reminderActive ? (
                           <>
-                            <BellRing className="w-3.5 h-3.5 text-amber-300" />
-                            <span>Alert Set! You&apos;ll Be Notified</span>
+                            <BellRing className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-300" />
+                            <span>Alert Set!</span>
                           </>
                         ) : (
                           <>
-                            <Bell className="w-3.5 h-3.5 text-indigo-200" />
-                            <span>Set Sale Reminder</span>
+                            <Bell className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-indigo-200" />
+                            <span>Set Reminder</span>
                           </>
                         )}
                       </button>
 
                       <Link
                         href="/products"
-                        className="px-4 py-2 rounded-lg text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/15 transition-all"
+                        className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-[11px] sm:text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/15 transition-all"
                       >
                         Preview
                       </Link>
@@ -591,73 +594,73 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 2 && (
               <>
-                <div className="lg:col-span-7 space-y-4">
+                <div className="lg:col-span-7 space-y-2 sm:space-y-4">
                   <div>
-                    <div className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-blue-400 mb-1">
-                      <Headphones className="w-3.5 h-3.5 text-blue-400" />
+                    <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-blue-400 mb-0.5 sm:mb-1">
+                      <Headphones className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-400" />
                       <span>Audio &amp; Smart Tech Clearance • Extra 15% OFF</span>
                     </div>
-                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
+                    <h2 className="text-base sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-snug">
                       Electronics &amp; Audio Super Sale{' '}
                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-cyan-200 to-indigo-300">
                         Top Gear Slashed
                       </span>
                     </h2>
-                    <p className="text-xs sm:text-sm text-blue-100/85 mt-2 leading-relaxed max-w-xl">
+                    <p className="hidden sm:block text-xs sm:text-sm text-blue-100/85 mt-2 leading-relaxed max-w-xl">
                       Upgrade your daily soundstage and productivity setup. Save big on active noise cancelling studio
                       headphones, smart watches, portable speakers, and ambient lighting.
                     </p>
                   </div>
 
                   {/* Tech Offer Highlights */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-lg">
-                    <div className="p-3 rounded-xl bg-white/10 backdrop-blur-md border border-blue-400/20 space-y-1">
-                      <span className="text-xs font-bold text-white block">SonicPro Studio ANC</span>
-                      <span className="text-[11px] text-blue-200 block">40h Battery • Spatial Audio</span>
-                      <span className="text-xs font-black text-amber-300 block pt-0.5">$299.00 (Save $50)</span>
+                  <div className="grid grid-cols-2 gap-2 max-w-lg">
+                    <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-blue-400/20 space-y-0.5 sm:space-y-1">
+                      <span className="text-[11px] sm:text-xs font-bold text-white block truncate">SonicPro Studio ANC</span>
+                      <span className="text-[9px] sm:text-[11px] text-blue-200 block truncate">40h Battery • Spatial</span>
+                      <span className="text-[11px] sm:text-xs font-black text-amber-300 block pt-0.5">$299.00 (Save $50)</span>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-white/10 backdrop-blur-md border border-blue-400/20 space-y-1">
-                      <span className="text-xs font-bold text-white block">ProTrack Ultra GPS</span>
-                      <span className="text-[11px] text-blue-200 block">AMOLED • Titanium Bezel</span>
-                      <span className="text-xs font-black text-amber-300 block pt-0.5">$399.00 (Save $50)</span>
+                    <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-blue-400/20 space-y-0.5 sm:space-y-1">
+                      <span className="text-[11px] sm:text-xs font-bold text-white block truncate">ProTrack Ultra GPS</span>
+                      <span className="text-[9px] sm:text-[11px] text-blue-200 block truncate">AMOLED • Titanium</span>
+                      <span className="text-[11px] sm:text-xs font-black text-amber-300 block pt-0.5">$399.00 (Save $50)</span>
                     </div>
                   </div>
 
                   {/* Coupon Pill */}
-                  <div className="p-2.5 rounded-xl bg-blue-950/60 border border-blue-400/30 flex items-center justify-between max-w-lg">
-                    <div className="flex items-center gap-2">
-                      <Tag className="w-3.5 h-3.5 text-blue-300" />
+                  <div className="p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl bg-blue-950/60 border border-blue-400/30 flex items-center justify-between max-w-lg">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <Tag className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-300" />
                       <div>
-                        <span className="text-[11px] font-mono font-bold text-white block">CODE: TECHBONUS</span>
-                        <span className="text-[9px] text-blue-200">Extra 15% off electronics &amp; tech gear</span>
+                        <span className="text-[10px] sm:text-[11px] font-mono font-bold text-white block">CODE: TECHBONUS</span>
+                        <span className="text-[8px] sm:text-[9px] text-blue-200">Extra 15% off electronics</span>
                       </div>
                     </div>
                     <button
                       onClick={() => handleCopyCode('TECHBONUS')}
-                      className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-500 hover:bg-blue-400 text-white transition-all flex items-center gap-1 cursor-pointer"
+                      className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md text-[9px] sm:text-[10px] font-bold bg-blue-500 hover:bg-blue-400 text-white transition-all flex items-center gap-1 cursor-pointer"
                     >
                       {copiedCode === 'TECHBONUS' ? <Check className="w-3 h-3 stroke-[3]" /> : <Copy className="w-3 h-3" />}
-                      <span>{copiedCode === 'TECHBONUS' ? 'Applied!' : 'Apply Code'}</span>
+                      <span>{copiedCode === 'TECHBONUS' ? 'Applied!' : 'Apply'}</span>
                     </button>
                   </div>
 
                   {/* Actions */}
-                  <div className="flex flex-wrap items-center gap-3 pt-2">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-1 sm:pt-2">
                     <Link
                       href="/products?category=electronics"
-                      className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black flex items-center gap-2 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 hover:brightness-110 text-white shadow-md shadow-blue-500/30 active:scale-95 transition-all cursor-pointer"
+                      className="px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-black flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 hover:brightness-110 text-white shadow-md shadow-blue-500/30 active:scale-95 transition-all cursor-pointer"
                     >
-                      <ShoppingBag className="w-4 h-4 text-white" />
-                      <span>Shop Electronics Deals</span>
-                      <ArrowRight className="w-4 h-4 ml-0.5" />
+                      <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
+                      <span>Shop Electronics</span>
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-0.5" />
                     </Link>
 
                     <Link
                       href="/products"
-                      className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all active:scale-95"
+                      className="px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-bold flex items-center gap-1.5 sm:gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all active:scale-95"
                     >
-                      <span>View All Categories</span>
+                      <span>All Categories</span>
                     </Link>
                   </div>
                 </div>
@@ -687,70 +690,70 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 3 && (
               <>
-                <div className="lg:col-span-7 space-y-4">
+                <div className="lg:col-span-7 space-y-2 sm:space-y-4">
                   <div>
-                    <div className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-amber-300 mb-1">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-300 mb-0.5 sm:mb-1">
+                      <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400" />
                       <span>Apparel, Leather &amp; Footwear • Up to 50% Off</span>
                     </div>
-                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
+                    <h2 className="text-base sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-snug">
                       Designer Apparel &amp; Italian Leather Clearance
                     </h2>
-                    <p className="text-xs sm:text-sm text-amber-100/85 mt-2 leading-relaxed max-w-xl">
+                    <p className="hidden sm:block text-xs sm:text-sm text-amber-100/85 mt-2 leading-relaxed max-w-xl">
                       Indulge in artisanal full-grain leather bags, pure cashmere outerwear, and tailored footwear.
                       Premium craftsmanship backed by complimentary worldwide delivery over $99.
                     </p>
                   </div>
 
                   {/* Fashion Offer Highlights */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-lg">
-                    <div className="p-3 rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-1">
-                      <span className="text-xs font-bold text-white block">Heritage Leather Weekender</span>
-                      <span className="text-[11px] text-amber-200/80 block">Full-Grain Tuscan Cowhide</span>
-                      <span className="text-xs font-black text-amber-300 block pt-0.5">$395.00 (Save $85)</span>
+                  <div className="grid grid-cols-2 gap-2 max-w-lg">
+                    <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-0.5 sm:space-y-1">
+                      <span className="text-[11px] sm:text-xs font-bold text-white block truncate">Heritage Weekender</span>
+                      <span className="text-[9px] sm:text-[11px] text-amber-200/80 block truncate">Tuscan Cowhide</span>
+                      <span className="text-[11px] sm:text-xs font-black text-amber-300 block pt-0.5">$395.00 (Save $85)</span>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-1">
-                      <span className="text-xs font-bold text-white block">Cashmere Blend Overcoat</span>
-                      <span className="text-[11px] text-amber-200/80 block">Italian Wool • Hand-Stitched</span>
-                      <span className="text-xs font-black text-amber-300 block pt-0.5">$595.00 (Save $105)</span>
+                    <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-0.5 sm:space-y-1">
+                      <span className="text-[11px] sm:text-xs font-bold text-white block truncate">Cashmere Overcoat</span>
+                      <span className="text-[9px] sm:text-[11px] text-amber-200/80 block truncate">Italian Wool</span>
+                      <span className="text-[11px] sm:text-xs font-black text-amber-300 block pt-0.5">$595.00 (Save $105)</span>
                     </div>
                   </div>
 
                   {/* Coupon Pill */}
-                  <div className="p-2.5 rounded-xl bg-amber-950/60 border border-amber-400/30 flex items-center justify-between max-w-lg">
-                    <div className="flex items-center gap-2">
-                      <Tag className="w-3.5 h-3.5 text-amber-300" />
+                  <div className="p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl bg-amber-950/60 border border-amber-400/30 flex items-center justify-between max-w-lg">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <Tag className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-300" />
                       <div>
-                        <span className="text-[11px] font-mono font-bold text-white block">CODE: SAVE50</span>
-                        <span className="text-[9px] text-amber-200">$50 off your cart on orders over $250</span>
+                        <span className="text-[10px] sm:text-[11px] font-mono font-bold text-white block">CODE: SAVE50</span>
+                        <span className="text-[8px] sm:text-[9px] text-amber-200">$50 off cart over $250</span>
                       </div>
                     </div>
                     <button
                       onClick={() => handleCopyCode('SAVE50')}
-                      className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 transition-all flex items-center gap-1 cursor-pointer"
+                      className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md text-[9px] sm:text-[10px] font-bold bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 transition-all flex items-center gap-1 cursor-pointer"
                     >
                       {copiedCode === 'SAVE50' ? <Check className="w-3 h-3 stroke-[3]" /> : <Copy className="w-3 h-3" />}
-                      <span>{copiedCode === 'SAVE50' ? 'Applied!' : 'Apply Code'}</span>
+                      <span>{copiedCode === 'SAVE50' ? 'Applied!' : 'Apply'}</span>
                     </button>
                   </div>
 
                   {/* Actions */}
-                  <div className="flex flex-wrap items-center gap-3 pt-2">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-1 sm:pt-2">
                     <Link
                       href="/products?category=apparel"
-                      className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black flex items-center gap-2 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:brightness-110 text-slate-950 shadow-md shadow-amber-500/30 active:scale-95 transition-all cursor-pointer"
+                      className="px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-black flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:brightness-110 text-slate-950 shadow-md shadow-amber-500/30 active:scale-95 transition-all cursor-pointer"
                     >
-                      <Shirt className="w-4 h-4 text-slate-950" />
-                      <span>Shop Fashion &amp; Leather</span>
-                      <ArrowRight className="w-4 h-4 ml-0.5" />
+                      <Shirt className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-950" />
+                      <span>Shop Fashion</span>
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-0.5" />
                     </Link>
 
                     <Link
                       href="/products?category=leather-goods"
-                      className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-amber-400/30 text-amber-200 hover:text-white transition-all active:scale-95"
+                      className="px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-bold flex items-center gap-1.5 sm:gap-2 bg-white/10 hover:bg-white/20 border border-amber-400/30 text-amber-200 hover:text-white transition-all active:scale-95"
                     >
-                      <span>Explore Leather Goods</span>
+                      <span>Leather Goods</span>
                     </Link>
                   </div>
                 </div>
@@ -777,8 +780,8 @@ export function HeroCardsHub() {
           </div>
 
           {/* BOTTOM QUICK-SWITCH MINI DOCK */}
-          <div className="pt-3 sm:pt-4 mt-3 sm:mt-4 border-t border-white/10">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 sm:gap-2">
+          <div className="pt-2 sm:pt-4 mt-2 sm:mt-4 border-t border-white/10">
+            <div className="grid grid-cols-4 gap-1 sm:gap-2">
               {RUNNING_OFFERS.map((camp, idx) => {
                 const Icon = camp.icon;
                 const isSelected = activeSlide === idx;
@@ -787,24 +790,25 @@ export function HeroCardsHub() {
                   <button
                     key={camp.id}
                     onClick={() => goToSlide(idx)}
-                    className={`p-1.5 sm:p-2.5 rounded-xl text-left transition-all duration-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer ${
+                    className={`p-1 sm:p-2.5 rounded-lg sm:rounded-xl text-center sm:text-left transition-all duration-300 flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-0.5 sm:gap-2 cursor-pointer ${
                       isSelected
                         ? 'bg-white/25 border border-white/40 shadow-sm'
                         : 'bg-white/5 border border-white/10 hover:bg-white/10'
                     }`}
                   >
                     <div
-                      className={`w-5 h-5 sm:w-6 sm:h-6 rounded-lg flex items-center justify-center shrink-0 ${
+                      className={`w-4 h-4 sm:w-6 sm:h-6 rounded-md sm:rounded-lg flex items-center justify-center shrink-0 ${
                         isSelected ? 'bg-white text-slate-900' : 'bg-white/10 text-white'
                       }`}
                     >
-                      <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                      <Icon className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5" />
                     </div>
-                    <div className="min-w-0">
-                      <span className="text-[10px] sm:text-xs font-bold truncate block text-white">
-                        {camp.label}
+                    <div className="min-w-0 w-full">
+                      <span className="text-[9px] sm:text-xs font-bold truncate block text-white text-center sm:text-left">
+                        <span className="sm:hidden">{camp.shortLabel}</span>
+                        <span className="hidden sm:inline">{camp.label}</span>
                       </span>
-                      <span className="text-[8px] sm:text-[10px] truncate block text-white/70">
+                      <span className="hidden sm:block text-[9px] sm:text-[10px] truncate text-white/70">
                         {camp.tagline}
                       </span>
                     </div>
