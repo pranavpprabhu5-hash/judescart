@@ -97,7 +97,6 @@ export function HeroCardsHub() {
   const [activeSlide, setActiveSlide] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  const [progress, setProgress] = useState<number>(0);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   // --------------------------------------------------------------------------
@@ -187,34 +186,22 @@ export function HeroCardsHub() {
   // --------------------------------------------------------------------------
   const nextSlide = useCallback(() => {
     setActiveSlide((prev) => (prev + 1) % RUNNING_OFFERS.length);
-    setProgress(0);
   }, []);
 
   const prevSlide = useCallback(() => {
     setActiveSlide((prev) => (prev - 1 + RUNNING_OFFERS.length) % RUNNING_OFFERS.length);
-    setProgress(0);
   }, []);
 
   const goToSlide = (index: number) => {
     setActiveSlide(index);
-    setProgress(0);
   };
 
   useEffect(() => {
     if (!isPlaying || isHovered) return;
 
-    const stepMs = 50;
-    const progressIncrement = (stepMs / AUTO_ROTATE_INTERVAL) * 100;
-
     const timer = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          nextSlide();
-          return 0;
-        }
-        return prev + progressIncrement;
-      });
-    }, stepMs);
+      nextSlide();
+    }, AUTO_ROTATE_INTERVAL);
 
     return () => clearInterval(timer);
   }, [isPlaying, isHovered, nextSlide]);
@@ -257,99 +244,7 @@ export function HeroCardsHub() {
         </p>
       </div>
 
-      {/* =========================================================================
-          1. INTERACTIVE RUNNING OFFERS TABS
-          ========================================================================= */}
-      <div className="bg-stone-200/60 dark:bg-slate-900/80 backdrop-blur-md p-1 sm:p-1.5 rounded-2xl border border-stone-200/80 dark:border-slate-800/90 mb-3 sm:mb-4 shadow-xs">
-        <div className="flex items-center justify-between gap-1 sm:gap-2">
-          {/* 4 Running Offer Tabs */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-1 sm:gap-2 flex-1">
-            {RUNNING_OFFERS.map((tab, idx) => {
-              const Icon = tab.icon;
-              const isActive = activeSlide === idx;
 
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => goToSlide(idx)}
-                  className={`group relative flex items-center justify-between p-2 sm:px-3 sm:py-2.5 rounded-xl text-left transition-all duration-300 cursor-pointer overflow-hidden ${
-                    isActive
-                      ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-2 ring-[#0066FF] dark:ring-[#38BDF8]'
-                      : 'hover:bg-white/70 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
-                  }`}
-                  aria-label={`Switch to ${tab.label}`}
-                >
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div
-                      className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-300 ${
-                        isActive
-                          ? 'bg-[#0066FF] text-white scale-105 shadow-xs'
-                          : 'bg-stone-200/80 dark:bg-slate-700/80 text-stone-600 dark:text-stone-300'
-                      }`}
-                    >
-                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-xs sm:text-[13px] font-bold truncate block">
-                          {tab.label}
-                        </span>
-                      </div>
-                      <span
-                        className={`text-[10px] sm:text-[11px] truncate block ${
-                          isActive
-                            ? 'text-[#0066FF] dark:text-[#38BDF8] font-semibold'
-                            : 'text-stone-500 dark:text-stone-400'
-                        }`}
-                      >
-                        {tab.tagline}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Active Progress Bar Underneath */}
-                  {isActive && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black/10 dark:bg-white/10 overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-[#0066FF] to-cyan-400 transition-all duration-75"
-                        style={{ width: `${progress}%` }}
-                      />
-                    </div>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Autoplay & Direction Controls */}
-          <div className="hidden lg:flex items-center gap-1 shrink-0 pl-1 border-l border-stone-200 dark:border-slate-800">
-            <button
-              onClick={() => setIsPlaying(!isPlaying)}
-              className="p-1.5 rounded-lg text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-white hover:bg-stone-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-              title={isPlaying ? 'Pause Rotation' : 'Resume Rotation'}
-              aria-label={isPlaying ? 'Pause Rotation' : 'Resume Rotation'}
-            >
-              {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-            </button>
-            <button
-              onClick={prevSlide}
-              className="p-1.5 rounded-lg text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-white hover:bg-stone-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-              title="Previous Offer"
-              aria-label="Previous Offer"
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={nextSlide}
-              className="p-1.5 rounded-lg text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-white hover:bg-stone-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-              title="Next Offer"
-              aria-label="Next Offer"
-            >
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-      </div>
 
       {/* =========================================================================
           2. FULL-WIDTH IMMERSIVE RUNNING OFFERS STAGE
@@ -392,6 +287,14 @@ export function HeroCardsHub() {
                 0{activeSlide + 1} / 04
               </span>
               <div className="flex items-center gap-1 sm:ml-2">
+                <button
+                  onClick={() => setIsPlaying(!isPlaying)}
+                  className="w-7 h-7 rounded-lg flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-all active:scale-90 cursor-pointer"
+                  title={isPlaying ? 'Pause auto-rotation' : 'Resume auto-rotation'}
+                  aria-label={isPlaying ? 'Pause auto-rotation' : 'Resume auto-rotation'}
+                >
+                  {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                </button>
                 <button
                   onClick={prevSlide}
                   className="w-7 h-7 rounded-lg flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-all active:scale-90 cursor-pointer"
