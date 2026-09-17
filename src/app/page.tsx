@@ -151,10 +151,6 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/60 text-[11px] uppercase tracking-widest font-bold text-[#0066FF] dark:text-blue-400 mb-2">
-              <Sparkles className="w-3 h-3" />
-              <span>Artisanal Collections</span>
-            </div>
             <h2 className="font-sans text-2xl sm:text-4xl font-extrabold tracking-tight text-stone-900 dark:text-white">
               Shop by Department
             </h2>
