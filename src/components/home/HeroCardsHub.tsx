@@ -298,7 +298,7 @@ export function HeroCardsHub() {
         </button>
 
         {/* Hero Slide Contents */}
-        <div className="relative z-10 px-4 sm:px-12 lg:px-12 py-2.5 sm:py-6 min-h-0 sm:min-h-[410px] flex flex-col justify-between">
+        <div className="relative z-10 px-4 sm:px-12 lg:px-12 py-2.5 sm:py-6 min-h-[350px] sm:min-h-[620px] lg:min-h-[460px] flex flex-col justify-between">
           {/* Top Info Bar inside Hero */}
           <div className="flex items-center justify-between gap-2 mb-1.5 sm:mb-4">
             <div className="flex items-center gap-2">
@@ -330,7 +330,7 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 0 && (
               <>
-                <div className="lg:col-span-7 space-y-2 sm:space-y-4">
+                <div className="lg:col-span-7 space-y-2 sm:space-y-4 min-h-[225px] sm:min-h-[240px] lg:min-h-[300px] flex flex-col justify-center">
                   <div>
                     <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-400 mb-0.5 sm:mb-1">
                       <Flame className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400 animate-pulse" />
@@ -472,7 +472,7 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 1 && (
               <>
-                <div className="lg:col-span-7 space-y-2 sm:space-y-4">
+                <div className="lg:col-span-7 space-y-2 sm:space-y-4 min-h-[225px] sm:min-h-[240px] lg:min-h-[300px] flex flex-col justify-center">
                   <div>
                     <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-cyan-300 mb-0.5 sm:mb-1">
                       <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-cyan-400" />
@@ -599,7 +599,7 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 2 && (
               <>
-                <div className="lg:col-span-7 space-y-2 sm:space-y-4">
+                <div className="lg:col-span-7 space-y-2 sm:space-y-4 min-h-[225px] sm:min-h-[240px] lg:min-h-[300px] flex flex-col justify-center">
                   <div>
                     <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-blue-400 mb-0.5 sm:mb-1">
                       <Headphones className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-400" />
@@ -695,7 +695,7 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 3 && (
               <>
-                <div className="lg:col-span-7 space-y-2 sm:space-y-4">
+                <div className="lg:col-span-7 space-y-2 sm:space-y-4 min-h-[225px] sm:min-h-[240px] lg:min-h-[300px] flex flex-col justify-center">
                   <div>
                     <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-300 mb-0.5 sm:mb-1">
                       <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400" />
