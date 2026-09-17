@@ -278,7 +278,7 @@ export function HeroCardsHub() {
         </button>
 
         {/* Hero Slide Contents */}
-        <div className="relative z-10 px-4 sm:px-12 lg:px-12 py-3 sm:py-6 min-h-[305px] sm:min-h-[580px] lg:min-h-[410px] flex flex-col justify-between">
+        <div className="relative z-10 px-4 sm:px-12 lg:px-12 py-3 sm:py-6 min-h-[305px] sm:min-h-[580px] lg:h-[415px] flex flex-col justify-between">
           {/* Top Info Bar inside Hero */}
           <div className="flex items-center justify-between gap-2 mb-1.5 sm:mb-4">
             <div className="flex items-center gap-2">
@@ -310,13 +310,13 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 0 && (
               <>
-                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:min-h-[290px] flex flex-col justify-between">
+                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:h-[320px] flex flex-col justify-between">
                   <div>
                     <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-400 mb-0.5 sm:mb-1 h-4 sm:h-5">
                       <Flame className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400 animate-pulse shrink-0" />
                       <span className="truncate">Flash Price Drops • Live Today</span>
                     </div>
-                    <div className="min-h-[2.5rem] sm:min-h-[3.75rem] lg:min-h-[4.25rem] flex items-center">
+                    <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.25rem] flex items-center">
                       <h2 className="text-base sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-snug line-clamp-2">
                         Flash Deals &amp; Daily Price Reductions
                       </h2>
@@ -393,7 +393,7 @@ export function HeroCardsHub() {
                 </div>
 
                 {/* Right Side Visual (Tablet & Desktop) */}
-                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[300px] rounded-2xl overflow-hidden border border-amber-500/30 shadow-xl group">
+                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[320px] rounded-2xl overflow-hidden border border-amber-500/30 shadow-xl group">
                   <Image
                     src={firstDeal?.images[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=85'}
                     alt="Flash Deals Spotlight"
@@ -418,13 +418,13 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 1 && (
               <>
-                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:min-h-[290px] flex flex-col justify-between">
+                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:h-[320px] flex flex-col justify-between">
                   <div>
                     <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-cyan-300 mb-0.5 sm:mb-1 h-4 sm:h-5">
                       <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-cyan-400 shrink-0" />
                       <span className="truncate">Autumn Mega Event • Starts in 3 Days</span>
                     </div>
-                    <div className="min-h-[2.5rem] sm:min-h-[3.75rem] lg:min-h-[4.25rem] flex items-center">
+                    <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.25rem] flex items-center">
                       <h2 className="text-base sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-snug line-clamp-2">
                         Autumn Mega Sale &amp; Seasonal Storewide Clearance
                       </h2>
@@ -505,7 +505,7 @@ export function HeroCardsHub() {
                 </div>
 
                 {/* Right Side Visual (Tablet & Desktop) */}
-                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[300px] rounded-2xl overflow-hidden border border-indigo-500/30 shadow-xl group">
+                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[320px] rounded-2xl overflow-hidden border border-indigo-500/30 shadow-xl group">
                   <Image
                     src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=1200&q=85"
                     alt="Upcoming Mega Autumn Bash Sale"
@@ -529,13 +529,13 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 2 && (
               <>
-                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:min-h-[290px] flex flex-col justify-between">
+                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:h-[320px] flex flex-col justify-between">
                   <div>
                     <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-blue-400 mb-0.5 sm:mb-1 h-4 sm:h-5">
                       <Headphones className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-400 shrink-0" />
                       <span className="truncate">Tech Gear Blowout • Extra 15% OFF</span>
                     </div>
-                    <div className="min-h-[2.5rem] sm:min-h-[3.75rem] lg:min-h-[4.25rem] flex items-center">
+                    <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.25rem] flex items-center">
                       <h2 className="text-base sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-snug line-clamp-2">
                         Electronics &amp; Audio Super Sale Top Gear Slashed
                       </h2>
@@ -600,7 +600,7 @@ export function HeroCardsHub() {
                 </div>
 
                 {/* Right Side Visual (Tablet & Desktop) */}
-                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[300px] rounded-2xl overflow-hidden border border-blue-500/30 shadow-xl group">
+                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[320px] rounded-2xl overflow-hidden border border-blue-500/30 shadow-xl group">
                   <Image
                     src={electronicsDeal?.images[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=85'}
                     alt="Electronics & Tech Deals"
@@ -624,13 +624,13 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 3 && (
               <>
-                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:min-h-[290px] flex flex-col justify-between">
+                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:h-[320px] flex flex-col justify-between">
                   <div>
                     <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-300 mb-0.5 sm:mb-1 h-4 sm:h-5">
                       <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400 shrink-0" />
                       <span className="truncate">Luxury Italian Goods • Up to 50% OFF</span>
                     </div>
-                    <div className="min-h-[2.5rem] sm:min-h-[3.75rem] lg:min-h-[4.25rem] flex items-center">
+                    <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.25rem] flex items-center">
                       <h2 className="text-base sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-snug line-clamp-2">
                         Designer Apparel &amp; Italian Leather Clearance
                       </h2>
@@ -695,7 +695,7 @@ export function HeroCardsHub() {
                 </div>
 
                 {/* Right Side Visual (Tablet & Desktop) */}
-                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[300px] rounded-2xl overflow-hidden border border-amber-400/30 shadow-xl group">
+                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[320px] rounded-2xl overflow-hidden border border-amber-400/30 shadow-xl group">
                   <Image
                     src={fashionDeal?.images[0] || 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1200&q=85'}
                     alt="Luxury Fashion & Leather Collection"
