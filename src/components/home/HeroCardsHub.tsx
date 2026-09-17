@@ -6,8 +6,8 @@ import Image from 'next/image';
 import {
   Flame,
   Calendar,
-  Trophy,
-  Crown,
+  Headphones,
+  Shirt,
   ArrowRight,
   ShoppingBag,
   Check,
@@ -17,21 +17,21 @@ import {
   ChevronRight,
   ChevronLeft,
   Sparkles,
-  Car,
-  Plane,
-  Coins,
-  ShieldCheck,
+  Tag,
+  Copy,
   Pause,
   Play,
+  Percent,
 } from 'lucide-react';
 import { useStore } from '@/context/StoreContext';
 import { Product } from '@/types/product';
 
-interface CampaignTabInfo {
-  id: 'offers' | 'sales' | 'draws' | 'bumper';
+interface OfferCampaign {
+  id: 'flash-deals' | 'autumn-sale' | 'tech-blowout' | 'luxury-fashion';
   label: string;
   tagline: string;
   badge: string;
+  badgeColor: string;
   icon: React.ComponentType<{ className?: string }>;
   accentColor: string;
   bgGradient: string;
@@ -39,65 +39,70 @@ interface CampaignTabInfo {
   glowClass: string;
 }
 
-const CAMPAIGNS: CampaignTabInfo[] = [
+const RUNNING_OFFERS: OfferCampaign[] = [
   {
-    id: 'offers',
+    id: 'flash-deals',
     label: 'Flash Deals',
-    tagline: 'Save up to 30%',
-    badge: 'Limited Time Drops',
+    tagline: 'Up to 35% OFF Today',
+    badge: '⚡ Limited Time Drops',
+    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-400/40',
     icon: Flame,
     accentColor: 'text-amber-400',
-    bgGradient: 'from-[#1a0b02] via-[#2d1205] to-[#110501]',
+    bgGradient: 'from-[#1c0c02] via-[#2d1205] to-[#120501]',
     borderClass: 'border-amber-500/40',
     glowClass: 'shadow-[0_0_35px_-5px_rgba(245,158,11,0.25)]',
   },
   {
-    id: 'sales',
-    label: 'Sale Events',
-    tagline: 'In 3 Days',
-    badge: 'Mega Autumn Bash',
+    id: 'autumn-sale',
+    label: 'Autumn Mega Sale',
+    tagline: 'Up to 60% Storewide',
+    badge: '🍂 Live Event Countdown',
+    badgeColor: 'bg-indigo-500/20 text-cyan-300 border-indigo-400/40',
     icon: Calendar,
     accentColor: 'text-cyan-400',
-    bgGradient: 'from-[#070e28] via-[#0d1c4e] to-[#04081c]',
+    bgGradient: 'from-[#0a122e] via-[#142259] to-[#060b1c]',
     borderClass: 'border-indigo-500/40',
     glowClass: 'shadow-[0_0_35px_-5px_rgba(99,102,241,0.25)]',
   },
   {
-    id: 'draws',
-    label: 'Weekly Draws',
-    tagline: '3 Prize Tiers',
-    badge: 'Sunday 8:00 PM',
-    icon: Trophy,
-    accentColor: 'text-emerald-400',
-    bgGradient: 'from-[#021f18] via-[#04362b] to-[#01140f]',
-    borderClass: 'border-emerald-500/40',
-    glowClass: 'shadow-[0_0_35px_-5px_rgba(16,185,129,0.25)]',
+    id: 'tech-blowout',
+    label: 'Tech Blowout',
+    tagline: 'Extra 15% OFF Audio & Gear',
+    badge: '🎧 Electronics Event',
+    badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-400/40',
+    icon: Headphones,
+    accentColor: 'text-blue-400',
+    bgGradient: 'from-[#07132e] via-[#0d2254] to-[#040b1a]',
+    borderClass: 'border-blue-500/40',
+    glowClass: 'shadow-[0_0_35px_-5px_rgba(59,130,246,0.25)]',
   },
   {
-    id: 'bumper',
-    label: 'Grand Bumper Jackpot',
-    tagline: 'Luxury SUV & ₹5 Lakhs',
-    badge: '👑 Signature Jackpot',
-    icon: Crown,
+    id: 'luxury-fashion',
+    label: 'Fashion & Leather',
+    tagline: 'Save Up to 50% Off',
+    badge: '✨ Handcrafted Luxury',
+    badgeColor: 'bg-amber-500/20 text-amber-200 border-amber-400/40',
+    icon: Shirt,
     accentColor: 'text-amber-300',
-    bgGradient: 'from-[#160228] via-[#29084c] to-[#0d0118]',
-    borderClass: 'border-amber-400/90 ring-1 ring-amber-300/40',
-    glowClass: 'shadow-[0_0_50px_-5px_rgba(251,191,36,0.38),0_0_20px_rgba(245,158,11,0.25)]',
+    bgGradient: 'from-[#1c1007] via-[#2d1b0c] to-[#120904]',
+    borderClass: 'border-amber-500/40',
+    glowClass: 'shadow-[0_0_35px_-5px_rgba(217,119,6,0.25)]',
   },
 ];
 
-const AUTO_ROTATE_INTERVAL = 7000; // 7 seconds per campaign slide
+const AUTO_ROTATE_INTERVAL = 6500; // 6.5 seconds per slide
 
 export function HeroCardsHub() {
-  const { products, formatAmount, addToCart, openLuckyDraw } = useStore();
+  const { products, formatAmount, addToCart, applyPromo } = useStore();
 
-  const [activeSlide, setActiveSlide] = useState<number>(3); // Start highlighted on Grand Bumper Jackpot or 0
+  const [activeSlide, setActiveSlide] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   // --------------------------------------------------------------------------
-  // CARD 1 DATA: Flash Deals / Products with Offers
+  // OFFER 1: Flash Deals (Curated discounted items)
   // --------------------------------------------------------------------------
   const discountedProducts = useMemo(() => {
     const list = products.filter((p) => p.originalPrice && p.originalPrice > p.price);
@@ -124,7 +129,7 @@ export function HeroCardsHub() {
   };
 
   // --------------------------------------------------------------------------
-  // CARD 2 DATA: Upcoming Sale Days Countdown
+  // OFFER 2: Autumn Mega Sale Countdown
   // --------------------------------------------------------------------------
   const [reminderActive, setReminderActive] = useState(false);
   const [saleTimeLeft, setSaleTimeLeft] = useState({
@@ -159,15 +164,35 @@ export function HeroCardsHub() {
   }, []);
 
   // --------------------------------------------------------------------------
-  // Slide Progression Handlers
+  // OFFER 3 & 4 Products
+  // --------------------------------------------------------------------------
+  const electronicsDeal = useMemo(() => {
+    return products.find((p) => p.category === 'electronics') || products[0];
+  }, [products]);
+
+  const fashionDeal = useMemo(() => {
+    return products.find((p) => p.category === 'apparel' || p.category === 'leather-goods') || products[1];
+  }, [products]);
+
+  const handleCopyCode = (code: string) => {
+    try {
+      navigator.clipboard.writeText(code);
+    } catch {}
+    applyPromo(code);
+    setCopiedCode(code);
+    setTimeout(() => setCopiedCode(null), 2500);
+  };
+
+  // --------------------------------------------------------------------------
+  // Navigation & Autoplay
   // --------------------------------------------------------------------------
   const nextSlide = useCallback(() => {
-    setActiveSlide((prev) => (prev + 1) % CAMPAIGNS.length);
+    setActiveSlide((prev) => (prev + 1) % RUNNING_OFFERS.length);
     setProgress(0);
   }, []);
 
   const prevSlide = useCallback(() => {
-    setActiveSlide((prev) => (prev - 1 + CAMPAIGNS.length) % CAMPAIGNS.length);
+    setActiveSlide((prev) => (prev - 1 + RUNNING_OFFERS.length) % RUNNING_OFFERS.length);
     setProgress(0);
   }, []);
 
@@ -176,7 +201,6 @@ export function HeroCardsHub() {
     setProgress(0);
   };
 
-  // Auto rotation timer with progress calculation
   useEffect(() => {
     if (!isPlaying || isHovered) return;
 
@@ -196,7 +220,7 @@ export function HeroCardsHub() {
     return () => clearInterval(timer);
   }, [isPlaying, isHovered, nextSlide]);
 
-  // Touch Swipe Gesture Handlers for Mobile & Tablet
+  // Touch Swipe Gesture Handlers
   const touchStartXRef = useRef(0);
   const touchStartYRef = useRef(0);
 
@@ -218,8 +242,7 @@ export function HeroCardsHub() {
     }
   };
 
-  const currentCampaign = CAMPAIGNS[activeSlide];
-  const isBumperActive = currentCampaign.id === 'bumper';
+  const currentOffer = RUNNING_OFFERS[activeSlide];
 
   return (
     <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-3 sm:pt-6">
@@ -227,29 +250,28 @@ export function HeroCardsHub() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 mb-3 sm:mb-5">
         <div>
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 text-[#0066FF] dark:text-[#38BDF8] text-[11px] font-extrabold uppercase tracking-wider mb-1">
-            <Sparkles className="w-3 h-3" />
-            <span>Curated Showcase</span>
+            <Percent className="w-3 h-3" />
+            <span>Active Storewide Promotions</span>
           </div>
           <h1 className="font-sans text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Discover JudesCart Campaigns
+            Running Offers &amp; Price Drops
           </h1>
         </div>
         <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md">
-          Explore today&apos;s flash price drops, upcoming sale dates, weekly lucky draws, and the signature Brand JUDES bumper jackpot.
+          Take advantage of limited-time seasonal savings, instant catalog discounts, and exclusive department coupon codes.
         </p>
       </div>
 
       {/* =========================================================================
-          1. INTERACTIVE CAMPAIGN TABS (SLEEK SEGMENTED CONTROLLER)
+          1. INTERACTIVE RUNNING OFFERS TABS
           ========================================================================= */}
       <div className="bg-stone-200/60 dark:bg-slate-900/80 backdrop-blur-md p-1 sm:p-1.5 rounded-2xl border border-stone-200/80 dark:border-slate-800/90 mb-3 sm:mb-4 shadow-xs">
         <div className="flex items-center justify-between gap-1 sm:gap-2">
-          {/* Scrollable / Responsive Tab Buttons */}
+          {/* 4 Running Offer Tabs */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-1 sm:gap-2 flex-1">
-            {CAMPAIGNS.map((tab, idx) => {
+            {RUNNING_OFFERS.map((tab, idx) => {
               const Icon = tab.icon;
               const isActive = activeSlide === idx;
-              const isBumper = tab.id === 'bumper';
 
               return (
                 <button
@@ -257,11 +279,7 @@ export function HeroCardsHub() {
                   onClick={() => goToSlide(idx)}
                   className={`group relative flex items-center justify-between p-2 sm:px-3 sm:py-2.5 rounded-xl text-left transition-all duration-300 cursor-pointer overflow-hidden ${
                     isActive
-                      ? isBumper
-                        ? 'bg-gradient-to-r from-[#210738] to-[#120324] text-white shadow-lg shadow-amber-500/20 ring-2 ring-amber-400/90 border border-amber-300/40'
-                        : 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-200 dark:ring-slate-700'
-                      : isBumper
-                      ? 'bg-gradient-to-r from-amber-500/10 via-purple-500/15 to-amber-500/10 hover:from-amber-500/20 hover:to-purple-500/25 border border-amber-400/60 ring-1 ring-amber-400/40 text-amber-900 dark:text-amber-200 shadow-[0_0_15px_rgba(251,191,36,0.18)]'
+                      ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-2 ring-[#0066FF] dark:ring-[#38BDF8]'
                       : 'hover:bg-white/70 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
                   }`}
                   aria-label={`Switch to ${tab.label}`}
@@ -270,11 +288,7 @@ export function HeroCardsHub() {
                     <div
                       className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-300 ${
                         isActive
-                          ? isBumper
-                            ? 'bg-gradient-to-br from-amber-400 to-yellow-500 text-slate-950 scale-105 shadow-xs'
-                            : 'bg-[#0066FF] text-white scale-105 shadow-xs'
-                          : isBumper
-                          ? 'bg-amber-400/20 border border-amber-400/40 text-amber-400 group-hover:scale-105'
+                          ? 'bg-[#0066FF] text-white scale-105 shadow-xs'
                           : 'bg-stone-200/80 dark:bg-slate-700/80 text-stone-600 dark:text-stone-300'
                       }`}
                     >
@@ -282,27 +296,14 @@ export function HeroCardsHub() {
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span
-                          className={`text-xs sm:text-[13px] font-bold truncate block ${
-                            isBumper && !isActive ? 'text-amber-700 dark:text-amber-300 font-extrabold' : ''
-                          }`}
-                        >
+                        <span className="text-xs sm:text-[13px] font-bold truncate block">
                           {tab.label}
                         </span>
-                        {isBumper && (
-                          <span className="hidden xl:inline-flex px-1.5 py-0.2 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 shrink-0 animate-pulse">
-                            Jackpot
-                          </span>
-                        )}
                       </div>
                       <span
                         className={`text-[10px] sm:text-[11px] truncate block ${
                           isActive
-                            ? isBumper
-                              ? 'text-amber-300 font-semibold'
-                              : 'text-[#0066FF] dark:text-[#38BDF8] font-semibold'
-                            : isBumper
-                            ? 'text-amber-600 dark:text-amber-400/90 font-medium'
+                            ? 'text-[#0066FF] dark:text-[#38BDF8] font-semibold'
                             : 'text-stone-500 dark:text-stone-400'
                         }`}
                       >
@@ -311,23 +312,11 @@ export function HeroCardsHub() {
                     </div>
                   </div>
 
-                  {/* Shimmer on Bumper Tab */}
-                  {isBumper && (
-                    <span className="absolute top-1 right-1 flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
-                    </span>
-                  )}
-
-                  {/* Active Progress Bar Underneath Active Tab */}
+                  {/* Active Progress Bar Underneath */}
                   {isActive && (
                     <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black/10 dark:bg-white/10 overflow-hidden">
                       <div
-                        className={`h-full transition-all duration-75 ${
-                          isBumper
-                            ? 'bg-gradient-to-r from-amber-400 to-yellow-300'
-                            : 'bg-gradient-to-r from-[#0066FF] to-cyan-400'
-                        }`}
+                        className="h-full bg-gradient-to-r from-[#0066FF] to-cyan-400 transition-all duration-75"
                         style={{ width: `${progress}%` }}
                       />
                     </div>
@@ -350,16 +339,16 @@ export function HeroCardsHub() {
             <button
               onClick={prevSlide}
               className="p-1.5 rounded-lg text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-white hover:bg-stone-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-              title="Previous Campaign"
-              aria-label="Previous Campaign"
+              title="Previous Offer"
+              aria-label="Previous Offer"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={nextSlide}
               className="p-1.5 rounded-lg text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-white hover:bg-stone-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-              title="Next Campaign"
-              aria-label="Next Campaign"
+              title="Next Offer"
+              aria-label="Next Offer"
             >
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
@@ -368,67 +357,42 @@ export function HeroCardsHub() {
       </div>
 
       {/* =========================================================================
-          2. FULL-WIDTH IMMERSIVE HERO STAGE WITH DYNAMIC BACKGROUND TRANSITIONS
+          2. FULL-WIDTH IMMERSIVE RUNNING OFFERS STAGE
           ========================================================================= */}
       <div
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-        className={`relative w-full rounded-2xl sm:rounded-3xl overflow-hidden text-white transition-all duration-500 select-none ${
-          isBumperActive
-            ? 'border-2 border-amber-400/90 ring-1 ring-amber-300/50 shadow-[0_0_50px_-5px_rgba(251,191,36,0.4),0_0_20px_rgba(245,158,11,0.25)] gold-glow-card'
-            : `border ${currentCampaign.borderClass} ${currentCampaign.glowClass}`
-        }`}
+        className={`relative w-full rounded-2xl sm:rounded-3xl overflow-hidden text-white transition-all duration-500 select-none border ${currentOffer.borderClass} ${currentOffer.glowClass}`}
       >
-        {/* Dynamic Background Gradient & Ambient Glow */}
+        {/* Dynamic Background Gradient */}
         <div
-          className={`absolute inset-0 bg-gradient-to-br ${currentCampaign.bgGradient} transition-colors duration-700 ease-in-out`}
+          className={`absolute inset-0 bg-gradient-to-br ${currentOffer.bgGradient} transition-colors duration-700 ease-in-out`}
         />
 
         {/* Ambient Radial Lighting Overlays */}
-        {isBumperActive ? (
-          <>
-            <div className="absolute -top-24 -right-24 w-96 h-96 bg-amber-500/25 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-purple-600/30 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-400/10 via-transparent to-transparent pointer-events-none" />
-          </>
-        ) : (
-          <>
-            <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/5 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-black/40 rounded-full blur-3xl pointer-events-none" />
-          </>
-        )}
+        <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-black/40 rounded-full blur-3xl pointer-events-none" />
 
-        {/* Hero Slider Slide Contents */}
-        <div className="relative z-10 p-4 sm:p-6 lg:p-8 min-h-[380px] sm:min-h-[420px] flex flex-col justify-between">
+        {/* Hero Slide Contents */}
+        <div className="relative z-10 p-4 sm:p-6 lg:p-8 min-h-[380px] sm:min-h-[410px] flex flex-col justify-between">
           {/* Top Info Bar inside Hero */}
           <div className="flex items-center justify-between gap-2 mb-4">
             <div className="flex items-center gap-2">
               <div
-                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider backdrop-blur-md ${
-                  isBumperActive
-                    ? 'bg-amber-400/20 border border-amber-400/60 text-amber-300 shadow-[0_0_15px_rgba(251,191,36,0.3)]'
-                    : 'bg-white/10 border border-white/20 text-white'
-                }`}
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider backdrop-blur-md border ${currentOffer.badgeColor}`}
               >
-                {React.createElement(currentCampaign.icon, {
-                  className: `w-3.5 h-3.5 ${isBumperActive ? 'text-amber-400 animate-pulse' : 'text-current'}`,
+                {React.createElement(currentOffer.icon, {
+                  className: 'w-3.5 h-3.5 text-current animate-pulse',
                 })}
-                <span>{currentCampaign.badge}</span>
+                <span>{currentOffer.badge}</span>
               </div>
-
-              {isBumperActive && (
-                <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 text-[11px] font-black uppercase tracking-wider shadow-xs">
-                  <Crown className="w-3 h-3" />
-                  <span>Mega Jackpot</span>
-                </span>
-              )}
             </div>
 
             {/* Slide Index Counter & Controls */}
             <div className="flex items-center gap-2 text-xs font-mono text-white/70">
-              <span className="hidden sm:inline">Campaign</span>
+              <span className="hidden sm:inline">Offer</span>
               <span className="px-2 py-0.5 rounded-md bg-white/10 border border-white/15 text-white font-bold">
                 0{activeSlide + 1} / 04
               </span>
@@ -436,14 +400,14 @@ export function HeroCardsHub() {
                 <button
                   onClick={prevSlide}
                   className="w-7 h-7 rounded-lg flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-all active:scale-90 cursor-pointer"
-                  aria-label="Previous slide"
+                  aria-label="Previous offer slide"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <button
                   onClick={nextSlide}
                   className="w-7 h-7 rounded-lg flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-all active:scale-90 cursor-pointer"
-                  aria-label="Next slide"
+                  aria-label="Next offer slide"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -454,113 +418,7 @@ export function HeroCardsHub() {
           {/* MAIN SLIDE BODY: TWO COLUMNS (Content & Interactive Widget vs Visual Media) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center flex-1">
             {/* =========================================================================
-                SLIDE 3: GRAND BUMPER JACKPOT
-                ========================================================================= */}
-            {activeSlide === 3 && (
-              <>
-                <div className="lg:col-span-7 space-y-4">
-                  <div>
-                    <div className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-amber-300 mb-1">
-                      <Crown className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Held Every 6–12 Months • Exclusive to Brand JUDES</span>
-                    </div>
-                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
-                      Grand Bumper Jackpot{' '}
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400">
-                        Luxury SUV &amp; ₹5 Lakhs Cash
-                      </span>
-                    </h2>
-                    <p className="text-xs sm:text-sm text-amber-100/85 mt-2 leading-relaxed max-w-xl">
-                      Experience JudesCart&apos;s ultimate shopping milestone. Every single checkout featuring our signature
-                      in-house brand <strong className="text-amber-300 font-extrabold">JUDES</strong> automatically earns
-                      verified draw tokens for our flagship prizes.
-                    </p>
-                  </div>
-
-                  {/* 3 Luxury Prize Tiles with Gold Foil Accents */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
-                    <div className="p-2.5 rounded-xl bg-gradient-to-b from-amber-400/20 via-white/5 to-transparent border border-amber-400/50 backdrop-blur-md flex sm:flex-col items-center sm:items-start justify-between sm:justify-start gap-2 group hover:border-amber-300 transition-colors">
-                      <div className="w-8 h-8 rounded-lg bg-amber-400/30 border border-amber-400/60 flex items-center justify-center text-base shrink-0">
-                        🚗
-                      </div>
-                      <div>
-                        <span className="text-xs font-black text-amber-200 block">Luxury SUV</span>
-                        <span className="text-[10px] text-amber-300/80 block">Grand Fleet Vehicle</span>
-                      </div>
-                    </div>
-
-                    <div className="p-2.5 rounded-xl bg-gradient-to-b from-pink-400/20 via-white/5 to-transparent border border-pink-400/40 backdrop-blur-md flex sm:flex-col items-center sm:items-start justify-between sm:justify-start gap-2 group hover:border-pink-300 transition-colors">
-                      <div className="w-8 h-8 rounded-lg bg-pink-400/30 border border-pink-400/60 flex items-center justify-center text-base shrink-0">
-                        ✈️
-                      </div>
-                      <div>
-                        <span className="text-xs font-black text-pink-200 block">7-Day World Tour</span>
-                        <span className="text-[10px] text-pink-300/80 block">5-Star Holiday Package</span>
-                      </div>
-                    </div>
-
-                    <div className="p-2.5 rounded-xl bg-gradient-to-b from-yellow-400/20 via-white/5 to-transparent border border-yellow-400/50 backdrop-blur-md flex sm:flex-col items-center sm:items-start justify-between sm:justify-start gap-2 group hover:border-yellow-300 transition-colors">
-                      <div className="w-8 h-8 rounded-lg bg-yellow-400/30 border border-yellow-400/60 flex items-center justify-center text-base shrink-0">
-                        💰
-                      </div>
-                      <div>
-                        <span className="text-xs font-black text-yellow-200 block">₹5,00,000 Cash</span>
-                        <span className="text-[10px] text-yellow-300/80 block">Direct Banking Spree</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* CTAs */}
-                  <div className="flex flex-wrap items-center gap-3 pt-2">
-                    <Link
-                      href="/products?brand=JUDES"
-                      className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black flex items-center gap-2 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:brightness-110 text-slate-950 shadow-md shadow-amber-500/30 active:scale-95 transition-all cursor-pointer"
-                    >
-                      <Crown className="w-4 h-4 text-slate-950" />
-                      <span>Shop Brand JUDES to Enter</span>
-                      <ArrowRight className="w-4 h-4 ml-0.5" />
-                    </Link>
-
-                    <Link
-                      href="/lucky-draw#bumper-draw"
-                      className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-amber-400/40 text-amber-200 hover:text-white transition-all active:scale-95 cursor-pointer"
-                    >
-                      <span>View Bumper Draw Rules</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Right Side Visual Banner */}
-                <div className="lg:col-span-5 relative w-full aspect-[16/10] sm:aspect-[16/9] lg:aspect-auto lg:h-[300px] rounded-2xl overflow-hidden border border-amber-400/40 shadow-xl shadow-amber-950/40 group">
-                  <Image
-                    src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=85"
-                    alt="Brand JUDES Grand Bumper Jackpot Luxury SUV"
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-700"
-                    priority
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#120324] via-[#120324]/50 to-transparent" />
-
-                  {/* Floating Badges on Image */}
-                  <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md border border-amber-400/50 text-[11px] font-bold text-amber-300 flex items-center gap-1.5 shadow-md">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                    <span>₹50+ Lakh Total Prize Pool</span>
-                  </div>
-
-                  <div className="absolute bottom-3 left-3 right-3 p-2.5 rounded-xl bg-slate-950/85 backdrop-blur-md border border-white/15 flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                      <span className="font-semibold text-slate-200">100% Transparent Audited Draw</span>
-                    </div>
-                    <span className="font-extrabold text-amber-400">Next Bumper: Q4</span>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {/* =========================================================================
-                SLIDE 0: FLASH DEALS & OFFERS
+                SLIDE 0: FLASH DEALS (Immediate Discounts)
                 ========================================================================= */}
             {activeSlide === 0 && (
               <>
@@ -568,14 +426,14 @@ export function HeroCardsHub() {
                   <div>
                     <div className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-amber-400 mb-1">
                       <Flame className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-                      <span>Immediate Price Drops • Limited Stock</span>
+                      <span>Immediate Price Drops • Live Today</span>
                     </div>
                     <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
-                      Flash Deals &amp; Exclusive Catalog Savings
+                      Flash Deals &amp; Daily Price Reductions
                     </h2>
                     <p className="text-xs sm:text-sm text-stone-300 mt-2 leading-relaxed max-w-xl">
-                      Grab verified factory-direct discounts on top-tier electronics, designer apparel, and everyday
-                      essentials. Deals refresh daily with limited quantities.
+                      Grab immediate manufacturer discounts on high-demand electronics, apparel, and lifestyle items.
+                      Stock is strictly limited with real-time stock reservations.
                     </p>
                   </div>
 
@@ -687,13 +545,14 @@ export function HeroCardsHub() {
                     alt="Flash Deals Spotlight"
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    priority
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#110501] via-[#110501]/40 to-transparent" />
                   <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-rose-600 text-white text-xs font-extrabold shadow-md">
                     Up to {discountPercent}% OFF
                   </div>
                   <div className="absolute bottom-3 left-3 right-3 p-2.5 rounded-xl bg-black/70 backdrop-blur-md border border-white/15 flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-200">24-Hour Deal Guarantee</span>
+                    <span className="font-semibold text-slate-200">24-Hour Flash Guarantee</span>
                     <span className="font-bold text-amber-300">Live Today</span>
                   </div>
                 </div>
@@ -701,7 +560,7 @@ export function HeroCardsHub() {
             )}
 
             {/* =========================================================================
-                SLIDE 1: SALE DAYS & COUNTDOWN
+                SLIDE 1: AUTUMN MEGA SALE (Storewide Savings)
                 ========================================================================= */}
             {activeSlide === 1 && (
               <>
@@ -718,8 +577,8 @@ export function HeroCardsHub() {
                       </span>
                     </h2>
                     <p className="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed max-w-xl">
-                      Mark your calendar for our biggest seasonal shopping festival. Get early access to tiered vouchers,
-                      double JudesCoins, and exclusive bundle price drops.
+                      Our biggest seasonal shopping festival of the quarter. Unlock tiered sitewide vouchers, extra
+                      JudesCoins cashback, and bundle discounts across every department.
                     </p>
                   </div>
 
@@ -759,6 +618,24 @@ export function HeroCardsHub() {
                       </div>
                     </div>
 
+                    {/* Coupon Pill with One-Click Copy */}
+                    <div className="p-2 rounded-lg bg-indigo-950/60 border border-indigo-400/30 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Tag className="w-3.5 h-3.5 text-cyan-400" />
+                        <div>
+                          <span className="text-[11px] font-mono font-bold text-white block">CODE: JUDES20</span>
+                          <span className="text-[9px] text-indigo-200">20% off all department selections</span>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleCopyCode('JUDES20')}
+                        className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 transition-all flex items-center gap-1 cursor-pointer"
+                      >
+                        {copiedCode === 'JUDES20' ? <Check className="w-3 h-3 stroke-[3]" /> : <Copy className="w-3 h-3" />}
+                        <span>{copiedCode === 'JUDES20' ? 'Applied!' : 'Apply'}</span>
+                      </button>
+                    </div>
+
                     <div className="flex items-center gap-2 pt-1">
                       <button
                         onClick={() => setReminderActive(!reminderActive)}
@@ -776,7 +653,7 @@ export function HeroCardsHub() {
                         ) : (
                           <>
                             <Bell className="w-3.5 h-3.5 text-indigo-200" />
-                            <span>Set Sale Reminder Notification</span>
+                            <span>Set Sale Reminder</span>
                           </>
                         )}
                       </button>
@@ -812,110 +689,189 @@ export function HeroCardsHub() {
             )}
 
             {/* =========================================================================
-                SLIDE 2: WEEKLY LUCKY DRAWS
+                SLIDE 2: ELECTRONICS & TECH BLOWOUT
                 ========================================================================= */}
             {activeSlide === 2 && (
               <>
                 <div className="lg:col-span-7 space-y-4">
                   <div>
-                    <div className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-emerald-400 mb-1">
-                      <Trophy className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Every Sunday 8:00 PM • 3 Exclusive Tiers</span>
+                    <div className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-blue-400 mb-1">
+                      <Headphones className="w-3.5 h-3.5 text-blue-400" />
+                      <span>Audio &amp; Smart Tech Clearance • Extra 15% OFF</span>
                     </div>
                     <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
-                      Shop &amp; Win Sunday Lucky Draws{' '}
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-200 to-amber-300">
-                        Apple Tech &amp; Cash Raffles
+                      Electronics &amp; Audio Super Sale{' '}
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-cyan-200 to-indigo-300">
+                        Top Gear Slashed
                       </span>
                     </h2>
-                    <p className="text-xs sm:text-sm text-emerald-100/85 mt-2 leading-relaxed max-w-xl">
-                      Turn everyday checkouts into verified winning tickets. Receive automated tokens based on your order
-                      value for Sunday&apos;s live audited draw.
+                    <p className="text-xs sm:text-sm text-blue-100/85 mt-2 leading-relaxed max-w-xl">
+                      Upgrade your daily soundstage and productivity setup. Save big on active noise cancelling studio
+                      headphones, smart watches, portable speakers, and ambient lighting.
                     </p>
                   </div>
 
-                  {/* 3 Tier Cards */}
-                  <div className="space-y-2 max-w-lg">
-                    <div className="p-2 sm:p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-emerald-400/20 flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <span className="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-xs">
-                          💎
-                        </span>
-                        <div>
-                          <span className="text-xs font-bold text-white block">Platinum Tier</span>
-                          <span className="text-[10px] text-emerald-200">iPhone 16 Pro &amp; MacBook Pro</span>
-                        </div>
-                      </div>
-                      <span className="text-[10px] font-extrabold text-amber-300 bg-amber-400/20 px-2 py-0.5 rounded-full border border-amber-400/30">
-                        Orders &gt;₹5,000
-                      </span>
+                  {/* Tech Offer Highlights */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-lg">
+                    <div className="p-3 rounded-xl bg-white/10 backdrop-blur-md border border-blue-400/20 space-y-1">
+                      <span className="text-xs font-bold text-white block">SonicPro Studio ANC</span>
+                      <span className="text-[11px] text-blue-200 block">40h Battery • Spatial Audio</span>
+                      <span className="text-xs font-black text-amber-300 block pt-0.5">$299.00 (Save $50)</span>
                     </div>
 
-                    <div className="p-2 sm:p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-emerald-400/20 flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <span className="w-7 h-7 rounded-lg bg-blue-500/20 border border-blue-400/40 flex items-center justify-center text-xs">
-                          🥇
-                        </span>
-                        <div>
-                          <span className="text-xs font-bold text-white block">Gold Tier</span>
-                          <span className="text-[10px] text-emerald-200">Apple Watch &amp; Sony Wireless Audio</span>
-                        </div>
-                      </div>
-                      <span className="text-[10px] font-extrabold text-blue-300 bg-blue-400/20 px-2 py-0.5 rounded-full border border-blue-400/30">
-                        Orders &gt;₹2,500
-                      </span>
+                    <div className="p-3 rounded-xl bg-white/10 backdrop-blur-md border border-blue-400/20 space-y-1">
+                      <span className="text-xs font-bold text-white block">ProTrack Ultra GPS</span>
+                      <span className="text-[11px] text-blue-200 block">AMOLED • Titanium Bezel</span>
+                      <span className="text-xs font-black text-amber-300 block pt-0.5">$399.00 (Save $50)</span>
                     </div>
+                  </div>
 
-                    <div className="p-2 sm:p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-emerald-400/20 flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <span className="w-7 h-7 rounded-lg bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-xs">
-                          🥈
-                        </span>
-                        <div>
-                          <span className="text-xs font-bold text-white block">Silver Tier</span>
-                          <span className="text-[10px] text-emerald-200">AirPods &amp; Instant Cash Raffles</span>
-                        </div>
+                  {/* Coupon Pill */}
+                  <div className="p-2.5 rounded-xl bg-blue-950/60 border border-blue-400/30 flex items-center justify-between max-w-lg">
+                    <div className="flex items-center gap-2">
+                      <Tag className="w-3.5 h-3.5 text-blue-300" />
+                      <div>
+                        <span className="text-[11px] font-mono font-bold text-white block">CODE: TECHBONUS</span>
+                        <span className="text-[9px] text-blue-200">Extra 15% off electronics &amp; tech gear</span>
                       </div>
-                      <span className="text-[10px] font-extrabold text-cyan-300 bg-cyan-400/20 px-2 py-0.5 rounded-full border border-cyan-400/30">
-                        Orders &gt;₹1,000
-                      </span>
                     </div>
+                    <button
+                      onClick={() => handleCopyCode('TECHBONUS')}
+                      className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-500 hover:bg-blue-400 text-white transition-all flex items-center gap-1 cursor-pointer"
+                    >
+                      {copiedCode === 'TECHBONUS' ? <Check className="w-3 h-3 stroke-[3]" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedCode === 'TECHBONUS' ? 'Applied!' : 'Apply Code'}</span>
+                    </button>
                   </div>
 
                   {/* Actions */}
                   <div className="flex flex-wrap items-center gap-3 pt-2">
-                    <button
-                      onClick={openLuckyDraw}
-                      className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black flex items-center gap-2 bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-300 hover:to-teal-400 text-slate-950 shadow-md shadow-emerald-500/30 active:scale-95 transition-all cursor-pointer"
+                    <Link
+                      href="/products?category=electronics"
+                      className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black flex items-center gap-2 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 hover:brightness-110 text-white shadow-md shadow-blue-500/30 active:scale-95 transition-all cursor-pointer"
                     >
-                      <Trophy className="w-4 h-4 text-slate-950" />
-                      <span>Open Prize Wheel &amp; Details</span>
-                    </button>
+                      <ShoppingBag className="w-4 h-4 text-white" />
+                      <span>Shop Electronics Deals</span>
+                      <ArrowRight className="w-4 h-4 ml-0.5" />
+                    </Link>
 
                     <Link
-                      href="/lucky-draw#regular-draws"
+                      href="/products"
                       className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all active:scale-95"
                     >
-                      <span>Rules &amp; Verification</span>
+                      <span>View All Categories</span>
                     </Link>
                   </div>
                 </div>
 
                 {/* Right Side Visual */}
-                <div className="lg:col-span-5 relative w-full aspect-[16/10] sm:aspect-[16/9] lg:aspect-auto lg:h-[300px] rounded-2xl overflow-hidden border border-emerald-500/30 shadow-xl group">
+                <div className="lg:col-span-5 relative w-full aspect-[16/10] sm:aspect-[16/9] lg:aspect-auto lg:h-[300px] rounded-2xl overflow-hidden border border-blue-500/30 shadow-xl group">
                   <Image
-                    src="https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=1200&q=85"
-                    alt="JudesCart Sunday Weekly Lucky Draws"
+                    src={electronicsDeal?.images[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=85'}
+                    alt="Electronics & Tech Deals"
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#01140f] via-[#01140f]/50 to-transparent" />
-                  <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-emerald-600 text-white text-xs font-extrabold shadow-md">
-                    Every Sunday Live
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#040b1a] via-[#040b1a]/50 to-transparent" />
+                  <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-extrabold shadow-md">
+                    Tech Category Special
                   </div>
                   <div className="absolute bottom-3 left-3 right-3 p-2.5 rounded-xl bg-black/70 backdrop-blur-md border border-white/15 flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-200">Sunday 8:00 PM Draw</span>
-                    <span className="font-bold text-emerald-300">Verified On-Chain</span>
+                    <span className="font-semibold text-slate-200">100% Genuine Guaranteed</span>
+                    <span className="font-bold text-cyan-300">Free Express Delivery</span>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* =========================================================================
+                SLIDE 3: LUXURY APPAREL & LEATHER STEALS
+                ========================================================================= */}
+            {activeSlide === 3 && (
+              <>
+                <div className="lg:col-span-7 space-y-4">
+                  <div>
+                    <div className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-amber-300 mb-1">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Apparel, Leather &amp; Footwear • Up to 50% Off</span>
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
+                      Designer Apparel &amp; Italian Leather Clearance
+                    </h2>
+                    <p className="text-xs sm:text-sm text-amber-100/85 mt-2 leading-relaxed max-w-xl">
+                      Indulge in artisanal full-grain leather bags, pure cashmere outerwear, and tailored footwear.
+                      Premium craftsmanship backed by complimentary worldwide delivery over $99.
+                    </p>
+                  </div>
+
+                  {/* Fashion Offer Highlights */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-lg">
+                    <div className="p-3 rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-1">
+                      <span className="text-xs font-bold text-white block">Heritage Leather Weekender</span>
+                      <span className="text-[11px] text-amber-200/80 block">Full-Grain Tuscan Cowhide</span>
+                      <span className="text-xs font-black text-amber-300 block pt-0.5">$395.00 (Save $85)</span>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-1">
+                      <span className="text-xs font-bold text-white block">Cashmere Blend Overcoat</span>
+                      <span className="text-[11px] text-amber-200/80 block">Italian Wool • Hand-Stitched</span>
+                      <span className="text-xs font-black text-amber-300 block pt-0.5">$595.00 (Save $105)</span>
+                    </div>
+                  </div>
+
+                  {/* Coupon Pill */}
+                  <div className="p-2.5 rounded-xl bg-amber-950/60 border border-amber-400/30 flex items-center justify-between max-w-lg">
+                    <div className="flex items-center gap-2">
+                      <Tag className="w-3.5 h-3.5 text-amber-300" />
+                      <div>
+                        <span className="text-[11px] font-mono font-bold text-white block">CODE: SAVE50</span>
+                        <span className="text-[9px] text-amber-200">$50 off your cart on orders over $250</span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleCopyCode('SAVE50')}
+                      className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 transition-all flex items-center gap-1 cursor-pointer"
+                    >
+                      {copiedCode === 'SAVE50' ? <Check className="w-3 h-3 stroke-[3]" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedCode === 'SAVE50' ? 'Applied!' : 'Apply Code'}</span>
+                    </button>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex flex-wrap items-center gap-3 pt-2">
+                    <Link
+                      href="/products?category=apparel"
+                      className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black flex items-center gap-2 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:brightness-110 text-slate-950 shadow-md shadow-amber-500/30 active:scale-95 transition-all cursor-pointer"
+                    >
+                      <Shirt className="w-4 h-4 text-slate-950" />
+                      <span>Shop Fashion &amp; Leather</span>
+                      <ArrowRight className="w-4 h-4 ml-0.5" />
+                    </Link>
+
+                    <Link
+                      href="/products?category=leather-goods"
+                      className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-amber-400/30 text-amber-200 hover:text-white transition-all active:scale-95"
+                    >
+                      <span>Explore Leather Goods</span>
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Right Side Visual */}
+                <div className="lg:col-span-5 relative w-full aspect-[16/10] sm:aspect-[16/9] lg:aspect-auto lg:h-[300px] rounded-2xl overflow-hidden border border-amber-400/30 shadow-xl group">
+                  <Image
+                    src={fashionDeal?.images[0] || 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1200&q=85'}
+                    alt="Luxury Fashion & Leather Collection"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#120904] via-[#120904]/50 to-transparent" />
+                  <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-amber-500 text-slate-950 text-xs font-black shadow-md">
+                    Up to 50% OFF
+                  </div>
+                  <div className="absolute bottom-3 left-3 right-3 p-2.5 rounded-xl bg-black/70 backdrop-blur-md border border-white/15 flex items-center justify-between text-xs">
+                    <span className="font-semibold text-slate-200">Handcrafted Artisanal Leather</span>
+                    <span className="font-bold text-amber-300">Free 30-Day Returns</span>
                   </div>
                 </div>
               </>
@@ -927,10 +883,9 @@ export function HeroCardsHub() {
               ========================================================================= */}
           <div className="pt-4 mt-4 border-t border-white/10">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-              {CAMPAIGNS.map((camp, idx) => {
+              {RUNNING_OFFERS.map((camp, idx) => {
                 const Icon = camp.icon;
                 const isSelected = activeSlide === idx;
-                const isBumper = camp.id === 'bumper';
 
                 return (
                   <button
@@ -938,41 +893,22 @@ export function HeroCardsHub() {
                     onClick={() => goToSlide(idx)}
                     className={`p-2 sm:p-2.5 rounded-xl text-left transition-all duration-300 flex items-center gap-2 cursor-pointer ${
                       isSelected
-                        ? isBumper
-                          ? 'bg-amber-400/30 border-2 border-amber-300 ring-2 ring-amber-400/80 shadow-[0_0_20px_rgba(251,191,36,0.35)]'
-                          : 'bg-white/25 border border-white/40 shadow-sm'
-                        : isBumper
-                        ? 'bg-amber-500/15 border-2 border-amber-400/80 ring-1 ring-amber-400/40 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:bg-amber-500/25'
+                        ? 'bg-white/25 border border-white/40 shadow-sm'
                         : 'bg-white/5 border border-white/10 hover:bg-white/10'
                     }`}
                   >
                     <div
                       className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${
-                        isBumper
-                          ? 'bg-amber-400 text-slate-950 font-black'
-                          : isSelected
-                          ? 'bg-white text-slate-900'
-                          : 'bg-white/10 text-white'
+                        isSelected ? 'bg-white text-slate-900' : 'bg-white/10 text-white'
                       }`}
                     >
                       <Icon className="w-3.5 h-3.5" />
                     </div>
                     <div className="min-w-0">
-                      <div className="flex items-center gap-1">
-                        <span
-                          className={`text-[11px] sm:text-xs font-bold truncate block ${
-                            isBumper ? 'text-amber-300 font-black' : 'text-white'
-                          }`}
-                        >
-                          {camp.label}
-                        </span>
-                        {isBumper && <span className="text-[10px] shrink-0">👑</span>}
-                      </div>
-                      <span
-                        className={`text-[9px] sm:text-[10px] truncate block ${
-                          isBumper ? 'text-amber-200/90 font-bold' : 'text-white/70'
-                        }`}
-                      >
+                      <span className="text-[11px] sm:text-xs font-bold truncate block text-white">
+                        {camp.label}
+                      </span>
+                      <span className="text-[9px] sm:text-[10px] truncate block text-white/70">
                         {camp.tagline}
                       </span>
                     </div>
