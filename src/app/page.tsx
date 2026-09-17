@@ -36,7 +36,7 @@ const CATEGORIES = [
     badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-400/30',
     image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1000&q=85',
     itemCount: '24 Devices',
-    gridClass: 'col-span-1 sm:col-span-2 lg:col-span-2 min-h-[220px] sm:min-h-[340px]',
+    gridClass: 'col-span-1 sm:col-span-2 lg:col-span-2 min-h-[160px] sm:min-h-[340px]',
   },
   {
     name: 'Apparel & Fashion',
@@ -46,7 +46,7 @@ const CATEGORIES = [
     badgeColor: 'bg-amber-500/20 text-amber-200 border-amber-400/30',
     image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=700&q=85',
     itemCount: '38 Styles',
-    gridClass: 'col-span-1 min-h-[200px] sm:min-h-[340px]',
+    gridClass: 'col-span-1 min-h-[145px] sm:min-h-[340px]',
   },
   {
     name: 'Footwear & Boots',
@@ -56,7 +56,7 @@ const CATEGORIES = [
     badgeColor: 'bg-emerald-500/20 text-emerald-200 border-emerald-400/30',
     image: 'https://images.unsplash.com/photo-1520639888713-7851133b1ed0?auto=format&fit=crop&w=700&q=85',
     itemCount: '19 Pairs',
-    gridClass: 'col-span-1 min-h-[190px] sm:min-h-[300px]',
+    gridClass: 'col-span-1 min-h-[135px] sm:min-h-[300px]',
   },
   {
     name: 'Leather Goods & Bags',
@@ -66,7 +66,7 @@ const CATEGORIES = [
     badgeColor: 'bg-amber-500/20 text-amber-200 border-amber-400/30',
     image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=700&q=85',
     itemCount: '15 Bags',
-    gridClass: 'col-span-1 min-h-[190px] sm:min-h-[300px]',
+    gridClass: 'col-span-1 min-h-[135px] sm:min-h-[300px]',
   },
   {
     name: 'Home, Living & Decor',
@@ -76,7 +76,7 @@ const CATEGORIES = [
     badgeColor: 'bg-indigo-500/20 text-indigo-200 border-indigo-400/30',
     image: 'https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=700&q=85',
     itemCount: '42 Objects',
-    gridClass: 'col-span-1 min-h-[190px] sm:min-h-[300px]',
+    gridClass: 'col-span-1 min-h-[135px] sm:min-h-[300px]',
   },
   {
     name: 'Beauty & Wellness',
@@ -86,7 +86,7 @@ const CATEGORIES = [
     badgeColor: 'bg-rose-500/20 text-rose-200 border-rose-400/30',
     image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1200&q=85',
     itemCount: '27 Formulas',
-    gridClass: 'col-span-1 sm:col-span-2 lg:col-span-3 min-h-[190px] sm:min-h-[280px]',
+    gridClass: 'col-span-1 sm:col-span-2 lg:col-span-3 min-h-[140px] sm:min-h-[280px]',
   },
 ];
 
@@ -284,7 +284,7 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {/* Tile 1: Hero Tile (Span 2 cols on lg) */}
-          <div className="lg:col-span-2 relative rounded-3xl overflow-hidden bg-[#0A192F] text-white p-8 sm:p-12 border border-blue-900/50 flex flex-col justify-between min-h-[340px]">
+          <div className="lg:col-span-2 relative rounded-2xl sm:rounded-3xl overflow-hidden bg-[#0A192F] text-white p-5 sm:p-12 border border-blue-900/50 flex flex-col justify-between min-h-[240px] sm:min-h-[340px]">
             {/* Background Texture Overlay */}
             <div className="absolute -right-20 -bottom-20 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -325,7 +325,7 @@ export default function HomePage() {
           </div>
 
           {/* Tile 2: Factory Direct Warranty */}
-          <div className="bento-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between space-y-6">
+          <div className="bento-card rounded-2xl sm:rounded-3xl p-4.5 sm:p-8 flex flex-col justify-between space-y-3.5 sm:space-y-6">
             <div className="space-y-4">
               <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 text-[#0066FF] dark:text-blue-400 flex items-center justify-center shadow-xs">
                 <ShieldCheck className="w-6 h-6" />
@@ -348,7 +348,7 @@ export default function HomePage() {
           </div>
 
           {/* Tile 3: 30-Day Easy Returns */}
-          <div className="bento-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between space-y-6">
+          <div className="bento-card rounded-2xl sm:rounded-3xl p-4.5 sm:p-8 flex flex-col justify-between space-y-3.5 sm:space-y-6">
             <div className="space-y-4">
               <div className="w-12 h-12 rounded-2xl bg-cyan-50 dark:bg-cyan-950/60 border border-cyan-200 dark:border-cyan-800 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shadow-xs">
                 <RefreshCw className="w-6 h-6" />
@@ -371,7 +371,7 @@ export default function HomePage() {
           </div>
 
           {/* Tile 4: Carbon-Neutral & Eco Dispatch (Span 2 on lg) */}
-          <div className="lg:col-span-2 bento-card rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="lg:col-span-2 bento-card rounded-2xl sm:rounded-3xl p-4.5 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-xs">
                 <Truck className="w-6 h-6" />
@@ -423,11 +423,11 @@ export default function HomePage() {
         </div>
 
         {/* Testimonials 3-Card Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-6">
           {TESTIMONIALS.map((t, idx) => (
             <div
               key={idx}
-              className="bento-card rounded-3xl p-6 sm:p-7 flex flex-col justify-between space-y-4"
+              className="bento-card rounded-2xl sm:rounded-3xl p-4 sm:p-7 flex flex-col justify-between space-y-2.5 sm:space-y-4"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
