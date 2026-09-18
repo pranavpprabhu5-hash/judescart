@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
+import { Inter, Plus_Jakarta_Sans, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import { StoreProvider } from '@/context/StoreContext';
 import { StoreLayoutShell } from '@/components/layout/StoreLayoutShell';
@@ -18,6 +18,12 @@ const inter = Inter({
 
 const jakarta = Plus_Jakarta_Sans({
   variable: '--font-jakarta',
+  subsets: ['latin'],
+  display: 'swap',
+});
+
+const playfair = Playfair_Display({
+  variable: '--font-serif',
   subsets: ['latin'],
   display: 'swap',
 });
@@ -58,7 +64,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jakarta.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${jakarta.variable} ${playfair.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
         <link rel="icon" type="image/png" sizes="32x32" href="/logo-icon.png" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />

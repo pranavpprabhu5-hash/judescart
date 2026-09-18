@@ -23,8 +23,6 @@ import {
   Briefcase,
   ArrowRight,
   SlidersHorizontal,
-  Coins,
-  Gift,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -186,10 +184,7 @@ export function Navbar() {
     openAuthModal,
     user,
     isLoggedIn,
-    judesCoins,
     vipTier,
-    openDailyMystery,
-    dailyMysteryClaimed,
   } = useStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
@@ -288,30 +283,6 @@ export function Navbar() {
               )}
             </Link>
 
-            {/* Daily Mystery Gift Button (Desktop >=md only - on mobile it is in BottomNav) */}
-            <button
-              onClick={openDailyMystery}
-              className="hidden md:flex relative items-center gap-1 p-2 sm:px-3 sm:py-1.5 rounded-full bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/40 dark:to-indigo-950/40 hover:from-purple-100 hover:to-indigo-100 dark:hover:from-purple-900/60 dark:hover:to-indigo-900/60 border border-purple-200 dark:border-purple-800/60 text-purple-900 dark:text-purple-300 transition-all text-xs font-bold cursor-pointer shadow-2xs group shrink-0"
-              title="Daily JudesCart Mystery Vault - Open Everyday to Claim"
-            >
-              <Gift className="w-4 h-4 text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform" />
-              <span className="hidden sm:inline">Daily Gift</span>
-              {!dailyMysteryClaimed && (
-                <span className="w-2 h-2 rounded-full bg-rose-500 absolute -top-0.5 -right-0.5 animate-ping" />
-              )}
-            </button>
-
-            {/* JudesCoins Loyalty Badge (Desktop Only) */}
-            <button
-              onClick={openProfile}
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-200/80 dark:border-amber-800/60 text-amber-900 dark:text-amber-300 transition-all text-xs font-bold group cursor-pointer shadow-2xs shrink-0"
-              title="JudesCoins Rewards Balance - Click to Redeem"
-            >
-              <Coins className="w-3.5 h-3.5 text-amber-500 group-hover:scale-110 transition-transform" />
-              <span>{judesCoins.toLocaleString()}</span>
-              <span className="text-[10px] text-amber-700/80 dark:text-amber-400 font-bold uppercase tracking-wider">Coins</span>
-            </button>
-
             {/* Customer Profile / Sign In */}
             {isLoggedIn ? (
               <button
@@ -336,14 +307,11 @@ export function Navbar() {
             ) : (
               <button
                 onClick={() => openAuthModal('login')}
-                className="flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-full bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200 dark:border-blue-800/80 text-[#0066FF] dark:text-[#38BDF8] transition-all text-xs font-bold cursor-pointer shrink-0 shadow-2xs group"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-stone-700 dark:text-stone-300 hover:text-stone-950 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-slate-800 transition-all text-xs font-semibold cursor-pointer shrink-0"
                 aria-label="Customer Sign In"
               >
-                <User className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+                <User className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Sign In</span>
-                <span className="hidden xl:inline text-[10px] text-amber-600 dark:text-amber-400 font-extrabold bg-amber-100 dark:bg-amber-900/60 px-1.5 py-0.2 rounded-full">
-                  +200
-                </span>
               </button>
             )}
 
@@ -570,8 +538,8 @@ export function Navbar() {
               ))}
             </div>
 
-            {/* Quick 2x2 Action Tiles on Mobile Drawer */}
-            <div className="pt-3 border-t border-stone-100 dark:border-slate-800 grid grid-cols-2 gap-2 text-xs">
+            {/* Quick Action Tiles on Mobile Drawer */}
+            <div className="pt-3 border-t border-stone-100 dark:border-slate-800 grid grid-cols-2 gap-2.5 text-xs">
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
@@ -581,44 +549,19 @@ export function Navbar() {
                     openAuthModal('login');
                   }
                 }}
-                className="flex items-center justify-center gap-2 p-2.5 rounded-xl border border-stone-200 dark:border-slate-800 bg-stone-50 dark:bg-slate-900/60 font-bold text-stone-900 dark:text-slate-100 hover:border-blue-300 transition-colors"
+                className="flex items-center justify-center gap-2 p-2.5 rounded-xl border border-stone-200 dark:border-slate-800 bg-stone-50 dark:bg-slate-900/60 font-semibold text-stone-900 dark:text-slate-100 hover:border-stone-400 transition-colors"
               >
-                <User className="w-4 h-4 text-[#0066FF]" />
-                <span className="truncate">{isLoggedIn ? user.name.split(' ')[0] : 'Sign In / Join'}</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  openDailyMystery();
-                }}
-                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl border border-purple-200 dark:border-purple-800/60 bg-purple-50 dark:bg-purple-950/40 font-bold text-purple-900 dark:text-purple-300 hover:border-purple-400 transition-colors relative"
-              >
-                <Gift className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
-                <span className="truncate">Daily Gift</span>
-                {!dailyMysteryClaimed && (
-                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping absolute top-2 right-2" />
-                )}
-              </button>
-
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  openProfile();
-                }}
-                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl border border-amber-200 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/40 font-bold text-amber-900 dark:text-amber-300 hover:border-amber-400 transition-colors"
-              >
-                <Coins className="w-3.5 h-3.5 text-amber-500" />
-                <span className="truncate">{judesCoins.toLocaleString()} Coins</span>
+                <User className="w-4 h-4 text-stone-700 dark:text-stone-300" />
+                <span className="truncate">{isLoggedIn ? user.name.split(' ')[0] : 'Sign In'}</span>
               </button>
 
               <Link
                 href="/wishlist"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl border border-stone-200 dark:border-slate-800 bg-stone-50 dark:bg-slate-900/60 font-bold text-stone-900 dark:text-slate-100 hover:border-rose-300 transition-colors"
+                className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl border border-stone-200 dark:border-slate-800 bg-stone-50 dark:bg-slate-900/60 font-semibold text-stone-900 dark:text-slate-100 hover:border-stone-400 transition-colors"
               >
-                <Heart className="w-4 h-4 text-rose-500" />
-                <span className="truncate">Wishlist ({wishlist.length})</span>
+                <Heart className="w-4 h-4 text-stone-700 dark:text-stone-300" />
+                <span className="truncate">Saved Items ({wishlist.length})</span>
               </Link>
             </div>
           </div>

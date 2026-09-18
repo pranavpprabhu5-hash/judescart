@@ -100,26 +100,11 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
             </h3>
           </Link>
 
-          {/* Draw Badges */}
-          <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-            {(product.drawTier === 'platinum' || product.drawTier === 'tier-1') && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-300/80 dark:border-amber-500/30">
-                🎟️ Platinum Draw
-              </span>
-            )}
-            {(product.drawTier === 'gold' || product.drawTier === 'tier-2') && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-300/80 dark:border-blue-500/30">
-                🎟️ Gold Draw
-              </span>
-            )}
-            {(product.drawTier === 'silver' || product.drawTier === 'tier-3') && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-500/10 text-slate-700 dark:text-slate-300 border border-slate-300/80 dark:border-slate-600/40">
-                🎟️ Silver Draw
-              </span>
-            )}
-            {product.brand === 'JUDES' && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-amber-50 dark:bg-amber-950/50 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-600/60">
-                👑 Brand JUDES: Bumper Draw
+          {/* Product Brand & Category Micro-tag */}
+          <div className="flex items-center gap-2 pt-0.5">
+            {product.brand && (
+              <span className="text-[10px] uppercase tracking-widest font-bold text-stone-500 dark:text-stone-400">
+                {product.brand}
               </span>
             )}
           </div>
@@ -347,47 +332,24 @@ export function ProductCard({ product, viewMode = 'grid' }: ProductCardProps) {
       {/* Product Information */}
       <div className="p-2.5 sm:p-4 space-y-1 sm:space-y-2 flex-1 flex flex-col justify-between">
         <div>
-          <div className="flex items-center justify-between text-[9px] sm:text-xs text-slate-400 mb-0.5 sm:mb-1">
-            <span className="uppercase tracking-wider font-bold text-[#0066FF] dark:text-blue-400">{product.category}</span>
-            <div className="scale-75 sm:scale-95 origin-right">
+          <div className="flex items-center justify-between text-[9px] sm:text-[11px] text-stone-500 dark:text-stone-400 mb-0.5 sm:mb-1">
+            <span className="uppercase tracking-widest font-semibold">{product.category}</span>
+            <div className="scale-75 sm:scale-90 origin-right">
               <RatingStars rating={product.rating} reviewCount={product.reviewCount} />
             </div>
           </div>
 
           <Link href={`/products/${product.slug}`} className="block">
-            <h3 className="text-xs sm:text-sm font-sans font-bold text-slate-900 dark:text-slate-100 group-hover:text-[#0066FF] dark:group-hover:text-blue-400 transition-colors line-clamp-1 leading-snug">
+            <h3 className="text-xs sm:text-sm font-sans font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1 leading-snug">
               {product.name}
             </h3>
           </Link>
 
-          {/* Draw Eligibility Badges */}
-          <div className="flex flex-wrap items-center gap-0.5 sm:gap-1 pt-0.5 sm:pt-1">
-            {(product.drawTier === 'platinum' || product.drawTier === 'tier-1') && (
-              <span className="inline-flex items-center gap-0.5 px-1 py-0.2 sm:px-1.5 sm:py-0.5 rounded text-[7px] sm:text-[9px] font-bold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-300/80 dark:border-amber-500/30">
-                🎟️ Platinum
-              </span>
-            )}
-            {(product.drawTier === 'gold' || product.drawTier === 'tier-2') && (
-              <span className="inline-flex items-center gap-0.5 px-1 py-0.2 sm:px-1.5 sm:py-0.5 rounded text-[7px] sm:text-[9px] font-bold bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-300/80 dark:border-blue-500/30">
-                🎟️ Gold
-              </span>
-            )}
-            {(product.drawTier === 'silver' || product.drawTier === 'tier-3') && (
-              <span className="inline-flex items-center gap-0.5 px-1 py-0.2 sm:px-1.5 sm:py-0.5 rounded text-[7px] sm:text-[9px] font-bold bg-slate-500/10 text-slate-700 dark:text-slate-300 border border-slate-300/80 dark:border-slate-600/40">
-                🎟️ Silver
-              </span>
-            )}
-            {product.brand === 'JUDES' && (
-              <span className="inline-flex items-center gap-0.5 px-1 py-0.2 sm:px-1.5 sm:py-0.5 rounded text-[7px] sm:text-[9px] font-extrabold bg-amber-50 dark:bg-amber-950/50 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-600/60">
-                👑 JUDES
-              </span>
-            )}
-          </div>
-
-          <div className="flex items-center gap-1 text-[9px] sm:text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold pt-0.5 sm:pt-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
-            <span className="truncate">In Stock • Ships Today</span>
-          </div>
+          {product.brand && (
+            <p className="text-[10px] text-stone-400 dark:text-stone-500 font-medium tracking-wide pt-0.5">
+              {product.brand}
+            </p>
+          )}
         </div>
 
         {/* Colors & Price */}
