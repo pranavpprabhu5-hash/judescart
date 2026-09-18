@@ -13,7 +13,6 @@ import {
   Check,
   Bell,
   BellRing,
-  Clock,
   ChevronRight,
   ChevronLeft,
   Sparkles,
@@ -23,7 +22,6 @@ import {
   Play,
 } from 'lucide-react';
 import { useStore } from '@/context/StoreContext';
-import { Product } from '@/types/product';
 
 interface OfferCampaign {
   id: 'flash-deals' | 'autumn-sale' | 'tech-blowout' | 'luxury-fashion';
@@ -97,7 +95,7 @@ const RUNNING_OFFERS: OfferCampaign[] = [
 const AUTO_ROTATE_INTERVAL = 6500; // 6.5 seconds per slide
 
 export function HeroCardsHub() {
-  const { products, formatAmount, addToCart, applyPromo } = useStore();
+  const { products, formatAmount, applyPromo } = useStore();
 
   const [activeSlide, setActiveSlide] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
@@ -216,69 +214,53 @@ export function HeroCardsHub() {
   const currentOffer = RUNNING_OFFERS[activeSlide];
 
   return (
-    <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-3 sm:pt-6">
-      {/* SECTION HEADER */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-1 sm:gap-2.5 mb-2 sm:mb-5">
-        <div>
-          <h1 className="font-sans text-lg sm:text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Running Offers &amp; Price Drops
-          </h1>
-        </div>
-        <p className="hidden sm:block text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md">
-          Take advantage of limited-time seasonal savings, instant catalog discounts, and exclusive department coupon codes.
-        </p>
-      </div>
-
-
-
-      {/* =========================================================================
-          2. FULL-WIDTH IMMERSIVE RUNNING OFFERS STAGE
-          ========================================================================= */}
+    <section
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      aria-label="Promotional Offers Banner"
+      className={`group/slider relative w-full overflow-hidden text-white transition-all duration-500 select-none border-b ${currentOffer.borderClass} ${currentOffer.glowClass}`}
+    >
+      {/* Dynamic Background Gradient (Full Bleed End-to-End) */}
       <div
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        className={`group/slider relative w-full rounded-2xl sm:rounded-3xl overflow-hidden text-white transition-all duration-500 select-none border ${currentOffer.borderClass} ${currentOffer.glowClass}`}
+        className={`absolute inset-0 bg-gradient-to-br ${currentOffer.bgGradient} transition-colors duration-700 ease-in-out`}
+      />
+
+      {/* Ambient Radial Lighting Overlays */}
+      <div className="absolute -top-28 -right-20 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-28 -left-20 w-96 h-96 bg-black/40 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-80 h-80 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+
+      {/* FLOATING SIDE NAVIGATION ARROWS (Floating at viewport edges) */}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          prevSlide();
+        }}
+        className="absolute left-2 sm:left-4 lg:left-6 top-1/2 -translate-y-1/2 z-30 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-black/45 hover:bg-black/80 sm:bg-slate-950/60 sm:hover:bg-slate-900/90 backdrop-blur-md border border-white/25 hover:border-white/60 text-white flex items-center justify-center shadow-xl shadow-black/40 transition-all duration-300 ease-out hover:scale-125 active:scale-95 cursor-pointer opacity-80 sm:opacity-0 sm:group-hover/slider:opacity-100 hover:!opacity-100 group/btn"
+        aria-label="Previous offer slide"
+        title="Previous offer"
       >
-        {/* Dynamic Background Gradient */}
-        <div
-          className={`absolute inset-0 bg-gradient-to-br ${currentOffer.bgGradient} transition-colors duration-700 ease-in-out`}
-        />
+        <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6 transition-transform duration-300 group-hover/btn:-translate-x-0.5" />
+      </button>
 
-        {/* Ambient Radial Lighting Overlays */}
-        <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-black/40 rounded-full blur-3xl pointer-events-none" />
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          nextSlide();
+        }}
+        className="absolute right-2 sm:right-4 lg:right-6 top-1/2 -translate-y-1/2 z-30 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-black/45 hover:bg-black/80 sm:bg-slate-950/60 sm:hover:bg-slate-900/90 backdrop-blur-md border border-white/25 hover:border-white/60 text-white flex items-center justify-center shadow-xl shadow-black/40 transition-all duration-300 ease-out hover:scale-125 active:scale-95 cursor-pointer opacity-80 sm:opacity-0 sm:group-hover/slider:opacity-100 hover:!opacity-100 group/btn"
+        aria-label="Next offer slide"
+        title="Next offer"
+      >
+        <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6 transition-transform duration-300 group-hover/btn:translate-x-0.5" />
+      </button>
 
-        {/* FLOATING SIDE NAVIGATION ARROWS (Zoom-in on Hover) */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            prevSlide();
-          }}
-          className="absolute left-1.5 sm:left-4 top-1/2 -translate-y-1/2 z-30 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-black/45 hover:bg-black/80 sm:bg-slate-950/60 sm:hover:bg-slate-900/90 backdrop-blur-md border border-white/25 hover:border-white/60 text-white flex items-center justify-center shadow-xl shadow-black/40 transition-all duration-300 ease-out hover:scale-125 active:scale-95 cursor-pointer opacity-80 sm:opacity-0 sm:group-hover/slider:opacity-100 hover:!opacity-100 group/btn"
-          aria-label="Previous offer slide"
-          title="Previous offer"
-        >
-          <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6 transition-transform duration-300 group-hover/btn:-translate-x-0.5" />
-        </button>
-
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            nextSlide();
-          }}
-          className="absolute right-1.5 sm:right-4 top-1/2 -translate-y-1/2 z-30 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-black/45 hover:bg-black/80 sm:bg-slate-950/60 sm:hover:bg-slate-900/90 backdrop-blur-md border border-white/25 hover:border-white/60 text-white flex items-center justify-center shadow-xl shadow-black/40 transition-all duration-300 ease-out hover:scale-125 active:scale-95 cursor-pointer opacity-80 sm:opacity-0 sm:group-hover/slider:opacity-100 hover:!opacity-100 group/btn"
-          aria-label="Next offer slide"
-          title="Next offer"
-        >
-          <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6 transition-transform duration-300 group-hover/btn:translate-x-0.5" />
-        </button>
-
-        {/* Hero Slide Contents */}
-        <div className="relative z-10 px-4 sm:px-12 lg:px-12 py-3 sm:py-6 min-h-[305px] sm:min-h-[580px] lg:h-[415px] flex flex-col justify-between">
+      {/* Hero Slide Contents - Centered inside max-w-7xl with side padding */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-12 lg:px-14 py-3.5 sm:py-6 lg:py-7 min-h-[340px] sm:min-h-[520px] lg:min-h-[485px] lg:h-[495px] flex flex-col justify-between">
           {/* Top Info Bar inside Hero */}
           <div className="flex items-center justify-between gap-2 mb-1.5 sm:mb-4">
             <div className="flex items-center gap-2">
@@ -310,18 +292,18 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 0 && (
               <>
-                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:h-[320px] flex flex-col justify-between">
+                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:h-[385px] flex flex-col justify-between">
                   <div>
                     <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-400 mb-0.5 sm:mb-1 h-4 sm:h-5">
                       <Flame className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400 animate-pulse shrink-0" />
                       <span className="truncate">Flash Price Drops • Live Today</span>
                     </div>
-                    <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.25rem] flex items-center">
-                      <h2 className="text-base sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-snug line-clamp-2">
+                    <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.5rem] flex items-center">
+                      <h1 className="text-base sm:text-2xl lg:text-3xl xl:text-4xl font-black text-white tracking-tight leading-snug line-clamp-2">
                         Flash Deals &amp; Daily Price Reductions
-                      </h2>
+                      </h1>
                     </div>
-                    <p className="hidden sm:block text-xs sm:text-sm text-stone-300 mt-1.5 sm:mt-2 leading-relaxed max-w-xl line-clamp-2 h-[2.5rem] sm:h-[2.75rem]">
+                    <p className="hidden sm:block text-xs sm:text-sm lg:text-base text-stone-300 mt-1.5 sm:mt-2 leading-relaxed max-w-xl line-clamp-2 h-[2.5rem] sm:h-[2.75rem] lg:h-[3rem]">
                       Grab immediate manufacturer discounts on high-demand electronics, apparel, and lifestyle items.
                       Stock is strictly limited with real-time stock reservations.
                     </p>
@@ -329,7 +311,7 @@ export function HeroCardsHub() {
 
                   {/* Flash Deals Highlights (Standardized 2-card grid) */}
                   <div className="grid grid-cols-2 gap-2 max-w-lg">
-                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-0.5 h-[66px] sm:h-[76px] flex flex-col justify-center">
+                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-0.5 h-[68px] sm:h-[80px] flex flex-col justify-center">
                       <span className="text-[11px] sm:text-xs font-bold text-white block truncate">
                         {firstDeal?.name || 'SonicPro Studio ANC'}
                       </span>
@@ -341,7 +323,7 @@ export function HeroCardsHub() {
                       </span>
                     </div>
 
-                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-0.5 h-[66px] sm:h-[76px] flex flex-col justify-center">
+                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-0.5 h-[68px] sm:h-[80px] flex flex-col justify-center">
                       <span className="text-[11px] sm:text-xs font-bold text-white block truncate">
                         {secondDeal?.name || 'HydroSmart Vacuum Flask'}
                       </span>
@@ -393,7 +375,7 @@ export function HeroCardsHub() {
                 </div>
 
                 {/* Right Side Visual (Tablet & Desktop) */}
-                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[320px] rounded-2xl overflow-hidden border border-amber-500/30 shadow-xl group">
+                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[385px] rounded-2xl overflow-hidden border border-amber-500/30 shadow-2xl group">
                   <Image
                     src={firstDeal?.images[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=85'}
                     alt="Flash Deals Spotlight"
@@ -418,18 +400,18 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 1 && (
               <>
-                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:h-[320px] flex flex-col justify-between">
+                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:h-[385px] flex flex-col justify-between">
                   <div>
                     <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-cyan-300 mb-0.5 sm:mb-1 h-4 sm:h-5">
                       <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-cyan-400 shrink-0" />
                       <span className="truncate">Autumn Mega Event • Starts in 3 Days</span>
                     </div>
-                    <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.25rem] flex items-center">
-                      <h2 className="text-base sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-snug line-clamp-2">
+                    <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.5rem] flex items-center">
+                      <h1 className="text-base sm:text-2xl lg:text-3xl xl:text-4xl font-black text-white tracking-tight leading-snug line-clamp-2">
                         Autumn Mega Sale &amp; Seasonal Storewide Clearance
-                      </h2>
+                      </h1>
                     </div>
-                    <p className="hidden sm:block text-xs sm:text-sm text-indigo-100/90 mt-1.5 sm:mt-2 leading-relaxed max-w-xl line-clamp-2 h-[2.5rem] sm:h-[2.75rem]">
+                    <p className="hidden sm:block text-xs sm:text-sm lg:text-base text-indigo-100/90 mt-1.5 sm:mt-2 leading-relaxed max-w-xl line-clamp-2 h-[2.5rem] sm:h-[2.75rem] lg:h-[3rem]">
                       Save up to 60% storewide across all 6 departments. Lock in VIP early access and claim an extra 20%
                       off coupon code right now.
                     </p>
@@ -437,13 +419,13 @@ export function HeroCardsHub() {
 
                   {/* Mega Sale Highlights (Standardized 2-card grid with live timer) */}
                   <div className="grid grid-cols-2 gap-2 max-w-lg">
-                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-indigo-400/20 space-y-0.5 h-[66px] sm:h-[76px] flex flex-col justify-center">
+                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-indigo-400/20 space-y-0.5 h-[68px] sm:h-[80px] flex flex-col justify-center">
                       <span className="text-[11px] sm:text-xs font-bold text-white block truncate">Storewide Catalog</span>
                       <span className="text-[9px] sm:text-[11px] text-indigo-200 block truncate">All 6 Departments</span>
                       <span className="text-[11px] sm:text-xs font-black text-cyan-300 block pt-0.5 truncate">Up to 60% OFF</span>
                     </div>
 
-                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-indigo-400/20 space-y-0.5 h-[66px] sm:h-[76px] flex flex-col justify-center">
+                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-indigo-400/20 space-y-0.5 h-[68px] sm:h-[80px] flex flex-col justify-center">
                       <span className="text-[11px] sm:text-xs font-bold text-white block truncate">Event Starts In</span>
                       <span className="text-[9px] sm:text-[11px] text-indigo-200 block truncate">September 21 Launch</span>
                       <span className="text-[11px] sm:text-xs font-black text-cyan-300 font-mono block pt-0.5 truncate">
@@ -505,7 +487,7 @@ export function HeroCardsHub() {
                 </div>
 
                 {/* Right Side Visual (Tablet & Desktop) */}
-                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[320px] rounded-2xl overflow-hidden border border-indigo-500/30 shadow-xl group">
+                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[385px] rounded-2xl overflow-hidden border border-indigo-500/30 shadow-2xl group">
                   <Image
                     src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=1200&q=85"
                     alt="Upcoming Mega Autumn Bash Sale"
@@ -529,18 +511,18 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 2 && (
               <>
-                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:h-[320px] flex flex-col justify-between">
+                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:h-[385px] flex flex-col justify-between">
                   <div>
                     <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-blue-400 mb-0.5 sm:mb-1 h-4 sm:h-5">
                       <Headphones className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-400 shrink-0" />
                       <span className="truncate">Tech Gear Blowout • Extra 15% OFF</span>
                     </div>
-                    <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.25rem] flex items-center">
-                      <h2 className="text-base sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-snug line-clamp-2">
+                    <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.5rem] flex items-center">
+                      <h1 className="text-base sm:text-2xl lg:text-3xl xl:text-4xl font-black text-white tracking-tight leading-snug line-clamp-2">
                         Electronics &amp; Audio Super Sale Top Gear Slashed
-                      </h2>
+                      </h1>
                     </div>
-                    <p className="hidden sm:block text-xs sm:text-sm text-blue-100/85 mt-1.5 sm:mt-2 leading-relaxed max-w-xl line-clamp-2 h-[2.5rem] sm:h-[2.75rem]">
+                    <p className="hidden sm:block text-xs sm:text-sm lg:text-base text-blue-100/85 mt-1.5 sm:mt-2 leading-relaxed max-w-xl line-clamp-2 h-[2.5rem] sm:h-[2.75rem] lg:h-[3rem]">
                       Upgrade your daily soundstage and productivity setup. Save big on active noise cancelling studio
                       headphones, smart watches, portable speakers, and ambient lighting.
                     </p>
@@ -548,13 +530,13 @@ export function HeroCardsHub() {
 
                   {/* Tech Offer Highlights (Standardized 2-card grid) */}
                   <div className="grid grid-cols-2 gap-2 max-w-lg">
-                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-blue-400/20 space-y-0.5 h-[66px] sm:h-[76px] flex flex-col justify-center">
+                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-blue-400/20 space-y-0.5 h-[68px] sm:h-[80px] flex flex-col justify-center">
                       <span className="text-[11px] sm:text-xs font-bold text-white block truncate">SonicPro Studio ANC</span>
                       <span className="text-[9px] sm:text-[11px] text-blue-200 block truncate">40h Battery • Spatial</span>
                       <span className="text-[11px] sm:text-xs font-black text-amber-300 block pt-0.5 truncate">$299.00 (Save $50)</span>
                     </div>
 
-                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-blue-400/20 space-y-0.5 h-[66px] sm:h-[76px] flex flex-col justify-center">
+                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-blue-400/20 space-y-0.5 h-[68px] sm:h-[80px] flex flex-col justify-center">
                       <span className="text-[11px] sm:text-xs font-bold text-white block truncate">ProTrack Ultra GPS</span>
                       <span className="text-[9px] sm:text-[11px] text-blue-200 block truncate">AMOLED • Titanium</span>
                       <span className="text-[11px] sm:text-xs font-black text-amber-300 block pt-0.5 truncate">$399.00 (Save $50)</span>
@@ -600,7 +582,7 @@ export function HeroCardsHub() {
                 </div>
 
                 {/* Right Side Visual (Tablet & Desktop) */}
-                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[320px] rounded-2xl overflow-hidden border border-blue-500/30 shadow-xl group">
+                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[385px] rounded-2xl overflow-hidden border border-blue-500/30 shadow-2xl group">
                   <Image
                     src={electronicsDeal?.images[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=85'}
                     alt="Electronics & Tech Deals"
@@ -624,18 +606,18 @@ export function HeroCardsHub() {
                 ========================================================================= */}
             {activeSlide === 3 && (
               <>
-                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:h-[320px] flex flex-col justify-between">
+                <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 min-h-[220px] sm:min-h-[250px] lg:h-[385px] flex flex-col justify-between">
                   <div>
                     <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-300 mb-0.5 sm:mb-1 h-4 sm:h-5">
                       <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400 shrink-0" />
                       <span className="truncate">Luxury Italian Goods • Up to 50% OFF</span>
                     </div>
-                    <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.25rem] flex items-center">
-                      <h2 className="text-base sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-snug line-clamp-2">
+                    <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.5rem] flex items-center">
+                      <h1 className="text-base sm:text-2xl lg:text-3xl xl:text-4xl font-black text-white tracking-tight leading-snug line-clamp-2">
                         Designer Apparel &amp; Italian Leather Clearance
-                      </h2>
+                      </h1>
                     </div>
-                    <p className="hidden sm:block text-xs sm:text-sm text-amber-100/85 mt-1.5 sm:mt-2 leading-relaxed max-w-xl line-clamp-2 h-[2.5rem] sm:h-[2.75rem]">
+                    <p className="hidden sm:block text-xs sm:text-sm lg:text-base text-amber-100/85 mt-1.5 sm:mt-2 leading-relaxed max-w-xl line-clamp-2 h-[2.5rem] sm:h-[2.75rem] lg:h-[3rem]">
                       Indulge in artisanal full-grain leather bags, pure cashmere outerwear, and tailored footwear.
                       Premium craftsmanship backed by complimentary worldwide delivery over $99.
                     </p>
@@ -643,13 +625,13 @@ export function HeroCardsHub() {
 
                   {/* Fashion Offer Highlights (Standardized 2-card grid) */}
                   <div className="grid grid-cols-2 gap-2 max-w-lg">
-                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-0.5 h-[66px] sm:h-[76px] flex flex-col justify-center">
+                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-0.5 h-[68px] sm:h-[80px] flex flex-col justify-center">
                       <span className="text-[11px] sm:text-xs font-bold text-white block truncate">Heritage Weekender</span>
                       <span className="text-[9px] sm:text-[11px] text-amber-200/80 block truncate">Tuscan Cowhide</span>
                       <span className="text-[11px] sm:text-xs font-black text-amber-300 block pt-0.5 truncate">$395.00 (Save $85)</span>
                     </div>
 
-                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-0.5 h-[66px] sm:h-[76px] flex flex-col justify-center">
+                    <div className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-md border border-amber-400/20 space-y-0.5 h-[68px] sm:h-[80px] flex flex-col justify-center">
                       <span className="text-[11px] sm:text-xs font-bold text-white block truncate">Cashmere Overcoat</span>
                       <span className="text-[9px] sm:text-[11px] text-amber-200/80 block truncate">Italian Wool</span>
                       <span className="text-[11px] sm:text-xs font-black text-amber-300 block pt-0.5 truncate">$595.00 (Save $105)</span>
@@ -695,7 +677,7 @@ export function HeroCardsHub() {
                 </div>
 
                 {/* Right Side Visual (Tablet & Desktop) */}
-                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[320px] rounded-2xl overflow-hidden border border-amber-400/30 shadow-xl group">
+                <div className="hidden sm:block lg:col-span-5 relative w-full aspect-[16/9] lg:aspect-auto lg:h-[385px] rounded-2xl overflow-hidden border border-amber-400/30 shadow-2xl group">
                   <Image
                     src={fashionDeal?.images[0] || 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1200&q=85'}
                     alt="Luxury Fashion & Leather Collection"
@@ -714,8 +696,24 @@ export function HeroCardsHub() {
               </>
             )}
           </div>
+
+          {/* Bottom Pagination Indicator Pills */}
+          <div className="flex items-center justify-center gap-2 pt-2.5 sm:pt-3 pb-0.5">
+            {RUNNING_OFFERS.map((offer, idx) => (
+              <button
+                key={offer.id}
+                onClick={() => setActiveSlide(idx)}
+                className={`transition-all duration-300 rounded-full cursor-pointer ${
+                  activeSlide === idx
+                    ? 'w-7 sm:w-8 h-1.5 bg-white shadow-xs'
+                    : 'w-2 h-1.5 bg-white/30 hover:bg-white/60'
+                }`}
+                aria-label={`Go to slide ${idx + 1}: ${offer.label}`}
+                title={offer.label}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
-  );
-}
+      </section>
+    );
+  }
