@@ -40,7 +40,7 @@ const RUNNING_OFFERS: OfferCampaign[] = [
     label: 'Electronics & Audio',
     shortLabel: 'Electronics',
     tagline: 'Up to 45% OFF Category Event',
-    badge: '⚡ Electronics & Audio Sale',
+    badge: 'Electronics & Studio Audio Sale',
     badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-400/40',
     icon: Headphones,
     accentColor: 'text-blue-400',
@@ -53,7 +53,7 @@ const RUNNING_OFFERS: OfferCampaign[] = [
     label: 'Apparel & Fashion',
     shortLabel: 'Fashion',
     tagline: 'Up to 50% OFF Season Clearance',
-    badge: '✨ Designer Fashion & Silks',
+    badge: 'Designer Apparel & Silk Archive',
     badgeColor: 'bg-amber-500/20 text-amber-200 border-amber-400/40',
     icon: Shirt,
     accentColor: 'text-amber-300',
@@ -66,7 +66,7 @@ const RUNNING_OFFERS: OfferCampaign[] = [
     label: 'Leather & Footwear',
     shortLabel: 'Leather Goods',
     tagline: 'Flat 35% OFF Artisanal Craft',
-    badge: '👑 Tuscan Leather & Footwear',
+    badge: 'Tuscan Leather & Footwear Atelier',
     badgeColor: 'bg-amber-600/20 text-amber-300 border-amber-500/40',
     icon: Briefcase,
     accentColor: 'text-amber-400',
@@ -79,7 +79,7 @@ const RUNNING_OFFERS: OfferCampaign[] = [
     label: 'Home & Living',
     shortLabel: 'Home Decor',
     tagline: 'Up to 45% OFF Home Refresh',
-    badge: '🌿 Nordic Living & Modern Home',
+    badge: 'Nordic Living & Hasami Porcelain',
     badgeColor: 'bg-indigo-500/20 text-cyan-300 border-indigo-400/40',
     icon: Home,
     accentColor: 'text-cyan-400',
@@ -237,7 +237,7 @@ export function HeroCardsHub() {
                     <span className="truncate">Electronics &amp; Audio Department • Live Today</span>
                   </div>
                   <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.5rem] flex items-center">
-                    <h1 className="text-base sm:text-2xl lg:text-3xl xl:text-4xl font-black text-white tracking-tight leading-snug line-clamp-2">
+                    <h1 className="font-serif text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-normal text-white tracking-tight leading-snug line-clamp-2">
                       Consumer Electronics &amp; Smart Audio Mega Deals
                     </h1>
                   </div>
@@ -345,7 +345,7 @@ export function HeroCardsHub() {
                     <span className="truncate">Designer Apparel &amp; Fashion • Season Clearance</span>
                   </div>
                   <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.5rem] flex items-center">
-                    <h1 className="text-base sm:text-2xl lg:text-3xl xl:text-4xl font-black text-white tracking-tight leading-snug line-clamp-2">
+                    <h1 className="font-serif text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-normal text-white tracking-tight leading-snug line-clamp-2">
                       Designer Apparel &amp; Luxury Cashmere Collection
                     </h1>
                   </div>
@@ -452,7 +452,7 @@ export function HeroCardsHub() {
                     <span className="truncate">Leather Goods &amp; Footwear • Artisanal Craft</span>
                   </div>
                   <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.5rem] flex items-center">
-                    <h1 className="text-base sm:text-2xl lg:text-3xl xl:text-4xl font-black text-white tracking-tight leading-snug line-clamp-2">
+                    <h1 className="font-serif text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-normal text-white tracking-tight leading-snug line-clamp-2">
                       Tuscan Full-Grain Leather &amp; Handcrafted Footwear
                     </h1>
                   </div>
@@ -559,7 +559,7 @@ export function HeroCardsHub() {
                     <span className="truncate">Home &amp; Living • Interior Refresh Specials</span>
                   </div>
                   <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.5rem] flex items-center">
-                    <h1 className="text-base sm:text-2xl lg:text-3xl xl:text-4xl font-black text-white tracking-tight leading-snug line-clamp-2">
+                    <h1 className="font-serif text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-normal text-white tracking-tight leading-snug line-clamp-2">
                       Modern Home Accents, Ambient Lighting &amp; Decor
                     </h1>
                   </div>

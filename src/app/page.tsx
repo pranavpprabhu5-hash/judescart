@@ -252,42 +252,62 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pt-8 border-t border-stone-200 dark:border-slate-800">
-            <div className="space-y-2.5">
-              <span className="font-mono text-xs text-stone-400 dark:text-stone-500">01 / ORIGIN</span>
-              <h4 className="font-serif text-lg font-normal text-stone-900 dark:text-white">
-                Direct Workshop Sourcing
-              </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 pt-8 border-t border-stone-200 dark:border-slate-800">
+            <div className="p-5 rounded-2xl bg-white/90 dark:bg-slate-800/90 border border-stone-200/80 dark:border-slate-700/60 shadow-2xs hover:shadow-md transition-all duration-300 space-y-3">
+              <div className="w-7 h-7 rounded-lg bg-stone-100 dark:bg-slate-700 flex items-center justify-center font-mono text-[11px] font-bold text-stone-700 dark:text-stone-300">
+                01
+              </div>
+              <div>
+                <span className="font-mono text-[10px] tracking-wider uppercase text-stone-400 dark:text-stone-500 block mb-0.5">ORIGIN</span>
+                <h4 className="font-serif text-base font-normal text-stone-900 dark:text-white">
+                  Direct Workshop Sourcing
+                </h4>
+              </div>
               <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed font-light">
                 Direct partnerships with verified workshops in Tuscany, Ulaanbaatar, and Shenzhen—eliminating distributor markups.
               </p>
             </div>
 
-            <div className="space-y-2.5">
-              <span className="font-mono text-xs text-stone-400 dark:text-stone-500">02 / MATERIALS</span>
-              <h4 className="font-serif text-lg font-normal text-stone-900 dark:text-white">
-                Documented Composition
-              </h4>
+            <div className="p-5 rounded-2xl bg-white/90 dark:bg-slate-800/90 border border-stone-200/80 dark:border-slate-700/60 shadow-2xs hover:shadow-md transition-all duration-300 space-y-3">
+              <div className="w-7 h-7 rounded-lg bg-stone-100 dark:bg-slate-700 flex items-center justify-center font-mono text-[11px] font-bold text-stone-700 dark:text-stone-300">
+                02
+              </div>
+              <div>
+                <span className="font-mono text-[10px] tracking-wider uppercase text-stone-400 dark:text-stone-500 block mb-0.5">MATERIALS</span>
+                <h4 className="font-serif text-base font-normal text-stone-900 dark:text-white">
+                  Documented Composition
+                </h4>
+              </div>
               <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed font-light">
                 Full disclosure of every component: 2-ply Grade-A cashmere, vegetable-tanned leather, and beryllium drivers.
               </p>
             </div>
 
-            <div className="space-y-2.5">
-              <span className="font-mono text-xs text-stone-400 dark:text-stone-500">03 / PACKAGING</span>
-              <h4 className="font-serif text-lg font-normal text-stone-900 dark:text-white">
-                100% Recycled &amp; Plastic-Free
-              </h4>
+            <div className="p-5 rounded-2xl bg-white/90 dark:bg-slate-800/90 border border-stone-200/80 dark:border-slate-700/60 shadow-2xs hover:shadow-md transition-all duration-300 space-y-3">
+              <div className="w-7 h-7 rounded-lg bg-stone-100 dark:bg-slate-700 flex items-center justify-center font-mono text-[11px] font-bold text-stone-700 dark:text-stone-300">
+                03
+              </div>
+              <div>
+                <span className="font-mono text-[10px] tracking-wider uppercase text-stone-400 dark:text-stone-500 block mb-0.5">PACKAGING</span>
+                <h4 className="font-serif text-base font-normal text-stone-900 dark:text-white">
+                  100% Recycled &amp; Plastic-Free
+                </h4>
+              </div>
               <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed font-light">
                 Dispatched in post-consumer recycled boxes sealed with water-activated paper tape and zero plastic fillers.
               </p>
             </div>
 
-            <div className="space-y-2.5">
-              <span className="font-mono text-xs text-stone-400 dark:text-stone-500">04 / GUARANTEE</span>
-              <h4 className="font-serif text-lg font-normal text-stone-900 dark:text-white">
-                30-Day Living Guarantee
-              </h4>
+            <div className="p-5 rounded-2xl bg-white/90 dark:bg-slate-800/90 border border-stone-200/80 dark:border-slate-700/60 shadow-2xs hover:shadow-md transition-all duration-300 space-y-3">
+              <div className="w-7 h-7 rounded-lg bg-stone-100 dark:bg-slate-700 flex items-center justify-center font-mono text-[11px] font-bold text-stone-700 dark:text-stone-300">
+                04
+              </div>
+              <div>
+                <span className="font-mono text-[10px] tracking-wider uppercase text-stone-400 dark:text-stone-500 block mb-0.5">GUARANTEE</span>
+                <h4 className="font-serif text-base font-normal text-stone-900 dark:text-white">
+                  30-Day Living Guarantee
+                </h4>
+              </div>
               <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed font-light">
                 Complimentary return shipping labels included with every order. Instant refunds upon carrier scan.
               </p>
