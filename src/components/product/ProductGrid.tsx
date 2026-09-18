@@ -16,7 +16,7 @@ export function ProductGrid({ products, viewMode = 'grid', columns = 3 }: Produc
     return (
       <div className="py-20 text-center rounded-2xl border border-dashed border-stone-300 bg-stone-50/50 p-8">
         <PackageSearch className="w-12 h-12 mx-auto text-stone-400 mb-3" />
-        <h3 className="text-base font-serif text-stone-900">No products found</h3>
+        <h3 className="text-base font-bold text-stone-900 dark:text-white">No products found</h3>
         <p className="text-xs text-stone-500 mt-1 max-w-sm mx-auto">
           We couldn&apos;t find any atelier pieces matching your selected filters. Try clearing or expanding your criteria.
         </p>

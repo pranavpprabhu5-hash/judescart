@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: var(--font-jakarta), "Plus Jakarta Sans", var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-outfit), "Outfit", var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  --font-heading: var(--font-outfit), "Outfit", var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
@@ -17,6 +23,9 @@
     --jc-navy: #0a192f;
     --jc-navy-dark: #071120;
     --jc-cyan: #0ea5e9;
+
+    --font-sans: var(--font-jakarta), "Plus Jakarta Sans", var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-display: var(--font-outfit), "Outfit", var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
   }
 
   .dark {
@@ -32,12 +41,19 @@
     border-color: var(--border);
   }
 
+  html {
+    font-family: var(--font-jakarta), "Plus Jakarta Sans", var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
   body {
     background-color: var(--background);
     color: var(--foreground);
+    font-family: var(--font-jakarta), "Plus Jakarta Sans", var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    letter-spacing: -0.015em;
     font-feature-settings: "rlig" 1, "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     overflow-x: hidden;
   }
 
@@ -141,9 +157,20 @@
   }
 }
 
-/* Editorial Typography */
+/* Modern High-End Typography */
+.font-sans {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  letter-spacing: -0.012em;
+}
+
+.font-display {
+  font-family: var(--font-outfit), "Outfit", var(--font-jakarta), "Plus Jakarta Sans", sans-serif !important;
+  letter-spacing: -0.028em;
+}
+
 .font-serif {
-  font-family: var(--font-serif), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  font-family: var(--font-outfit), "Outfit", var(--font-jakarta), "Plus Jakarta Sans", sans-serif !important;
+  letter-spacing: -0.02em;
 }
 
 /* Luxury Card & Button Utilities */

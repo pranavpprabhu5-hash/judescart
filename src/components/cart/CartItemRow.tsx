@@ -30,7 +30,7 @@ export function CartItemRow({ item }: CartItemRowProps) {
         <Link
           href={`/products/${item.slug}`}
           onClick={closeCart}
-          className="text-xs font-serif font-medium text-stone-900 hover:text-stone-600 transition-colors line-clamp-1"
+          className="text-xs font-semibold text-stone-900 dark:text-white hover:text-[#0066FF] dark:hover:text-blue-400 transition-colors line-clamp-1"
         >
           {item.name}
         </Link>

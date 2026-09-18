@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Plus_Jakarta_Sans, Playfair_Display } from 'next/font/google';
+import { Inter, Plus_Jakarta_Sans, Outfit } from 'next/font/google';
 import './globals.css';
 import { StoreProvider } from '@/context/StoreContext';
 import { StoreLayoutShell } from '@/components/layout/StoreLayoutShell';
@@ -10,20 +10,22 @@ export const viewport: Viewport = {
   maximumScale: 1,
 };
 
-const inter = Inter({
-  variable: '--font-inter',
+const outfit = Outfit({
+  variable: '--font-outfit',
   subsets: ['latin'],
   display: 'swap',
+  weight: ['400', '500', '600', '700', '800', '900'],
 });
 
 const jakarta = Plus_Jakarta_Sans({
   variable: '--font-jakarta',
   subsets: ['latin'],
   display: 'swap',
+  weight: ['400', '500', '600', '700', '800'],
 });
 
-const playfair = Playfair_Display({
-  variable: '--font-serif',
+const inter = Inter({
+  variable: '--font-inter',
   subsets: ['latin'],
   display: 'swap',
 });
@@ -64,7 +66,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jakarta.variable} ${playfair.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang="en" className={`${outfit.variable} ${jakarta.variable} ${inter.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
         <link rel="icon" type="image/png" sizes="32x32" href="/logo-icon.png" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -77,6 +79,9 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="JudesCart" />
         <meta name="theme-color" content="#0066FF" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#070F1E" media="(prefers-color-scheme: dark)" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -95,7 +100,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col font-sans bg-[#F8FAFC] dark:bg-[#070F1E] text-slate-900 dark:text-slate-100 selection:bg-[#0066FF] selection:text-white transition-colors duration-200">
+      <body className="min-h-full flex flex-col bg-[#F8FAFC] dark:bg-[#070F1E] text-slate-900 dark:text-slate-100 selection:bg-[#0066FF] selection:text-white transition-colors duration-200">
         <StoreProvider>
           <StoreLayoutShell>{children}</StoreLayoutShell>
         </StoreProvider>

@@ -112,7 +112,7 @@ export function MonogramCustomizerModal({
                 }`}
               >
                 <div
-                  className={`px-3 py-1.5 rounded-lg backdrop-blur-xs font-serif font-black tracking-[0.25em] text-lg sm:text-xl uppercase shadow-lg border ${
+                  className={`px-3 py-1.5 rounded-lg backdrop-blur-xs font-display font-black tracking-[0.25em] text-lg sm:text-xl uppercase shadow-lg border ${
                     foilColor === 'gold'
                       ? 'text-amber-200 bg-amber-950/70 border-amber-400/80 shadow-amber-500/20 [text-shadow:_0_1px_2px_rgba(251,191,36,0.6)]'
                       : foilColor === 'silver'
@@ -148,7 +148,7 @@ export function MonogramCustomizerModal({
                 value={initials}
                 onChange={(e) => setInitials(e.target.value.toUpperCase())}
                 placeholder="e.g. E.V. or J.C."
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-serif font-black text-sm uppercase tracking-widest text-slate-900 dark:text-white focus:ring-2 focus:ring-[#0066FF]"
+                className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-display font-black text-sm uppercase tracking-widest text-slate-900 dark:text-white focus:ring-2 focus:ring-[#0066FF]"
               />
               <p className="text-[10px] text-slate-400 mt-1">
                 Traditional style includes periods (e.g. &ldquo;M.V.&rdquo;) or clean modern letters (&ldquo;MV&rdquo;).

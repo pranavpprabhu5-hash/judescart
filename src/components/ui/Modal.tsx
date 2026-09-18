@@ -49,8 +49,8 @@ export function Modal({ isOpen, onClose, title, children, maxWidth = 'md' }: Mod
           maxWidths[maxWidth]
         )}
       >
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-stone-100">
-          {title && <h3 className="text-lg font-serif font-medium text-stone-900">{title}</h3>}
+        <div className="flex items-center justify-between pb-4 mb-4 border-b border-stone-100 dark:border-slate-800">
+          {title && <h3 className="text-lg font-bold text-stone-900 dark:text-white tracking-tight">{title}</h3>}
           <button
             onClick={onClose}
             className="p-1 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors ml-auto"

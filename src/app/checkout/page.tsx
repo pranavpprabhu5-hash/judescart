@@ -206,9 +206,9 @@ export default function CheckoutPage() {
   if (cart.length === 0) {
     return (
       <div className="max-w-xl mx-auto px-4 py-24 text-center space-y-4">
-        <ShoppingBag className="w-12 h-12 mx-auto text-stone-300 stroke-[1.2]" />
-        <h2 className="font-serif text-2xl text-stone-900">Your bag is empty</h2>
-        <p className="text-xs text-stone-500">There are no items to checkout.</p>
+        <ShoppingBag className="w-12 h-12 mx-auto text-stone-300 dark:text-slate-600 stroke-[1.2]" />
+        <h2 className="font-display text-2xl font-bold text-stone-900 dark:text-white tracking-tight">Your bag is empty</h2>
+        <p className="text-xs text-stone-500 dark:text-stone-400">There are no items to checkout.</p>
         <Link
           href="/products"
           className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-stone-950 text-white text-xs font-medium hover:bg-stone-800 transition-colors"

@@ -88,8 +88,8 @@ function OrderSuccessContent() {
       {/* Itemized Order Receipt */}
       {currentOrder && (
         <div className="p-6 sm:p-8 rounded-2xl bg-white border border-stone-200/80 shadow-sm space-y-6">
-          <div className="flex items-center justify-between pb-4 border-b border-stone-100">
-            <h3 className="font-serif text-base font-medium text-stone-900">Receipt Details</h3>
+          <div className="flex items-center justify-between pb-4 border-b border-stone-100 dark:border-slate-800">
+            <h3 className="text-base font-bold text-stone-900 dark:text-white tracking-tight">Receipt Details</h3>
             <span className="font-mono text-xs text-stone-500">{currentOrder.date}</span>
           </div>
 

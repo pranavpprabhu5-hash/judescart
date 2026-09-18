@@ -237,7 +237,7 @@ export function HeroCardsHub() {
                     <span className="truncate">Electronics &amp; Audio Department • Live Today</span>
                   </div>
                   <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.5rem] flex items-center">
-                    <h1 className="font-serif text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-normal text-white tracking-tight leading-snug line-clamp-2">
+                    <h1 className="font-display text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-extrabold text-white tracking-tight leading-snug line-clamp-2">
                       Consumer Electronics &amp; Smart Audio Mega Deals
                     </h1>
                   </div>
@@ -345,7 +345,7 @@ export function HeroCardsHub() {
                     <span className="truncate">Designer Apparel &amp; Fashion • Season Clearance</span>
                   </div>
                   <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.5rem] flex items-center">
-                    <h1 className="font-serif text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-normal text-white tracking-tight leading-snug line-clamp-2">
+                    <h1 className="font-display text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-extrabold text-white tracking-tight leading-snug line-clamp-2">
                       Designer Apparel &amp; Luxury Cashmere Collection
                     </h1>
                   </div>
@@ -452,7 +452,7 @@ export function HeroCardsHub() {
                     <span className="truncate">Leather Goods &amp; Footwear • Artisanal Craft</span>
                   </div>
                   <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.5rem] flex items-center">
-                    <h1 className="font-serif text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-normal text-white tracking-tight leading-snug line-clamp-2">
+                    <h1 className="font-display text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-extrabold text-white tracking-tight leading-snug line-clamp-2">
                       Tuscan Full-Grain Leather &amp; Handcrafted Footwear
                     </h1>
                   </div>
@@ -559,7 +559,7 @@ export function HeroCardsHub() {
                     <span className="truncate">Home &amp; Living • Interior Refresh Specials</span>
                   </div>
                   <div className="h-[2.5rem] sm:h-[3.75rem] lg:h-[4.5rem] flex items-center">
-                    <h1 className="font-serif text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-normal text-white tracking-tight leading-snug line-clamp-2">
+                    <h1 className="font-display text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-extrabold text-white tracking-tight leading-snug line-clamp-2">
                       Modern Home Accents, Ambient Lighting &amp; Decor
                     </h1>
                   </div>

@@ -128,7 +128,7 @@ export default function HomePage() {
             <span className="text-[11px] uppercase tracking-[0.2em] font-semibold text-stone-500 dark:text-stone-400 block mb-1">
               Curated Catalog
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight text-stone-900 dark:text-white">
+            <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-stone-900 dark:text-white">
               Shop by Department
             </h2>
             <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1 max-w-xl">
@@ -180,7 +180,7 @@ export default function HomePage() {
                   {cat.itemCount}
                 </span>
                 <div className="flex items-center justify-between gap-2">
-                  <h3 className="font-serif text-lg sm:text-2xl font-normal text-white group-hover:text-stone-200 transition-colors">
+                  <h3 className="font-display text-base sm:text-2xl font-bold text-white group-hover:text-stone-200 transition-colors">
                     {cat.name}
                   </h3>
                   <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-white group-hover:text-stone-900 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300 shrink-0">
@@ -203,7 +203,7 @@ export default function HomePage() {
             <span className="text-[11px] uppercase tracking-[0.2em] font-semibold text-stone-500 dark:text-stone-400 block mb-1">
               Selected Works
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight text-stone-900 dark:text-white">
+            <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-stone-900 dark:text-white">
               The Permanent Collection
             </h2>
             <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1">
@@ -244,7 +244,7 @@ export default function HomePage() {
             <span className="text-[11px] uppercase tracking-[0.2em] font-semibold text-stone-500 dark:text-stone-400 block">
               Ethos &amp; Provenance
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-stone-900 dark:text-white tracking-tight leading-tight">
+            <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-extrabold text-stone-900 dark:text-white tracking-tight leading-tight">
               Retail Designed Around Material Integrity &amp; Restraint
             </h2>
             <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400 leading-relaxed max-w-2xl">
@@ -259,7 +259,7 @@ export default function HomePage() {
               </div>
               <div>
                 <span className="font-mono text-[10px] tracking-wider uppercase text-stone-400 dark:text-stone-500 block mb-0.5">ORIGIN</span>
-                <h4 className="font-serif text-base font-normal text-stone-900 dark:text-white">
+                <h4 className="font-display text-base font-bold text-stone-900 dark:text-white">
                   Direct Workshop Sourcing
                 </h4>
               </div>
@@ -274,7 +274,7 @@ export default function HomePage() {
               </div>
               <div>
                 <span className="font-mono text-[10px] tracking-wider uppercase text-stone-400 dark:text-stone-500 block mb-0.5">MATERIALS</span>
-                <h4 className="font-serif text-base font-normal text-stone-900 dark:text-white">
+                <h4 className="font-display text-base font-bold text-stone-900 dark:text-white">
                   Documented Composition
                 </h4>
               </div>
@@ -289,7 +289,7 @@ export default function HomePage() {
               </div>
               <div>
                 <span className="font-mono text-[10px] tracking-wider uppercase text-stone-400 dark:text-stone-500 block mb-0.5">PACKAGING</span>
-                <h4 className="font-serif text-base font-normal text-stone-900 dark:text-white">
+                <h4 className="font-display text-base font-bold text-stone-900 dark:text-white">
                   100% Recycled &amp; Plastic-Free
                 </h4>
               </div>
@@ -304,7 +304,7 @@ export default function HomePage() {
               </div>
               <div>
                 <span className="font-mono text-[10px] tracking-wider uppercase text-stone-400 dark:text-stone-500 block mb-0.5">GUARANTEE</span>
-                <h4 className="font-serif text-base font-normal text-stone-900 dark:text-white">
+                <h4 className="font-display text-base font-bold text-stone-900 dark:text-white">
                   30-Day Living Guarantee
                 </h4>
               </div>
@@ -323,7 +323,7 @@ export default function HomePage() {
             <span className="text-[11px] uppercase tracking-[0.2em] font-semibold text-stone-500 dark:text-stone-400 block mb-1">
               Field Reports
             </span>
-            <h2 className="font-serif text-2xl sm:text-4xl font-normal text-stone-900 dark:text-white tracking-tight">
+            <h2 className="font-display text-2xl sm:text-4xl font-bold text-stone-900 dark:text-white tracking-tight">
               Selected Reflections
             </h2>
           </div>
@@ -340,7 +340,7 @@ export default function HomePage() {
               key={idx}
               className="rounded-2xl sm:rounded-3xl p-6 sm:p-7 bg-white dark:bg-slate-900 border border-stone-200/80 dark:border-slate-800 flex flex-col justify-between space-y-5 shadow-2xs"
             >
-              <p className="text-xs sm:text-sm text-stone-700 dark:text-stone-300 leading-relaxed italic font-serif">
+              <p className="text-xs sm:text-sm text-stone-700 dark:text-stone-300 leading-relaxed italic">
                 &ldquo;{t.quote}&rdquo;
               </p>
 
